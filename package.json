@@ -13,6 +13,8 @@
     "format:check": "prettier --check .",
     "seed": "tsx scripts/seed.ts",
     "payload": "payload",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -26,23 +28,32 @@
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.85.1",
+    "@payloadcms/email-nodemailer": "^3.85.1",
+    "@payloadcms/email-resend": "^3.85.1",
     "@payloadcms/next": "^3.85.1",
     "@payloadcms/richtext-lexical": "^3.85.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",
     "next-themes": "^0.4.6",
+    "otplib": "^13.4.1",
     "payload": "^3.85.1",
+    "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "resend": "^6.14.0",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.19.43",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "husky": "^9.1.7",
@@ -51,6 +62,7 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.9"
   }
 }
