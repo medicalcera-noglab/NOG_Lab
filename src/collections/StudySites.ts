@@ -1,0 +1,56 @@
+import type { CollectionConfig } from 'payload'
+import { isAdminOrEditor, isAuthenticated } from '../access'
+
+export const StudySites: CollectionConfig = {
+  slug: 'study_sites',
+  admin: {
+    useAsTitle: 'name',
+    group: 'Research',
+    defaultColumns: ['name', 'district', 'province', 'project'],
+  },
+  access: {
+    read: isAuthenticated,
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
+  },
+  fields: [
+    {
+      name: 'name',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'district',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'province',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'project',
+      type: 'relationship',
+      relationTo: 'projects',
+      required: true,
+      admin: { position: 'sidebar' },
+    },
+    /**
+     * Payload's `point` field creates a geometry(Point) column (PostGIS).
+     * A separate migration converts this to geography(Point,4326) and adds
+     * a GiST index. The read/write format (EWKB) remains compatible.
+     *
+     * Admin note: coordinates are stored as [longitude, latitude] (GeoJSON order).
+     */
+    {
+      name: 'location',
+      type: 'point',
+      required: true,
+      admin: {
+        description: 'Enter coordinates as [longitude, latitude].',
+      },
+    },
+  ],
+}

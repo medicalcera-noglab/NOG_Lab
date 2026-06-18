@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+
+/* ─────────────────────────────────────────────
+   Dark-mode variant: triggered by [data-theme="dark"]
+   set on <html> by next-themes.
+   ───────────────────────────────────────────── */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* ─────────────────────────────────────────────
+   Brand primitive tokens
+   Never reference these raw hex values in components —
+   use semantic aliases below or Tailwind utilities.
+   ───────────────────────────────────────────── */
+:root {
+  /* Primitives */
+  --color-teal: #0e6e6e;
+  --color-teal-dark: #1a9090;
+  --color-sand: #e8c9a0;
+  --color-sand-dark: #7a5c38;
+  --color-coral: #e2725b;
+  --color-coral-dark: #f08070;
+  --color-ink: #1a1a1a;
+  --color-paper: #f7f7f5;
+
+  /* ── Light mode semantics ── */
+  --bg: var(--color-paper);
+  --fg: var(--color-ink);
+  --muted: #6b6b68;
+  --border: #d4d2cb;
+  --surface: #ffffff;
+  --surface-raised: #efede9;
+
+  --primary: var(--color-teal);
+  --primary-fg: #ffffff;
+  --accent: var(--color-coral);
+  --accent-hover: #cc5744;
+  --ring: var(--color-teal);
+}
+
+/* ── Dark mode overrides ── */
+[data-theme='dark'] {
+  --bg: #0d1117;
+  --fg: #e8e6e1;
+  --muted: #9a9896;
+  --border: #2a2a2e;
+  --surface: #161b22;
+  --surface-raised: #1e242d;
+
+  --primary: var(--color-teal-dark);
+  --primary-fg: #ffffff;
+  --accent: var(--color-coral-dark);
+  --accent-hover: #e06050;
+  --ring: var(--color-teal-dark);
+}
+
+/* ─────────────────────────────────────────────
+   Tailwind v4 theme — maps CSS vars to utilities.
+   bg-teal, text-coral, border-muted, etc. all work.
+   ───────────────────────────────────────────── */
+@theme inline {
+  /* Brand palette → Tailwind color utilities */
+  --color-teal: #0e6e6e;
+  --color-teal-light: #1a9090;
+  --color-sand: #e8c9a0;
+  --color-coral: #e2725b;
+  --color-ink: #1a1a1a;
+  --color-paper: #f7f7f5;
+
+  /* Semantic → Tailwind color utilities (theme-reactive) */
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-ring: var(--ring);
+
+  /* Typography */
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+
+  /* Focus ring */
+  --default-ring-color: var(--ring);
+}
+
+/* ─────────────────────────────────────────────
+   Base styles
+   ───────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────────────────────────
+   Keyframes
+   ───────────────────────────────────────────── */
+@keyframes blob-drift {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(6px, -10px) scale(1.03) rotate(2deg);
+  }
+  66% {
+    transform: translate(-8px, 4px) scale(0.97) rotate(-1deg);
+  }
+  100% {
+    transform: translate(4px, 8px) scale(1.01) rotate(1deg);
+  }
+}
+
+/* Disable animation for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Accessible focus ring — never outline: none without replacement
+   ───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-teal);
+  color: #fff;
+}
