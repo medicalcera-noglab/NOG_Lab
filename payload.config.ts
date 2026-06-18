@@ -4,6 +4,7 @@ import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { migrations } from './migrations/index'
+import { buildEmailAdapter } from './src/lib/email'
 
 import { Users } from './src/collections/Users'
 import { Media } from './src/collections/Media'
@@ -62,6 +63,7 @@ export default buildConfig({
     prodMigrations: migrations,
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
+  email: buildEmailAdapter(),
   secret: process.env.PAYLOAD_SECRET ?? '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
