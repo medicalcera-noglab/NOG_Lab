@@ -6,6 +6,7 @@ import { setPublishedAtHook } from '../hooks/setPublishedAt'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { notifyEditorsHook } from '../hooks/notifyEditors'
 import { revalidateBlogPosts } from '../hooks/revalidateCache'
+import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 const preventContributorPublish = ({
   data,
@@ -54,7 +55,8 @@ export const BlogPosts: CollectionConfig = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       preventContributorPublish as any,
     ],
-    afterChange: [notifyEditorsHook, revalidateBlogPosts],
+    afterChange: [notifyEditorsHook, revalidateBlogPosts, makeAuditChangeHook('blog_posts')],
+    afterDelete: [makeAuditDeleteHook('blog_posts')],
   },
   fields: [
     {

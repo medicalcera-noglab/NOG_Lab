@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, isAuthenticated } from '../access'
 import { revalidateStudySites } from '../hooks/revalidateCache'
+import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const StudySites: CollectionConfig = {
   slug: 'study_sites',
@@ -16,7 +17,8 @@ export const StudySites: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
-    afterChange: [revalidateStudySites],
+    afterChange: [revalidateStudySites, makeAuditChangeHook('study_sites')],
+    afterDelete: [makeAuditDeleteHook('study_sites')],
   },
   fields: [
     {

@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
 import { revalidateAbout } from '../hooks/revalidateCache'
+import { makeGlobalAuditChangeHook } from '../hooks/auditLog'
 
 export const About: GlobalConfig = {
   slug: 'about',
@@ -19,7 +20,7 @@ export const About: GlobalConfig = {
     update: isAdminOrEditor,
   },
   hooks: {
-    afterChange: [revalidateAbout],
+    afterChange: [revalidateAbout, makeGlobalAuditChangeHook('about')],
   },
   fields: [
     {

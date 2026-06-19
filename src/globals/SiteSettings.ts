@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { isSuperAdmin } from '../access'
 import { revalidateSiteSettings } from '../hooks/revalidateCache'
+import { makeGlobalAuditChangeHook } from '../hooks/auditLog'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site_settings',
@@ -18,7 +19,7 @@ export const SiteSettings: GlobalConfig = {
     update: isSuperAdmin,
   },
   hooks: {
-    afterChange: [revalidateSiteSettings],
+    afterChange: [revalidateSiteSettings, makeGlobalAuditChangeHook('site_settings')],
   },
   fields: [
     {

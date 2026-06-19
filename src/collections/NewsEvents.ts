@@ -5,6 +5,7 @@ import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { makeEnsureUniqueFeaturedHook } from '../hooks/ensureUniqueFeature'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { revalidateNewsEvents } from '../hooks/revalidateCache'
+import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 const preventContributorPublish = ({
   data,
@@ -53,7 +54,8 @@ export const NewsEvents: CollectionConfig = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       preventContributorPublish as any,
     ],
-    afterChange: [revalidateNewsEvents],
+    afterChange: [revalidateNewsEvents, makeAuditChangeHook('news_events')],
+    afterDelete: [makeAuditDeleteHook('news_events')],
   },
   fields: [
     {

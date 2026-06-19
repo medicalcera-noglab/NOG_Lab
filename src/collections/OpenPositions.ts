@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, isAuthenticated } from '../access'
 import { revalidateOpenPositions } from '../hooks/revalidateCache'
+import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const OpenPositions: CollectionConfig = {
   slug: 'open_positions',
@@ -16,7 +17,8 @@ export const OpenPositions: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
-    afterChange: [revalidateOpenPositions],
+    afterChange: [revalidateOpenPositions, makeAuditChangeHook('open_positions')],
+    afterDelete: [makeAuditDeleteHook('open_positions')],
   },
   fields: [
     {

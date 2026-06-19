@@ -3,6 +3,7 @@ import { isAdminOrEditor, isAuthenticated } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { makeEnsureUniqueFeaturedHook } from '../hooks/ensureUniqueFeature'
 import { revalidateProjects } from '../hooks/revalidateCache'
+import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -20,7 +21,8 @@ export const Projects: CollectionConfig = {
   hooks: {
     beforeValidate: [makeSlugHook('title')],
     beforeChange: [makeEnsureUniqueFeaturedHook('projects')],
-    afterChange: [revalidateProjects],
+    afterChange: [revalidateProjects, makeAuditChangeHook('projects')],
+    afterDelete: [makeAuditDeleteHook('projects')],
   },
   fields: [
     {

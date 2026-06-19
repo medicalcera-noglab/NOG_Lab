@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
 import { revalidateMediaCoverage } from '../hooks/revalidateCache'
+import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const MediaCoverage: CollectionConfig = {
   slug: 'media_coverage',
@@ -16,7 +17,8 @@ export const MediaCoverage: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
-    afterChange: [revalidateMediaCoverage],
+    afterChange: [revalidateMediaCoverage, makeAuditChangeHook('media_coverage')],
+    afterDelete: [makeAuditDeleteHook('media_coverage')],
   },
   fields: [
     {
