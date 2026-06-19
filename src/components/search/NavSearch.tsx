@@ -3,17 +3,10 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Search, X, Loader } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { GroupedResults, SearchResult } from '@/lib/search'
-
-const TYPE_LABELS: Record<string, string> = {
-  publication: 'Publications',
-  person: 'People',
-  project: 'Projects',
-  blog: 'Blog',
-  news: 'News',
-}
 
 function SnippetText({ html }: { html: string }) {
   // ts_headline wraps matches in <mark> from our own DB — safe to render.
@@ -75,6 +68,7 @@ interface Props {
 
 export function NavSearch({ className, onNavigate }: Props) {
   const router = useRouter()
+  const t = useTranslations('search')
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<GroupedResults | null>(null)
@@ -107,7 +101,7 @@ export function NavSearch({ className, onNavigate }: Props) {
   // Debounced fetch — all setState calls inside the timeout callback (not synchronously)
   useEffect(() => {
     const delay = query.length >= 2 ? 220 : 0
-    const t = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       if (query.length < 2) {
         setResults(null)
         setActiveIdx(-1)
@@ -125,7 +119,7 @@ export function NavSearch({ className, onNavigate }: Props) {
         setActiveIdx(-1)
       }
     }, delay)
-    return () => clearTimeout(t)
+    return () => clearTimeout(timer)
   }, [query])
 
   const openSearch = () => {
@@ -174,6 +168,14 @@ export function NavSearch({ className, onNavigate }: Props) {
   const dropdownOpen = open && query.length >= 2
 
   // Build display groups with cumulative offsets for keyboard nav
+  const TYPE_LABELS: Record<string, string> = {
+    publication: t('groups.publication'),
+    person: t('groups.person'),
+    project: t('groups.project'),
+    blog: t('groups.blog'),
+    news: t('groups.news'),
+  }
+
   const groups: Array<{ label: string; items: SearchResult[]; offset: number }> = []
   if (results) {
     let offset = 0
@@ -201,7 +203,7 @@ export function NavSearch({ className, onNavigate }: Props) {
         <button
           type="button"
           onClick={openSearch}
-          aria-label="Open search"
+          aria-label={t('openLabel')}
           className={cn(
             'flex h-[44px] items-center justify-center rounded-lg',
             'text-muted hover:text-fg hover:bg-surface-raised',
@@ -211,7 +213,7 @@ export function NavSearch({ className, onNavigate }: Props) {
           )}
         >
           <Search size={18} aria-hidden="true" />
-          {isMobileWidget && <span className="text-sm">Search…</span>}
+          {isMobileWidget && <span className="text-sm">{t('mobileButtonText')}</span>}
         </button>
       )}
 
@@ -227,13 +229,13 @@ export function NavSearch({ className, onNavigate }: Props) {
             <Search
               size={15}
               aria-hidden="true"
-              className="text-muted absolute top-1/2 left-3 -translate-y-1/2"
+              className="text-muted absolute start-3 top-1/2 -translate-y-1/2"
             />
             <input
               ref={inputRef}
               type="search"
               role="combobox"
-              aria-label="Search site"
+              aria-label={t('inputLabel')}
               aria-expanded={dropdownOpen}
               aria-controls="nav-search-listbox"
               aria-haspopup="listbox"
@@ -242,15 +244,15 @@ export function NavSearch({ className, onNavigate }: Props) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Search…"
+              placeholder={t('placeholder')}
               autoComplete="off"
-              className="text-fg placeholder:text-muted w-full bg-transparent py-2 pr-3 pl-8 text-sm outline-none"
+              className="text-fg placeholder:text-muted w-full bg-transparent py-2 ps-8 pe-3 text-sm outline-none"
             />
             {loading && (
               <Loader
                 size={14}
                 aria-hidden="true"
-                className="text-muted absolute top-1/2 right-3 -translate-y-1/2 animate-spin"
+                className="text-muted absolute end-3 top-1/2 -translate-y-1/2 animate-spin"
               />
             )}
           </div>
@@ -258,7 +260,7 @@ export function NavSearch({ className, onNavigate }: Props) {
           <button
             type="button"
             onClick={closeSearch}
-            aria-label="Close search"
+            aria-label={t('closeLabel')}
             className={cn(
               'flex h-[44px] w-[44px] flex-shrink-0 items-center justify-center rounded-lg',
               'text-muted hover:text-fg hover:bg-surface-raised',
@@ -276,9 +278,9 @@ export function NavSearch({ className, onNavigate }: Props) {
         <div
           id="nav-search-listbox"
           role="listbox"
-          aria-label="Search results"
+          aria-label={t('inputLabel')}
           className={cn(
-            'border-border bg-bg absolute top-full left-0 z-50 mt-1 rounded-xl border shadow-lg',
+            'border-border bg-bg absolute start-0 top-full z-50 mt-1 rounded-xl border shadow-lg',
             'max-h-[70vh] overflow-y-auto',
             isMobileWidget ? 'w-full' : 'w-80',
           )}
@@ -286,10 +288,10 @@ export function NavSearch({ className, onNavigate }: Props) {
           {/* Screen-reader live region */}
           <p aria-live="polite" aria-atomic="true" className="sr-only">
             {loading
-              ? 'Searching…'
+              ? t('announcing.loading')
               : totalResults > 0
-                ? `${totalResults} result${totalResults === 1 ? '' : 's'} for ${query}`
-                : `No results for ${query}`}
+                ? t('announcing.results', { count: totalResults, query })
+                : t('announcing.noResults', { query })}
           </p>
 
           {totalResults > 0 ? (
@@ -332,16 +334,14 @@ export function NavSearch({ className, onNavigate }: Props) {
                     'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
                   )}
                 >
-                  See all results for &ldquo;{query}&rdquo; →
+                  {t('seeAll', { query })}
                 </Link>
               </div>
             </div>
           ) : !loading ? (
-            <p className="text-muted px-4 py-6 text-center text-sm">
-              No results for &ldquo;{query}&rdquo;
-            </p>
+            <p className="text-muted px-4 py-6 text-center text-sm">{t('noResults', { query })}</p>
           ) : (
-            <p className="text-muted px-4 py-6 text-center text-sm">Searching…</p>
+            <p className="text-muted px-4 py-6 text-center text-sm">{t('loading')}</p>
           )}
         </div>
       )}

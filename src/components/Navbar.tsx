@@ -1,12 +1,14 @@
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { getSiteSettings } from '@/lib/data'
 import { PRIMARY_NAV } from '@/lib/nav'
 import { NavMenu } from './NavMenu'
+import { LocaleSwitcher } from './LocaleSwitcher'
 import { Container } from './ui/Container'
 import { cn } from '@/lib/utils'
 
 export async function Navbar() {
-  const settings = await getSiteSettings()
+  const [settings, t] = await Promise.all([getSiteSettings(), getTranslations('nav')])
 
   return (
     <header
@@ -16,14 +18,11 @@ export async function Navbar() {
       )}
     >
       <Container>
-        <nav
-          aria-label="Primary navigation"
-          className="flex h-16 items-center justify-between gap-6"
-        >
+        <nav aria-label={t('primaryNav')} className="flex h-16 items-center justify-between gap-6">
           {/* Logo / lab name */}
           <Link
             href="/"
-            aria-label={`${settings.labName} — home`}
+            aria-label={`${settings.labName} — ${t('logoHomeLabel')}`}
             className={cn(
               'font-heading text-primary flex-shrink-0 text-lg font-bold',
               'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
@@ -46,14 +45,19 @@ export async function Navbar() {
                     'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                   )}
                 >
-                  {link.label}
+                  {t(link.msgKey)}
                 </Link>
               </li>
             ))}
           </ul>
 
-          {/* Theme toggle + mobile menu (client) */}
-          <NavMenu links={PRIMARY_NAV} />
+          {/* Locale switcher + theme toggle + mobile menu (client) */}
+          <div className="flex items-center gap-1">
+            <div className="hidden md:flex">
+              <LocaleSwitcher />
+            </div>
+            <NavMenu links={PRIMARY_NAV} />
+          </div>
         </nav>
       </Container>
     </header>

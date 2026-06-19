@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { getSearchProvider, type SearchResult, type GroupedResults } from '@/lib/search'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
@@ -12,22 +13,12 @@ interface Props {
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { q = '' } = await searchParams
+  const t = await getTranslations('search.page')
   return {
-    title: q ? `Search: "${q}"` : 'Search',
+    title: q ? t('titleWithQuery', { query: q }) : t('titleEmpty'),
     robots: { index: false },
   }
 }
-
-const GROUP_CONFIG: Array<{
-  key: keyof Omit<GroupedResults, 'total'>
-  label: string
-}> = [
-  { key: 'publications', label: 'Publications' },
-  { key: 'people', label: 'People' },
-  { key: 'projects', label: 'Projects' },
-  { key: 'blog', label: 'Blog' },
-  { key: 'news', label: 'News' },
-]
 
 function SnippetText({ html }: { html: string }) {
   // ts_headline highlights from our own DB — safe to render.
@@ -65,19 +56,20 @@ function ResultCard({ result }: { result: SearchResult }) {
   )
 }
 
-function SearchForm({ defaultValue }: { defaultValue: string }) {
+async function SearchForm({ defaultValue }: { defaultValue: string }) {
+  const t = await getTranslations('search.page')
   return (
     <form method="GET" action="/search" role="search" className="mb-10">
       <div className="flex gap-2">
         <label htmlFor="search-input" className="sr-only">
-          Search
+          {t('inputLabel')}
         </label>
         <input
           id="search-input"
           type="search"
           name="q"
           defaultValue={defaultValue}
-          placeholder="Search publications, people, projects, blog…"
+          placeholder={t('inputPlaceholder')}
           autoFocus
           className={
             'border-border bg-surface text-fg flex-1 rounded-xl border px-4 py-3 ' +
@@ -92,7 +84,7 @@ function SearchForm({ defaultValue }: { defaultValue: string }) {
             'focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
           }
         >
-          Search
+          {t('submit')}
         </button>
       </div>
     </form>
@@ -102,6 +94,21 @@ function SearchForm({ defaultValue }: { defaultValue: string }) {
 export default async function SearchPage({ searchParams }: Props) {
   const { q = '' } = await searchParams
   const query = q.trim()
+  const [t, tSearch] = await Promise.all([
+    getTranslations('search.page'),
+    getTranslations('search'),
+  ])
+
+  const GROUP_CONFIG: Array<{
+    key: keyof Omit<GroupedResults, 'total'>
+    label: string
+  }> = [
+    { key: 'publications', label: tSearch('groups.publication') },
+    { key: 'people', label: tSearch('groups.person') },
+    { key: 'projects', label: tSearch('groups.project') },
+    { key: 'blog', label: tSearch('groups.blog') },
+    { key: 'news', label: tSearch('groups.news') },
+  ]
 
   let grouped: GroupedResults | null = null
   if (query.length >= 2) {
@@ -115,29 +122,20 @@ export default async function SearchPage({ searchParams }: Props) {
     <Section>
       <Container className="max-w-3xl">
         <h1 className="font-heading text-fg mb-2 text-3xl font-bold">
-          {query ? `Search results for "${query}"` : 'Search'}
+          {query ? t('titleWithQuery', { query }) : t('titleEmpty')}
         </h1>
         {hasAny && (
-          <p className="text-muted mb-8 text-sm">
-            {grouped!.total} result{grouped!.total === 1 ? '' : 's'} found
-          </p>
+          <p className="text-muted mb-8 text-sm">{t('found', { count: grouped!.total })}</p>
         )}
 
         <SearchForm defaultValue={query} />
 
-        {!query && (
-          <p className="text-muted py-16 text-center">
-            Enter at least two characters to search across publications, people, projects, and blog
-            posts.
-          </p>
-        )}
+        {!query && <p className="text-muted py-16 text-center">{t('prompt')}</p>}
 
         {query && grouped && !hasAny && (
           <div className="py-16 text-center">
-            <p className="text-fg font-medium">No results for &ldquo;{query}&rdquo;</p>
-            <p className="text-muted mt-1 text-sm">
-              Try different keywords or check your spelling.
-            </p>
+            <p className="text-fg font-medium">{t('noResults', { query })}</p>
+            <p className="text-muted mt-1 text-sm">{t('tryAgain')}</p>
           </div>
         )}
 
@@ -153,7 +151,7 @@ export default async function SearchPage({ searchParams }: Props) {
                     className="font-heading text-fg border-border mb-4 border-b pb-2 text-xl font-bold"
                   >
                     {label}
-                    <span className="text-muted ml-2 text-sm font-normal">({items.length})</span>
+                    <span className="text-muted ms-2 text-sm font-normal">({items.length})</span>
                   </h2>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {items.map((result) => (

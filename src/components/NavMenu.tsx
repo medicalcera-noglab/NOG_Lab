@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
+import { useTranslations } from 'next-intl'
 import { Menu, X, Sun, Moon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { NavLink } from '@/lib/nav'
 import { NavSearch } from './search/NavSearch'
+import { LocaleSwitcher } from './LocaleSwitcher'
 
 interface NavMenuProps {
   links: NavLink[]
@@ -28,8 +30,8 @@ export function NavMenu({ links }: NavMenuProps) {
   const isClient = useIsClient()
   const menuRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
-
-  // (useIsClient handles hydration guard — no effect needed here)
+  const t = useTranslations('nav')
+  const tTheme = useTranslations('theme')
 
   // Focus trap + Escape handler
   useEffect(() => {
@@ -98,7 +100,7 @@ export function NavMenu({ links }: NavMenuProps) {
         {isClient && (
           <button
             onClick={toggleTheme}
-            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-label={isDark ? tTheme('switchToLight') : tTheme('switchToDark')}
             className={cn(
               'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
               'text-muted hover:text-fg hover:bg-surface-raised',
@@ -117,7 +119,7 @@ export function NavMenu({ links }: NavMenuProps) {
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         aria-controls="mobile-menu"
-        aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+        aria-label={open ? t('closeMenu') : t('openMenu')}
         className={cn(
           'flex h-[44px] w-[44px] items-center justify-center rounded-lg md:hidden',
           'text-muted hover:text-fg hover:bg-surface-raised',
@@ -135,10 +137,10 @@ export function NavMenu({ links }: NavMenuProps) {
           ref={menuRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Navigation menu"
+          aria-label={t('mobileMenuLabel')}
           className="bg-bg fixed inset-0 top-[64px] z-40 md:hidden"
         >
-          <nav aria-label="Mobile navigation" className="flex flex-col gap-1 p-6 pt-8">
+          <nav aria-label={t('mobileNavLabel')} className="flex flex-col gap-1 p-6 pt-8">
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -151,7 +153,7 @@ export function NavMenu({ links }: NavMenuProps) {
                   'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                 )}
               >
-                {link.label}
+                {t(link.msgKey)}
               </Link>
             ))}
 
@@ -163,7 +165,7 @@ export function NavMenu({ links }: NavMenuProps) {
               {isClient && (
                 <button
                   onClick={toggleTheme}
-                  aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                  aria-label={isDark ? tTheme('switchToLight') : tTheme('switchToDark')}
                   className={cn(
                     'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
                     'text-muted hover:text-fg hover:bg-surface-raised',
@@ -178,6 +180,10 @@ export function NavMenu({ links }: NavMenuProps) {
                   )}
                 </button>
               )}
+            </div>
+
+            <div className="mt-2 px-4">
+              <LocaleSwitcher />
             </div>
           </nav>
         </div>

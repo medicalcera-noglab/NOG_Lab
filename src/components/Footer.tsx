@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { ExternalLink, BookOpen, MapPin } from 'lucide-react'
 
 const SOCIAL_LINK_CLASS =
@@ -9,7 +10,11 @@ import { PRIMARY_NAV } from '@/lib/nav'
 import { Container } from './ui/Container'
 
 export async function Footer() {
-  const settings = await getSiteSettings()
+  const [settings, t, tNav] = await Promise.all([
+    getSiteSettings(),
+    getTranslations('footer'),
+    getTranslations('nav'),
+  ])
 
   const social = settings.social ?? {}
   const hasSocial = Object.values(social).some(Boolean)
@@ -42,8 +47,10 @@ export async function Footer() {
           </div>
 
           {/* Navigation */}
-          <nav aria-label="Footer navigation">
-            <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">Site</p>
+          <nav aria-label={t('footerNav')}>
+            <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
+              {t('siteSection')}
+            </p>
             <ul role="list" className="space-y-2">
               {PRIMARY_NAV.map((link) => (
                 <li key={link.href}>
@@ -51,7 +58,7 @@ export async function Footer() {
                     href={link.href}
                     className="text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
                   >
-                    {link.label}
+                    {tNav(link.msgKey)}
                   </Link>
                 </li>
               ))}
@@ -62,7 +69,7 @@ export async function Footer() {
           {hasSocial && (
             <div>
               <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
-                Connect
+                {t('connectSection')}
               </p>
               <ul role="list" className="space-y-3">
                 {social.twitter && (
@@ -71,7 +78,7 @@ export async function Footer() {
                       href={social.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Twitter / X (opens in new tab)"
+                      aria-label={t('twitter')}
                       className={SOCIAL_LINK_CLASS}
                     >
                       <ExternalLink size={13} aria-hidden="true" />
@@ -85,7 +92,7 @@ export async function Footer() {
                       href={social.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="LinkedIn (opens in new tab)"
+                      aria-label={t('linkedin')}
                       className={SOCIAL_LINK_CLASS}
                     >
                       <ExternalLink size={13} aria-hidden="true" />
@@ -99,7 +106,7 @@ export async function Footer() {
                       href={social.researchgate}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="ResearchGate (opens in new tab)"
+                      aria-label={t('researchgate')}
                       className={SOCIAL_LINK_CLASS}
                     >
                       <BookOpen size={13} aria-hidden="true" />
@@ -113,7 +120,7 @@ export async function Footer() {
                       href={social.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="GitHub (opens in new tab)"
+                      aria-label={t('github')}
                       className={SOCIAL_LINK_CLASS}
                     >
                       <ExternalLink size={13} aria-hidden="true" />
@@ -131,7 +138,7 @@ export async function Footer() {
           <div className="border-border border-t py-6">
             <iframe
               src={settings.newsletterEmbedUrl}
-              title="Newsletter subscription form"
+              title={t('newsletter')}
               className="h-24 w-full max-w-lg border-0"
               loading="lazy"
             />
