@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, ExternalLink, ArrowLeft } from 'lucide-react'
@@ -40,20 +41,18 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
   const { slug } = await params
   const [person, settings] = await Promise.all([getPersonBySlug(slug), getSiteSettings()])
-
   if (!person) return { title: 'Person not found' }
 
   const photo = (person.photo as Media | null | undefined) ?? null
-  const ogImage = photo?.url ? [{ url: photo.url }] : undefined
-
-  return {
-    title: `${person.name} | ${settings.labName}`,
-    description: person.interests?.map((i) => i.interest).join(', ') ?? undefined,
-    openGraph: {
+  return buildMetadata(
+    {
       title: person.name,
-      images: ogImage,
+      description: person.interests?.map((i) => i.interest).join(', ') ?? undefined,
+      canonical: `/people/${slug}`,
+      ogImage: photo?.url ?? null,
     },
-  }
+    settings,
+  )
 }
 
 export default async function PersonProfilePage({ params }: ProfilePageProps) {

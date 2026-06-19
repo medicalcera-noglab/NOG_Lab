@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -9,6 +10,7 @@ import { MediaImage } from '@/components/MediaImage'
 import { SocialShare } from '@/components/blog/SocialShare'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { getBlogBySlug, getRelatedPosts, getAllBlogSlugs } from '@/lib/data/blog'
+import { getSiteSettings } from '@/lib/data'
 import type { Media, Person } from '../../../../../payload-types'
 
 export const revalidate = 60
@@ -19,12 +21,19 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const post = await getBlogBySlug(slug)
+  const [post, settings] = await Promise.all([getBlogBySlug(slug), getSiteSettings()])
   if (!post) return {}
-  return {
-    title: post.seoMeta?.title ?? post.title,
-    description: post.seoMeta?.description ?? undefined,
-  }
+  const cover =
+    post.coverImage && typeof post.coverImage === 'object' ? (post.coverImage as Media) : null
+  return buildMetadata(
+    {
+      title: post.seoMeta?.title ?? post.title ?? undefined,
+      description: post.seoMeta?.description ?? undefined,
+      canonical: `/blog/${slug}`,
+      ogImage: cover?.url ?? null,
+    },
+    settings,
+  )
 }
 
 export async function generateStaticParams() {
@@ -47,8 +56,26 @@ export default async function BlogDetailPage({ params }: Props) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
   const postUrl = `${siteUrl}/blog/${post.slug ?? post.id}`
 
+  const blogJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.seoMeta?.description ?? undefined,
+    url: postUrl,
+    ...(cover?.url ? { image: cover.url } : {}),
+    ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
+    ...(post.updatedAt ? { dateModified: post.updatedAt } : {}),
+    ...(author ? { author: { '@type': 'Person', name: (author as Person).name } } : {}),
+    publisher: { '@type': 'Organization', name: siteUrl },
+    keywords: tags.filter(Boolean).join(', '),
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
       <Section className="pt-16 pb-6">
         <Container className="max-w-3xl">
           <Link

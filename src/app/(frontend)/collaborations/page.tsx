@@ -1,13 +1,22 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
+import { getSiteSettings } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { MediaImage } from '@/components/MediaImage'
 import { getAllCollaborators } from '@/lib/data/collaborators'
 import type { Media } from '../../../../payload-types'
 
-export const metadata: Metadata = {
-  title: 'Collaborations',
-  description: 'Our global network of research partners, institutions, and collaborators.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return buildMetadata(
+    {
+      title: 'Collaborations',
+      description: 'Our global network of research partners, institutions, and collaborators.',
+      canonical: '/collaborations',
+    },
+    settings,
+  )
 }
 
 export const revalidate = 300

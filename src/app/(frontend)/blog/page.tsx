@@ -1,13 +1,22 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
+import { getSiteSettings } from '@/lib/data'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { getBlogList } from '@/lib/data/blog'
 
-export const metadata: Metadata = {
-  title: 'Blog',
-  description: 'Insights, commentary, and research updates from NOG Lab.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return buildMetadata(
+    {
+      title: 'Blog',
+      description: 'Insights, commentary, and research updates from the NOG Lab.',
+      canonical: '/blog',
+    },
+    settings,
+  )
 }
 
 export const revalidate = 120

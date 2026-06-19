@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, DollarSign, MapPin, Users, BookOpen, Building2 } from 'lucide-react'
@@ -15,6 +16,8 @@ import { MediaImage } from '@/components/MediaImage'
 import { RichText } from '@/components/RichText'
 import { PublicationListItem } from '@/components/publications/PublicationListItem'
 import { ProjectGallery, type GalleryImage } from '@/components/projects/ProjectGallery'
+import { ProjectsMiniMap } from '@/components/projects/ProjectsMiniMap'
+import type { MapSite } from '@/app/(payload)/api/map-sites/route'
 import { cn } from '@/lib/utils'
 import type {
   Media,
@@ -36,17 +39,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProjectDetailProps): Promise<Metadata> {
   const { slug } = await params
   const [project, settings] = await Promise.all([getProjectBySlug(slug), getSiteSettings()])
-
   if (!project) return { title: 'Project not found' }
 
   const cover = (project.coverImage as Media | null | undefined) ?? null
-  return {
-    title: `${project.title} | ${settings.labName}`,
-    openGraph: {
-      title: project.title,
-      images: cover?.url ? [{ url: cover.url }] : undefined,
-    },
-  }
+  return buildMetadata(
+    { title: project.title, canonical: `/projects/${slug}`, ogImage: cover?.url ?? null },
+    settings,
+  )
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailProps) {
@@ -82,6 +81,32 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
       },
     ]
   })
+
+  // Convert study sites to MapSite format for the mini map
+  const miniMapSites: MapSite[] = studySites
+    .filter((s) => Array.isArray(s.location) && s.location.length === 2)
+    .map((s) => ({
+      id: s.id,
+      name: s.name,
+      district: s.district,
+      province: s.province,
+      lng: s.location[0],
+      lat: s.location[1],
+      project: {
+        id: project.id,
+        title: project.title,
+        slug: project.slug ?? '',
+        status: project.status,
+      },
+      theme: theme
+        ? {
+            id: theme.id,
+            name: theme.name,
+            color: theme.color ?? '#0E6E6E',
+            slug: theme.slug ?? '',
+          }
+        : null,
+    }))
 
   // JSON-LD
   const jsonLd = {
@@ -313,14 +338,11 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
                       Study Sites
                     </h2>
 
-                    {/* Labeled slot — Step 9 will replace this with an interactive map */}
-                    <div
-                      className="border-border bg-surface mb-4 rounded-lg border p-4"
-                      aria-label="Site map placeholder — interactive map added in Step 9"
-                      role="note"
-                    >
-                      <p className="text-muted text-xs">Interactive site map coming in Step 9.</p>
-                    </div>
+                    {miniMapSites.length > 0 && (
+                      <div className="mb-4">
+                        <ProjectsMiniMap sites={miniMapSites} />
+                      </div>
+                    )}
 
                     <ul role="list" className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                       {studySites.map((site) => (

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
+import { getSiteSettings } from '@/lib/data'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
@@ -6,9 +8,16 @@ import { NewsCard } from '@/components/news/NewsCard'
 import { getNewsList } from '@/lib/data/news'
 import type { NewsCategory } from '@/lib/data/news'
 
-export const metadata: Metadata = {
-  title: 'News & Events',
-  description: 'Awards, grants, talks, conferences, and press from NOG Lab.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return buildMetadata(
+    {
+      title: 'News & Events',
+      description: 'Awards, grants, talks, conferences, and press from the NOG Lab.',
+      canonical: '/news',
+    },
+    settings,
+  )
 }
 
 export const revalidate = 120

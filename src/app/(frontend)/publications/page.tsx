@@ -1,5 +1,7 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
+import { getSiteSettings } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { PublicationListItem } from '@/components/publications/PublicationListItem'
 import { PublicationFilters } from '@/components/publications/PublicationFilters'
@@ -7,9 +9,16 @@ import { getFilteredPublications, getPublicationFilterOptions } from '@/lib/data
 import type { PublicationFilters as Filters } from '@/lib/data/publications'
 import { cn } from '@/lib/utils'
 
-export const metadata: Metadata = {
-  title: 'Publications',
-  description: 'Peer-reviewed articles, preprints, and book chapters from the NOG Lab.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return buildMetadata(
+    {
+      title: 'Publications',
+      description: 'Peer-reviewed articles, preprints, and book chapters from the NOG Lab.',
+      canonical: '/publications',
+    },
+    settings,
+  )
 }
 
 // Short ISR window — citation counts update nightly via cron.
@@ -35,6 +44,8 @@ function exportHref(format: 'bibtex' | 'ris', filters: Filters): string {
   return `/publications/export/${format}${qs ? `?${qs}` : ''}`
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
+
 export default async function PublicationsPage({ searchParams }: PageProps) {
   const params = await searchParams
   const filters: Filters = {
@@ -50,89 +61,122 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
     getPublicationFilterOptions(),
   ])
 
+  const pubsJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Publications',
+    url: `${SITE_URL}/publications`,
+    numberOfItems: publications.length,
+    itemListElement: publications.map((pub, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      item: {
+        '@type': 'ScholarlyArticle',
+        name: pub.title,
+        ...(pub.journal ? { isPartOf: { '@type': 'Periodical', name: pub.journal } } : {}),
+        ...(pub.year ? { datePublished: String(pub.year) } : {}),
+        ...(pub.doi ? { identifier: `https://doi.org/${pub.doi}` } : {}),
+        ...(pub.doi ? { url: `https://doi.org/${pub.doi}` } : {}),
+        author: (pub.authors ?? [])
+          .map((a) =>
+            typeof a === 'object' && a !== null
+              ? { '@type': 'Person', name: (a as { name?: string }).name }
+              : null,
+          )
+          .filter(Boolean),
+      },
+    })),
+  }
+
   return (
-    <main id="main-content">
-      <Container className="py-16 md:py-24">
-        {/* ── Page header ── */}
-        <div className="mb-12">
-          <h1 className="font-heading text-fg text-4xl font-bold md:text-5xl">Publications</h1>
-          <p className="text-muted mt-3 max-w-2xl text-base">
-            {publications.length > 0
-              ? `${publications.length} publication${publications.length !== 1 ? 's' : ''}`
-              : 'No publications found'}
-            {hasFilters ? ' matching the selected filters.' : '.'}
-          </p>
-        </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pubsJsonLd) }}
+      />
+      <main id="main-content">
+        <Container className="py-16 md:py-24">
+          {/* ── Page header ── */}
+          <div className="mb-12">
+            <h1 className="font-heading text-fg text-4xl font-bold md:text-5xl">Publications</h1>
+            <p className="text-muted mt-3 max-w-2xl text-base">
+              {publications.length > 0
+                ? `${publications.length} publication${publications.length !== 1 ? 's' : ''}`
+                : 'No publications found'}
+              {hasFilters ? ' matching the selected filters.' : '.'}
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[240px_1fr]">
-          {/* ── Sidebar filters ── */}
-          <Suspense>
-            <PublicationFilters
-              options={filterOptions}
-              active={{
-                year: filters.year,
-                type: filters.type,
-                themeSlug: filters.themeSlug,
-                authorId: filters.authorId,
-              }}
-            />
-          </Suspense>
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[240px_1fr]">
+            {/* ── Sidebar filters ── */}
+            <Suspense>
+              <PublicationFilters
+                options={filterOptions}
+                active={{
+                  year: filters.year,
+                  type: filters.type,
+                  themeSlug: filters.themeSlug,
+                  authorId: filters.authorId,
+                }}
+              />
+            </Suspense>
 
-          {/* ── Publication list ── */}
-          <section aria-label="Publication list">
-            {/* Export current list */}
-            {publications.length > 0 && (
-              <div className="border-border mb-6 flex flex-wrap items-center gap-3 border-b pb-4">
-                <span className="text-muted text-xs font-semibold">Export list:</span>
-                <a
-                  href={exportHref('bibtex', filters)}
-                  download="publications.bib"
-                  className={cn(
-                    'text-muted border-border rounded-full border px-3 py-1 text-xs font-semibold',
-                    'hover:text-fg hover:border-fg/30 transition-colors duration-150',
-                    'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
-                  )}
-                >
-                  BibTeX
-                </a>
-                <a
-                  href={exportHref('ris', filters)}
-                  download="publications.ris"
-                  className={cn(
-                    'text-muted border-border rounded-full border px-3 py-1 text-xs font-semibold',
-                    'hover:text-fg hover:border-fg/30 transition-colors duration-150',
-                    'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
-                  )}
-                >
-                  RIS
-                </a>
-              </div>
-            )}
-
-            {publications.length === 0 ? (
-              <div className="py-16 text-center">
-                <p className="text-muted text-sm">No publications match the selected filters.</p>
-                {hasFilters && (
+            {/* ── Publication list ── */}
+            <section aria-label="Publication list">
+              {/* Export current list */}
+              {publications.length > 0 && (
+                <div className="border-border mb-6 flex flex-wrap items-center gap-3 border-b pb-4">
+                  <span className="text-muted text-xs font-semibold">Export list:</span>
                   <a
-                    href="/publications"
-                    className="text-primary focus-visible:ring-ring mt-3 inline-block rounded text-sm underline focus-visible:ring-2 focus-visible:outline-none"
+                    href={exportHref('bibtex', filters)}
+                    download="publications.bib"
+                    className={cn(
+                      'text-muted border-border rounded-full border px-3 py-1 text-xs font-semibold',
+                      'hover:text-fg hover:border-fg/30 transition-colors duration-150',
+                      'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
+                    )}
                   >
-                    Clear all filters
+                    BibTeX
                   </a>
-                )}
-              </div>
-            ) : (
-              <ul role="list" className="flex flex-col gap-4">
-                {publications.map((pub) => (
-                  <li key={pub.id}>
-                    <PublicationListItem publication={pub} showCiteLinks />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        </div>
-      </Container>
-    </main>
+                  <a
+                    href={exportHref('ris', filters)}
+                    download="publications.ris"
+                    className={cn(
+                      'text-muted border-border rounded-full border px-3 py-1 text-xs font-semibold',
+                      'hover:text-fg hover:border-fg/30 transition-colors duration-150',
+                      'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
+                    )}
+                  >
+                    RIS
+                  </a>
+                </div>
+              )}
+
+              {publications.length === 0 ? (
+                <div className="py-16 text-center">
+                  <p className="text-muted text-sm">No publications match the selected filters.</p>
+                  {hasFilters && (
+                    <a
+                      href="/publications"
+                      className="text-primary focus-visible:ring-ring mt-3 inline-block rounded text-sm underline focus-visible:ring-2 focus-visible:outline-none"
+                    >
+                      Clear all filters
+                    </a>
+                  )}
+                </div>
+              ) : (
+                <ul role="list" className="flex flex-col gap-4">
+                  {publications.map((pub) => (
+                    <li key={pub.id}>
+                      <PublicationListItem publication={pub} showCiteLinks />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          </div>
+        </Container>
+      </main>
+    </>
   )
 }

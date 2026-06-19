@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import { getSiteSettings, getResearchPageData } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { FadeUp } from '@/components/FadeUp'
@@ -6,13 +7,11 @@ import { ResearchInPageNav } from '@/components/research/ResearchInPageNav'
 import { ThemeSection, deriveLeads } from '@/components/research/ThemeSection'
 import type { Project, Publication, Person, ResearchTheme } from '../../../../payload-types'
 
+export const revalidate = 60
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  const title = `Research | ${settings.labName}`
-  return {
-    title,
-    openGraph: { title },
-  }
+  return buildMetadata({ title: 'Research', canonical: '/research' }, settings)
 }
 
 export default async function ResearchPage() {

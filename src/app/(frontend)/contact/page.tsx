@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import { MapPin, Mail } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
@@ -6,9 +7,16 @@ import { ContactForm } from '@/components/forms/ContactForm'
 import { MapEmbed } from '@/components/contact/MapEmbed'
 import { getSiteSettings } from '@/lib/data/site-settings'
 
-export const metadata: Metadata = {
-  title: 'Contact',
-  description: 'Get in touch with NOG Lab.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return buildMetadata(
+    {
+      title: 'Contact',
+      description: `Get in touch with ${settings.labName}.`,
+      canonical: '/contact',
+    },
+    settings,
+  )
 }
 
 export const revalidate = 300

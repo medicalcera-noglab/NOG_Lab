@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import { getSiteSettings, getAllPeople, isAlumni } from '@/lib/data'
 import { Section } from '@/components/ui/Section'
 import { Container } from '@/components/ui/Container'
@@ -21,13 +22,11 @@ const DEFAULT_ROLE_LABELS: Record<string, string> = {
   alumni: 'Alumni',
 }
 
+export const revalidate = 60
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  const title = `People | ${settings.labName}`
-  return {
-    title,
-    openGraph: { title },
-  }
+  return buildMetadata({ title: 'People', canonical: '/people' }, settings)
 }
 
 interface PeoplePageProps {

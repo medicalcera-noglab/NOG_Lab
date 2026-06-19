@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import Link from 'next/link'
 import { List, Map } from 'lucide-react'
 import {
@@ -12,7 +13,7 @@ import { Container } from '@/components/ui/Container'
 import { FadeUp } from '@/components/FadeUp'
 import { ProjectCard } from '@/components/projects/ProjectCard'
 import { ProjectFilters } from '@/components/projects/ProjectFilters'
-import { MapPlaceholder } from '@/components/projects/MapPlaceholder'
+import { ProjectsMap } from '@/components/projects/ProjectsMap'
 import { cn } from '@/lib/utils'
 
 /**
@@ -28,10 +29,11 @@ import { cn } from '@/lib/utils'
  * Step 9 reads these same params to populate the map view.
  */
 
+export const revalidate = 60
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  const title = `Projects | ${settings.labName}`
-  return { title, openGraph: { title } }
+  return buildMetadata({ title: 'Projects', canonical: '/projects' }, settings)
 }
 
 interface ProjectsPageProps {
@@ -165,7 +167,14 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
             {/* Content area: list or map */}
             {view === 'map' ? (
               <FadeUp delay={0.1}>
-                <MapPlaceholder />
+                <ProjectsMap
+                  searchParams={{
+                    theme: sp.theme,
+                    status: sp.status,
+                    funder: sp.funder,
+                    province: sp.province,
+                  }}
+                />
               </FadeUp>
             ) : projects.length === 0 ? (
               <FadeUp delay={0.1}>

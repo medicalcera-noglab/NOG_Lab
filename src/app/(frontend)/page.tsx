@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import {
   getSiteSettings,
   getCounts,
@@ -15,17 +16,14 @@ import { PakistanMapTeaser } from '@/components/home/PakistanMapTeaser'
 import { LatestNews } from '@/components/home/LatestNews'
 import { PartnerStrip } from '@/components/home/PartnerStrip'
 
+export const revalidate = 60
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  return {
-    title: settings.labName,
-    description: settings.tagline ?? undefined,
-    openGraph: {
-      title: settings.labName,
-      description: settings.tagline ?? undefined,
-    },
-  }
+  return buildMetadata({ canonical: '/' }, settings)
 }
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
 
 export default async function HomePage() {
   // All data fetched in parallel — each is individually cached by unstable_cache
@@ -39,8 +37,31 @@ export default async function HomePage() {
       getStudySiteCount(),
     ])
 
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ResearchOrganization',
+    name: settings.labName,
+    description: settings.tagline ?? undefined,
+    url: SITE_URL,
+    ...(settings.contactAddress ? { address: settings.contactAddress } : {}),
+    ...(settings.social?.twitter
+      ? {
+          sameAs: [
+            settings.social.twitter,
+            settings.social.linkedin,
+            settings.social.github,
+            settings.social.researchgate,
+          ].filter(Boolean),
+        }
+      : {}),
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
       <HeroSection
         labName={settings.labName}
         tagline={settings.tagline}

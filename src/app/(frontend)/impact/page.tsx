@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
+import { getSiteSettings } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { RichText } from '@/components/RichText'
@@ -6,9 +8,16 @@ import { MediaImage } from '@/components/MediaImage'
 import { getImpactStories, getMediaCoverage, getImpactKPIs } from '@/lib/data/impact'
 import type { Media } from '../../../../payload-types'
 
-export const metadata: Metadata = {
-  title: 'Impact',
-  description: 'Research impact: publications, citations, grants, and community stories.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return buildMetadata(
+    {
+      title: 'Impact',
+      description: 'Research impact: publications, citations, grants, and community stories.',
+      canonical: '/impact',
+    },
+    settings,
+  )
 }
 
 export const revalidate = 600

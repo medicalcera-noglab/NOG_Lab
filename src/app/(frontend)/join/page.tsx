@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { RichText } from '@/components/RichText'
@@ -7,9 +8,16 @@ import { getAbout } from '@/lib/data/about'
 import { getOpenPositions } from '@/lib/data/positions'
 import { getSiteSettings } from '@/lib/data/site-settings'
 
-export const metadata: Metadata = {
-  title: 'Join the Lab',
-  description: 'Open positions and how to apply to NOG Lab.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return buildMetadata(
+    {
+      title: 'Join the Lab',
+      description: `Open positions and how to apply to ${settings.labName}.`,
+      canonical: '/join',
+    },
+    settings,
+  )
 }
 
 export const revalidate = 300

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/metadata'
 import { Download } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
@@ -9,9 +10,16 @@ import { getAbout } from '@/lib/data/about'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import type { Media } from '../../../../payload-types'
 
-export const metadata: Metadata = {
-  title: 'About',
-  description: 'Our mission, leadership, institutional affiliation, and facilities.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return buildMetadata(
+    {
+      title: 'About',
+      description: 'Our mission, leadership, institutional affiliation, and facilities.',
+      canonical: '/about',
+    },
+    settings,
+  )
 }
 
 export const revalidate = 300
