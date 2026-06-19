@@ -27,7 +27,7 @@ export function JoinForm({ positions }: Props) {
   }
 
   return (
-    <form action={action} className="space-y-5" noValidate encType="multipart/form-data">
+    <form action={action} className="space-y-5" noValidate>
       {/* Honeypot */}
       <input
         type="text"

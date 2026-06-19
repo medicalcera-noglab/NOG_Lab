@@ -68,7 +68,8 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI ?? '',
     },
-    // All environments use explicit migrations — no auto-push schema drift.
+    // Never auto-push schema — we manage schema exclusively through explicit migrations.
+    push: false,
     prodMigrations: migrations,
     migrationDir: path.resolve(dirname, 'migrations'),
   }),

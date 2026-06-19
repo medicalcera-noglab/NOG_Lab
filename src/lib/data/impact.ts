@@ -56,7 +56,7 @@ export const getImpactKPIs = unstable_cache(
       }),
       payload.count({
         collection: 'projects',
-        where: { isActive: { equals: true } },
+        where: { status: { equals: 'ongoing' } },
         overrideAccess: true,
       }),
     ])
