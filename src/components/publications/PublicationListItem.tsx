@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FileText, ExternalLink, Unlock } from 'lucide-react'
+import { FileText, ExternalLink, Unlock, BookMarked } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Publication, Media } from '../../../payload-types'
 
@@ -7,6 +7,11 @@ interface PublicationListItemProps {
   publication: Publication
   /** Highlight this person's name (for profile pages). */
   highlightPersonName?: string
+  /**
+   * When true, renders per-item BibTeX and RIS download links.
+   * Uses /publications/export/[format]?ids=<id> route.
+   */
+  showCiteLinks?: boolean
 }
 
 const TYPE_LABELS: Record<Publication['type'], string> = {
@@ -19,6 +24,7 @@ const TYPE_LABELS: Record<Publication['type'], string> = {
 export function PublicationListItem({
   publication: pub,
   highlightPersonName,
+  showCiteLinks = false,
 }: PublicationListItemProps) {
   const pdf = (pub.pdf as Media | null | undefined) ?? null
   const pdfUrl = pdf?.url ?? null
@@ -126,6 +132,34 @@ export function PublicationListItem({
             <FileText size={12} aria-hidden="true" />
             PDF
           </Link>
+        )}
+        {showCiteLinks && (
+          <>
+            <a
+              href={`/publications/export/bibtex?ids=${pub.id}`}
+              download={`${pub.id}.bib`}
+              aria-label={`Download BibTeX citation for ${pub.title}`}
+              className={cn(
+                'text-muted inline-flex items-center gap-1 text-xs font-semibold',
+                'focus-visible:ring-ring hover:text-fg rounded hover:underline focus-visible:ring-2 focus-visible:outline-none',
+              )}
+            >
+              <BookMarked size={12} aria-hidden="true" />
+              BibTeX
+            </a>
+            <a
+              href={`/publications/export/ris?ids=${pub.id}`}
+              download={`${pub.id}.ris`}
+              aria-label={`Download RIS citation for ${pub.title}`}
+              className={cn(
+                'text-muted inline-flex items-center gap-1 text-xs font-semibold',
+                'focus-visible:ring-ring hover:text-fg rounded hover:underline focus-visible:ring-2 focus-visible:outline-none',
+              )}
+            >
+              <BookMarked size={12} aria-hidden="true" />
+              RIS
+            </a>
+          </>
         )}
       </div>
     </article>

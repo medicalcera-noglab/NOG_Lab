@@ -33,3 +33,12 @@ export {
   type ProjectFilters,
   type ProjectFilterOptions,
 } from './projects'
+export {
+  getFilteredPublications,
+  getPublicationFilterOptions,
+  getPublicationsByIds,
+  getAllPublicationsWithDoi,
+  type Publication,
+  type PublicationFilters,
+  type PublicationFilterOptions,
+} from './publications'
