@@ -5,10 +5,15 @@ import { PRIMARY_NAV } from '@/lib/nav'
 import { NavMenu } from './NavMenu'
 import { LocaleSwitcher } from './LocaleSwitcher'
 import { Container } from './ui/Container'
+import { MediaImage } from './MediaImage'
 import { cn } from '@/lib/utils'
+import type { Media } from '@/../../payload-types'
 
 export async function Navbar() {
   const [settings, t] = await Promise.all([getSiteSettings(), getTranslations('nav')])
+
+  const logo = typeof settings.logo === 'object' ? (settings.logo as Media) : null
+  const logoDark = typeof settings.logoDark === 'object' ? (settings.logoDark as Media) : null
 
   return (
     <header
@@ -24,12 +29,43 @@ export async function Navbar() {
             href="/"
             aria-label={`${settings.labName} — ${t('logoHomeLabel')}`}
             className={cn(
-              'font-heading text-primary flex-shrink-0 text-lg font-bold',
+              'flex flex-shrink-0 items-center gap-2.5',
               'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
               'focus-visible:ring-offset-bg rounded focus-visible:ring-offset-2',
             )}
           >
-            {settings.labName}
+            {logo ? (
+              <>
+                {/* Light-mode logo */}
+                <span className={cn('block h-8 w-8', logoDark ? 'dark:hidden' : '')}>
+                  <MediaImage
+                    doc={logo}
+                    sizes="32px"
+                    className="h-full w-full object-contain"
+                    priority
+                  />
+                </span>
+                {/* Dark-mode logo (only rendered when logoDark is configured) */}
+                {logoDark && (
+                  <span className="hidden h-8 w-8 dark:block">
+                    <MediaImage
+                      doc={logoDark}
+                      sizes="32px"
+                      className="h-full w-full object-contain"
+                      priority
+                    />
+                  </span>
+                )}
+              </>
+            ) : null}
+            <span
+              className={cn(
+                'font-heading text-primary text-lg font-bold',
+                logo ? 'sr-only md:not-sr-only' : '',
+              )}
+            >
+              {settings.labName}
+            </span>
           </Link>
 
           {/* Desktop nav links */}

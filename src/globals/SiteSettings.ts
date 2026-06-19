@@ -39,6 +39,17 @@ export const SiteSettings: GlobalConfig = {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
+      label: 'Logo (light mode)',
+    },
+    {
+      name: 'logoDark',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Logo — dark / reversed (white version for dark mode)',
+      admin: {
+        description:
+          'Upload the white/reversed logo variant. Shown automatically when the site is in dark mode.',
+      },
     },
     {
       name: 'footerText',

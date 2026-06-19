@@ -1,13 +1,15 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { ExternalLink, BookOpen, MapPin } from 'lucide-react'
-
-const SOCIAL_LINK_CLASS =
-  'flex items-center gap-2 text-sm text-muted hover:text-fg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded'
 import { getSiteSettings } from '@/lib/data'
 import { lexicalToText } from '@/lib/richtext'
 import { PRIMARY_NAV } from '@/lib/nav'
 import { Container } from './ui/Container'
+import { MediaImage } from './MediaImage'
+import type { Media } from '@/../../payload-types'
+
+const SOCIAL_LINK_CLASS =
+  'flex items-center gap-2 text-sm text-muted hover:text-fg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded'
 
 export async function Footer() {
   const [settings, t, tNav] = await Promise.all([
@@ -24,13 +26,32 @@ export async function Footer() {
     ' ',
   )
 
+  const logo = typeof settings.logo === 'object' ? (settings.logo as Media) : null
+  const logoDark = typeof settings.logoDark === 'object' ? (settings.logoDark as Media) : null
+
   return (
     <footer className="border-border bg-surface mt-auto border-t">
       <Container>
         <div className="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-4 lg:col-span-2">
-            <p className="font-heading text-primary text-lg font-bold">{settings.labName}</p>
+            {/* Logo mark */}
+            {logo && (
+              <div className="flex items-center gap-3">
+                <span className={logoDark ? 'block dark:hidden' : 'block'}>
+                  <MediaImage doc={logo} sizes="40px" className="h-10 w-10 object-contain" />
+                </span>
+                {logoDark && (
+                  <span className="hidden dark:block">
+                    <MediaImage doc={logoDark} sizes="40px" className="h-10 w-10 object-contain" />
+                  </span>
+                )}
+                <p className="font-heading text-primary text-lg font-bold">{settings.labName}</p>
+              </div>
+            )}
+            {!logo && (
+              <p className="font-heading text-primary text-lg font-bold">{settings.labName}</p>
+            )}
             {footerBodyText && (
               <p className="text-muted max-w-sm text-sm leading-relaxed">{footerBodyText}</p>
             )}
