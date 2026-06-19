@@ -1,0 +1,145 @@
+import type { Metadata } from 'next'
+import { Container } from '@/components/ui/Container'
+import { Section } from '@/components/ui/Section'
+import { RichText } from '@/components/RichText'
+import { MediaImage } from '@/components/MediaImage'
+import { getImpactStories, getMediaCoverage, getImpactKPIs } from '@/lib/data/impact'
+import type { Media } from '../../../../payload-types'
+
+export const metadata: Metadata = {
+  title: 'Impact',
+  description: 'Research impact: publications, citations, grants, and community stories.',
+}
+
+export const revalidate = 600
+
+export default async function ImpactPage() {
+  const [stories, coverage, kpis] = await Promise.all([
+    getImpactStories(),
+    getMediaCoverage(),
+    getImpactKPIs(),
+  ])
+
+  const kpiItems = [
+    { label: 'Publications', value: kpis.publications },
+    { label: 'Total Citations', value: kpis.totalCitations.toLocaleString() },
+    { label: 'Active Students', value: kpis.activeStudents },
+    { label: 'Active Projects', value: kpis.grants },
+  ]
+
+  return (
+    <>
+      <Section className="pt-20 pb-12">
+        <Container>
+          <h1 className="mb-4 text-4xl font-bold">Our Impact</h1>
+          <p className="text-muted max-w-2xl text-lg">
+            Measuring research outcomes through publications, student training, and community
+            change.
+          </p>
+        </Container>
+      </Section>
+
+      {/* KPI Dashboard */}
+      <Section className="bg-surface py-12">
+        <Container>
+          <ul className="grid grid-cols-2 gap-6 md:grid-cols-4" role="list">
+            {kpiItems.map((kpi) => (
+              <li key={kpi.label} className="border-border bg-bg rounded-xl border p-6 text-center">
+                <p className="text-accent text-4xl font-bold">{kpi.value}</p>
+                <p className="text-muted mt-1 text-sm">{kpi.label}</p>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </Section>
+
+      {/* Impact Stories */}
+      {stories.length > 0 && (
+        <Section className="py-12">
+          <Container>
+            <h2 className="mb-8 text-2xl font-bold">Impact Stories</h2>
+            <div className="space-y-10">
+              {stories.map((story, idx) => {
+                const cover =
+                  story.cover && typeof story.cover === 'object' ? (story.cover as Media) : null
+                const isEven = idx % 2 === 0
+                return (
+                  <article
+                    key={story.id}
+                    className={`flex flex-col items-start gap-8 md:flex-row ${isEven ? '' : 'md:flex-row-reverse'}`}
+                  >
+                    {cover && (
+                      <div className="aspect-video shrink-0 overflow-hidden rounded-xl md:w-2/5">
+                        <MediaImage
+                          doc={cover}
+                          sizes="(max-width:768px) 100vw, 40vw"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h3 className="mb-3 text-xl font-bold">{story.title}</h3>
+                      <RichText data={story.body} className="max-w-2xl" />
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          </Container>
+        </Section>
+      )}
+
+      {/* Media Coverage Timeline */}
+      {coverage.length > 0 && (
+        <Section className="bg-surface py-12">
+          <Container>
+            <h2 className="mb-8 text-2xl font-bold">Media Coverage</h2>
+            <ol
+              className="border-border relative ml-4 space-y-8 border-l"
+              aria-label="Media coverage timeline"
+            >
+              {coverage.map((item) => {
+                const logo =
+                  item.logo && typeof item.logo === 'object' ? (item.logo as Media) : null
+                const date = new Date(item.date)
+                return (
+                  <li key={item.id} className="ml-6">
+                    <span
+                      className="border-accent bg-bg absolute -left-2 h-4 w-4 rounded-full border-2"
+                      aria-hidden
+                    />
+                    <time dateTime={item.date} className="text-muted mb-1 block text-xs">
+                      {date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </time>
+                    <div className="flex items-center gap-3">
+                      {logo && (
+                        <div className="h-10 w-10 shrink-0">
+                          <MediaImage
+                            doc={logo}
+                            sizes="40px"
+                            className="h-full w-full object-contain"
+                          />
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-muted text-xs font-medium">{item.outlet}</p>
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-accent font-semibold transition-colors focus-visible:underline focus-visible:outline-none"
+                        >
+                          {item.title} →
+                        </a>
+                      </div>
+                    </div>
+                  </li>
+                )
+              })}
+            </ol>
+          </Container>
+        </Section>
+      )}
+    </>
+  )
+}
