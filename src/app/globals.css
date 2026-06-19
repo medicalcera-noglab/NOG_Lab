@@ -134,6 +134,25 @@ body {
   }
 }
 
+@keyframes counter-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-4px, -8px) scale(1.02);
+  }
+  100% {
+    transform: translate(3px, 6px) scale(0.98);
+  }
+}
+
+/* Hero animation pause — applied when the user clicks "Pause animation".
+   Targets all descendants of the .hero-paused container so JS only
+   needs to toggle one class on the parent. */
+.hero-paused * {
+  animation-play-state: paused !important;
+}
+
 /* Disable animation for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   * {
