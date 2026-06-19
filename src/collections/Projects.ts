@@ -141,5 +141,12 @@ export const Projects: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'relatedPublications',
+      type: 'relationship',
+      relationTo: 'publications',
+      hasMany: true,
+      label: 'Related Publications / Outputs',
+    },
   ],
 }
