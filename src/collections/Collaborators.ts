@@ -19,6 +19,7 @@ export const Collaborators: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'type',

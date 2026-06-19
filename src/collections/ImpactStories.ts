@@ -29,6 +29,7 @@ export const ImpactStories: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'slug',
@@ -66,6 +67,7 @@ export const ImpactStories: CollectionConfig = {
       name: 'body',
       type: 'richText',
       required: true,
+      localized: true,
     },
     {
       name: 'relatedProjects',

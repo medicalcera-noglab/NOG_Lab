@@ -7,6 +7,7 @@ import * as migration_20260619_120001_media_image_sizes from './20260619_120001_
 import * as migration_20260619_200000_site_settings_role_labels from './20260619_200000_site_settings_role_labels'
 import * as migration_20260619_210000_projects_related_publications from './20260619_210000_projects_related_publications'
 import * as migration_20260619_300000_search_fts from './20260619_300000_search_fts'
+import * as migration_20260619_400000_add_localization from './20260619_400000_add_localization'
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260619_300000_search_fts.up,
     down: migration_20260619_300000_search_fts.down,
     name: '20260619_300000_search_fts',
+  },
+  {
+    up: migration_20260619_400000_add_localization.up,
+    down: migration_20260619_400000_add_localization.down,
+    name: '20260619_400000_add_localization',
   },
 ]

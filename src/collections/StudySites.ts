@@ -19,16 +19,19 @@ export const StudySites: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'district',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'province',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'project',
@@ -49,7 +52,11 @@ export const StudySites: CollectionConfig = {
       type: 'point',
       required: true,
       admin: {
-        description: 'Enter coordinates as [longitude, latitude].',
+        description:
+          'Enter coordinates as [longitude, latitude]. Click on the map below to set the point.',
+        components: {
+          Field: '@/components/admin/MapPicker#MapPicker',
+        },
       },
     },
   ],

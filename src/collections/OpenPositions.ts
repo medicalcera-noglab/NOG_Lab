@@ -19,16 +19,19 @@ export const OpenPositions: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'description',
       type: 'richText',
       required: true,
+      localized: true,
     },
     {
       name: 'type',
       type: 'text',
       required: true,
+      localized: true,
       admin: {
         description: 'e.g. PhD Fellowship, Postdoc, Research Assistant',
       },
