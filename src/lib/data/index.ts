@@ -16,3 +16,20 @@ export {
   isAlumni,
   type Person,
 } from './people'
+export {
+  getResearchPageData,
+  getAllResearchThemes,
+  type ResearchTheme,
+  type ResearchPageData,
+} from './research'
+export {
+  getFilteredProjects,
+  getProjectFilterOptions,
+  getProjectBySlug,
+  getProjectStudySites,
+  getAllProjectSlugs,
+  type Project,
+  type StudySite,
+  type ProjectFilters,
+  type ProjectFilterOptions,
+} from './projects'
