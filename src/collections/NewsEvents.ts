@@ -3,6 +3,7 @@ import { isAdminOrEditor, isAuthenticated, isOwnerDraftOnly, canCreateContent } 
 import { setPublishedAtHook } from '../hooks/setPublishedAt'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { makeEnsureUniqueFeaturedHook } from '../hooks/ensureUniqueFeature'
+import { makeSlugHook } from '../hooks/makeSlug'
 
 const preventContributorPublish = ({
   data,
@@ -43,6 +44,7 @@ export const NewsEvents: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
+    beforeValidate: [makeSlugHook('title')],
     beforeChange: [
       setCreatedByHook,
       setPublishedAtHook,
@@ -56,6 +58,12 @@ export const NewsEvents: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      unique: true,
+      admin: { position: 'sidebar' },
     },
     {
       name: 'body',

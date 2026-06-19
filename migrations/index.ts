@@ -1,18 +1,13 @@
-import * as migration_20240101000000_enable_postgis from './20240101000000_enable_postgis'
 import * as migration_20260618_201421 from './20260618_201421'
 import * as migration_20260618_201422_postgis_geography from './20260618_201422_postgis_geography'
 import * as migration_20260619_000000_users_totp_fields from './20260619_000000_users_totp_fields'
+import * as migration_20260619_103316 from './20260619_103316'
 import * as migration_20260619_120000_applicant_files from './20260619_120000_applicant_files'
 import * as migration_20260619_120001_media_image_sizes from './20260619_120001_media_image_sizes'
 import * as migration_20260619_200000_site_settings_role_labels from './20260619_200000_site_settings_role_labels'
 import * as migration_20260619_210000_projects_related_publications from './20260619_210000_projects_related_publications'
 
 export const migrations = [
-  {
-    up: migration_20240101000000_enable_postgis.up,
-    down: migration_20240101000000_enable_postgis.down,
-    name: '20240101000000_enable_postgis',
-  },
   {
     up: migration_20260618_201421.up,
     down: migration_20260618_201421.down,
@@ -27,6 +22,11 @@ export const migrations = [
     up: migration_20260619_000000_users_totp_fields.up,
     down: migration_20260619_000000_users_totp_fields.down,
     name: '20260619_000000_users_totp_fields',
+  },
+  {
+    up: migration_20260619_103316.up,
+    down: migration_20260619_103316.down,
+    name: '20260619_103316',
   },
   {
     up: migration_20260619_120000_applicant_files.up,

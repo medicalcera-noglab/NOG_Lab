@@ -4,6 +4,7 @@ import { makeSlugHook } from '../hooks/makeSlug'
 import { computeReadingTimeHook } from '../hooks/computeReadingTime'
 import { setPublishedAtHook } from '../hooks/setPublishedAt'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
+import { notifyEditorsHook } from '../hooks/notifyEditors'
 
 const preventContributorPublish = ({
   data,
@@ -52,6 +53,7 @@ export const BlogPosts: CollectionConfig = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       preventContributorPublish as any,
     ],
+    afterChange: [notifyEditorsHook],
   },
   fields: [
     {
@@ -139,6 +141,16 @@ export const BlogPosts: CollectionConfig = {
           admin: { description: '120–160 characters recommended.' },
         },
       ],
+    },
+    {
+      name: 'scheduledPublishAt',
+      type: 'date',
+      label: 'Scheduled Publish At',
+      admin: {
+        position: 'sidebar',
+        date: { displayFormat: 'dd MMM yyyy HH:mm' },
+        description: 'Auto-publish at this time via the scheduled-publish cron.',
+      },
     },
     {
       name: 'createdBy',

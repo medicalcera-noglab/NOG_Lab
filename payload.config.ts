@@ -21,7 +21,10 @@ import { NewsEvents } from './src/collections/NewsEvents'
 import { OpenPositions } from './src/collections/OpenPositions'
 import { Inquiries } from './src/collections/Inquiries'
 import { AuditLog } from './src/collections/AuditLog'
+import { ImpactStories } from './src/collections/ImpactStories'
+import { MediaCoverage } from './src/collections/MediaCoverage'
 import { SiteSettings } from './src/globals/SiteSettings'
+import { About } from './src/globals/About'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -51,13 +54,15 @@ export default buildConfig({
     BlogPosts,
     NewsEvents,
     OpenPositions,
+    ImpactStories,
+    MediaCoverage,
     // Forms
     Inquiries,
     // Admin / audit
     AuditLog,
   ],
   plugins: buildStoragePlugin(),
-  globals: [SiteSettings],
+  globals: [SiteSettings, About],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: {

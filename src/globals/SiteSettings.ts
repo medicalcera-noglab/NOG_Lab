@@ -155,5 +155,32 @@ export const SiteSettings: GlobalConfig = {
       relationTo: 'media',
       label: 'Lab Brochure (PDF)',
     },
+    {
+      name: 'googleMapsEmbedUrl',
+      type: 'text',
+      label: 'Google Maps Embed URL',
+      admin: {
+        description:
+          'Paste the src URL from Google Maps "Embed a map". Shown on /contact with click-to-load.',
+      },
+    },
+    {
+      name: 'noOpenPositionsMessage',
+      type: 'text',
+      label: 'No Open Positions Message',
+      admin: {
+        description: 'Shown on /join when no active positions exist.',
+      },
+      defaultValue:
+        'We have no open positions at this time. Check back soon or send a general inquiry.',
+    },
+    {
+      name: 'contactEmail',
+      type: 'email',
+      label: 'Public Contact Email',
+      admin: {
+        description: 'Displayed on the /contact page.',
+      },
+    },
   ],
 }
