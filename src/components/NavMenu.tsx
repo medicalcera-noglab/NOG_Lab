@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
-import { Menu, X, Sun, Moon, Search } from 'lucide-react'
+import { Menu, X, Sun, Moon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { NavLink } from '@/lib/nav'
+import { NavSearch } from './search/NavSearch'
 
 interface NavMenuProps {
   links: NavLink[]
@@ -91,19 +92,7 @@ export function NavMenu({ links }: NavMenuProps) {
     <>
       {/* ── Desktop right-side controls ──────────────────────────────── */}
       <div className="hidden items-center gap-1 md:flex">
-        {/* Search slot — wired in Step 11 */}
-        <Link
-          href="/search"
-          aria-label="Search"
-          className={cn(
-            'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
-            'text-muted hover:text-fg hover:bg-surface-raised',
-            'transition-colors duration-150 focus-visible:outline-none',
-            'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-          )}
-        >
-          <Search size={18} aria-hidden="true" />
-        </Link>
+        <NavSearch />
 
         {/* Theme toggle */}
         {isClient && (
@@ -169,20 +158,7 @@ export function NavMenu({ links }: NavMenuProps) {
             <hr className="border-border my-4" />
 
             <div className="flex items-center gap-3 px-4">
-              <Link
-                href="/search"
-                aria-label="Search"
-                onClick={() => setOpen(false)}
-                className={cn(
-                  'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
-                  'text-muted hover:text-fg hover:bg-surface-raised',
-                  'transition-colors duration-150 focus-visible:outline-none',
-                  'focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2',
-                )}
-              >
-                <Search size={20} aria-hidden="true" />
-                <span className="sr-only">Search</span>
-              </Link>
+              <NavSearch className="w-full" onNavigate={() => setOpen(false)} />
 
               {isClient && (
                 <button
