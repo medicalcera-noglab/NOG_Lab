@@ -27,12 +27,16 @@
     ]
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1072.0",
+    "@aws-sdk/s3-request-presigner": "^3.1072.0",
     "@payloadcms/db-postgres": "^3.85.1",
     "@payloadcms/email-nodemailer": "^3.85.1",
     "@payloadcms/email-resend": "^3.85.1",
     "@payloadcms/next": "^3.85.1",
     "@payloadcms/richtext-lexical": "^3.85.1",
+    "@payloadcms/storage-s3": "^3.85.1",
     "clsx": "^2.1.1",
+    "file-type": "^22.0.1",
     "framer-motion": "^12.40.0",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.21.0",
@@ -44,6 +48,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.14.0",
+    "sharp": "^0.35.1",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
