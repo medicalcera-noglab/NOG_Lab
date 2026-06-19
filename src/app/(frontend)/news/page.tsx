@@ -7,6 +7,7 @@ import { Section } from '@/components/ui/Section'
 import { NewsCard } from '@/components/news/NewsCard'
 import { getNewsList } from '@/lib/data/news'
 import type { NewsCategory } from '@/lib/data/news'
+import { EmptyState } from '@/components/placeholders'
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -78,7 +79,16 @@ export default async function NewsPage({ searchParams }: PageProps) {
       <Section className="pb-20">
         <Container>
           {items.length === 0 ? (
-            <p className="text-muted">No items found.</p>
+            <EmptyState
+              variant={0}
+              heading={category ? 'No items in this category' : 'News & events coming soon'}
+              body={
+                category
+                  ? 'Nothing has been posted in this category yet. Try viewing all news.'
+                  : 'Awards, grants, talks, and press coverage will appear here once added.'
+              }
+              action={category ? { label: 'View all news', href: '/news' } : undefined}
+            />
           ) : (
             <ul className="space-y-4" role="list">
               {items.map((item) => (

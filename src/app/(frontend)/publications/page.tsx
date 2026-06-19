@@ -7,6 +7,7 @@ import { PublicationListItem } from '@/components/publications/PublicationListIt
 import { PublicationFilters } from '@/components/publications/PublicationFilters'
 import { getFilteredPublications, getPublicationFilterOptions } from '@/lib/data/publications'
 import type { PublicationFilters as Filters } from '@/lib/data/publications'
+import { EmptyState } from '@/components/placeholders'
 import { cn } from '@/lib/utils'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -153,17 +154,20 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
               )}
 
               {publications.length === 0 ? (
-                <div className="py-16 text-center">
-                  <p className="text-muted text-sm">No publications match the selected filters.</p>
-                  {hasFilters && (
-                    <a
-                      href="/publications"
-                      className="text-primary focus-visible:ring-ring mt-3 inline-block rounded text-sm underline focus-visible:ring-2 focus-visible:outline-none"
-                    >
-                      Clear all filters
-                    </a>
-                  )}
-                </div>
+                <EmptyState
+                  variant={2}
+                  heading={
+                    !hasFilters ? 'Publications coming soon' : 'No publications match these filters'
+                  }
+                  body={
+                    !hasFilters
+                      ? 'Peer-reviewed articles and preprints will appear here once they are added.'
+                      : 'Try adjusting or clearing the active filters to browse all publications.'
+                  }
+                  action={
+                    hasFilters ? { label: 'Clear all filters', href: '/publications' } : undefined
+                  }
+                />
               ) : (
                 <ul role="list" className="flex flex-col gap-4">
                   {publications.map((pub) => (

@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/Container'
 import { FadeUp } from '@/components/FadeUp'
 import { PersonCard } from '@/components/people/PersonCard'
 import { RoleTabNav, type RoleTab } from '@/components/people/RoleTabNav'
+import { EmptyState } from '@/components/placeholders'
 import type { Person } from '../../../../payload-types'
 
 type RoleKey = 'pi' | 'postdoc' | 'phd' | 'ms' | 'staff'
@@ -107,9 +108,24 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
         {/* Grid or empty state */}
         {displayPeople.length === 0 ? (
           <FadeUp delay={0.1}>
-            <p className="text-muted py-16 text-center text-sm">
-              No team members found in this category.
-            </p>
+            <EmptyState
+              variant={0}
+              heading={
+                allPeople.length === 0
+                  ? 'Team profiles coming soon'
+                  : 'No team members in this category'
+              }
+              body={
+                allPeople.length === 0
+                  ? 'Researcher profiles will appear here once they are added to the site.'
+                  : `No ${activeRoleLabel.toLowerCase()} are currently listed. Try another filter.`
+              }
+              action={
+                allPeople.length > 0 && activeRole !== 'all'
+                  ? { label: 'Show all members', href: '/people' }
+                  : undefined
+              }
+            />
           </FadeUp>
         ) : (
           <div

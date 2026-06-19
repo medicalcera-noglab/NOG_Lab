@@ -5,6 +5,7 @@ import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { MediaImage } from '@/components/MediaImage'
 import { getAllCollaborators } from '@/lib/data/collaborators'
+import { EmptyState } from '@/components/placeholders'
 import type { Media } from '../../../../payload-types'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -84,7 +85,11 @@ export default async function CollaborationsPage() {
         <Container>
           <h2 className="mb-8 text-2xl font-bold">All Collaborators</h2>
           {collaborators.length === 0 ? (
-            <p className="text-muted">No collaborators listed yet.</p>
+            <EmptyState
+              variant={3}
+              heading="Collaborators coming soon"
+              body="Our global network of research partners and institutions will be listed here."
+            />
           ) : (
             <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" role="list">
               {collaborators.map((c) => {

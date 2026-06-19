@@ -20,32 +20,23 @@ export function PersonCard({ person, roleLabel }: PersonCardProps) {
         'transition-shadow duration-200 hover:shadow-md',
       )}
     >
-      {/* Photo */}
+      {/* Photo — always rendered; MediaImage shows placeholder when photo is absent */}
       <Link
         href={`/people/${slug}`}
         tabIndex={-1}
         aria-hidden="true"
         className="bg-surface-raised block aspect-[4/3] overflow-hidden"
       >
-        {photo ? (
-          <div className="relative h-full w-full">
-            <MediaImage
-              doc={photo}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            />
-          </div>
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <span
-              className="text-muted font-heading text-5xl font-bold select-none"
-              aria-hidden="true"
-            >
-              {person.name.charAt(0).toUpperCase()}
-            </span>
-          </div>
-        )}
+        <div className="relative h-full w-full">
+          <MediaImage
+            doc={photo}
+            fill
+            seed={person.id}
+            placeholderLabel={`Illustration placeholder for ${person.name}`}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+          />
+        </div>
       </Link>
 
       {/* Content */}

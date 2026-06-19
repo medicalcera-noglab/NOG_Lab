@@ -23,34 +23,23 @@ export function ProjectCard({ project }: ProjectCardProps) {
         'transition-shadow duration-200 hover:shadow-md',
       )}
     >
-      {/* Cover image */}
+      {/* Cover image — always rendered; MediaImage shows placeholder when coverImage is absent */}
       <Link
         href={`/projects/${slug}`}
         tabIndex={-1}
         aria-hidden="true"
         className="bg-surface-raised block aspect-[16/9] overflow-hidden"
       >
-        {coverImage ? (
-          <div className="relative h-full w-full">
-            <MediaImage
-              doc={coverImage}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            />
-          </div>
-        ) : (
-          <div
-            className="flex h-full w-full items-center justify-center"
-            style={theme?.color ? ({ '--tc': theme.color } as React.CSSProperties) : undefined}
-          >
-            <div
-              className="h-12 w-12 rounded-full opacity-20"
-              style={{ backgroundColor: theme?.color ?? 'var(--primary)' }}
-              aria-hidden="true"
-            />
-          </div>
-        )}
+        <div className="relative h-full w-full">
+          <MediaImage
+            doc={coverImage}
+            fill
+            seed={project.id}
+            placeholderLabel={`Illustration placeholder for ${project.title}`}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+          />
+        </div>
       </Link>
 
       {/* Content */}

@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { getBlogList } from '@/lib/data/blog'
+import { EmptyState } from '@/components/placeholders'
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -84,7 +85,16 @@ export default async function BlogPage({ searchParams }: PageProps) {
       <Section className="pb-20">
         <Container>
           {posts.length === 0 ? (
-            <p className="text-muted">No posts yet. Check back soon.</p>
+            <EmptyState
+              variant={1}
+              heading={tag ? 'No posts with this tag' : 'Blog posts coming soon'}
+              body={
+                tag
+                  ? 'No articles have been tagged with this topic yet. Try browsing all posts.'
+                  : 'Research insights and updates will appear here once published.'
+              }
+              action={tag ? { label: 'Browse all posts', href: '/blog' } : undefined}
+            />
           ) : (
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
               {posts.map((post) => (

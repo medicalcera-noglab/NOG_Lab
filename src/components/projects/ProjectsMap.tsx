@@ -1,5 +1,6 @@
 import type { MapSite } from '@/app/(payload)/api/map-sites/route'
 import { ProjectsMapWrapper } from './ProjectsMapWrapper'
+import { EmptyState } from '@/components/placeholders'
 
 interface Props {
   searchParams?: {
@@ -38,6 +39,23 @@ async function fetchSites(filters: Props['searchParams']): Promise<MapSite[]> {
 
 export async function ProjectsMap({ searchParams }: Props) {
   const sites = await fetchSites(searchParams)
+
+  if (sites.length === 0) {
+    const hasFilters = Object.values(searchParams ?? {}).some(Boolean)
+    return (
+      <EmptyState
+        variant={2}
+        heading={hasFilters ? 'No study sites match these filters' : 'Map coming soon'}
+        body={
+          hasFilters
+            ? 'No geo-tagged study sites match the active filters. Try clearing them.'
+            : 'Study site locations will appear on the map once sites are added to projects.'
+        }
+        action={hasFilters ? { label: 'Clear all filters', href: '/projects?view=map' } : undefined}
+        className="min-h-[400px] justify-center"
+      />
+    )
+  }
 
   return <ProjectsMapWrapper sites={sites} />
 }

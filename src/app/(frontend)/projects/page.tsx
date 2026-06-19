@@ -14,6 +14,7 @@ import { FadeUp } from '@/components/FadeUp'
 import { ProjectCard } from '@/components/projects/ProjectCard'
 import { ProjectFilters } from '@/components/projects/ProjectFilters'
 import { ProjectsMap } from '@/components/projects/ProjectsMap'
+import { EmptyState } from '@/components/placeholders'
 import { cn } from '@/lib/utils'
 
 /**
@@ -178,22 +179,22 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
               </FadeUp>
             ) : projects.length === 0 ? (
               <FadeUp delay={0.1}>
-                <div className="border-border rounded-xl border py-20 text-center">
-                  <p className="text-muted mb-3 text-sm font-medium">
-                    No projects match the selected filters.
-                  </p>
-                  {hasFilters && (
-                    <Link
-                      href="/projects"
-                      className={cn(
-                        'text-primary text-sm font-semibold underline underline-offset-2',
-                        'focus-visible:ring-ring rounded focus-visible:ring-2 focus-visible:outline-none',
-                      )}
-                    >
-                      Clear all filters
-                    </Link>
-                  )}
-                </div>
+                <EmptyState
+                  variant={3}
+                  heading={
+                    projects.length === 0 && !hasFilters
+                      ? 'Projects coming soon'
+                      : 'No projects match these filters'
+                  }
+                  body={
+                    !hasFilters
+                      ? 'Research projects will appear here once they are published.'
+                      : 'Try adjusting or clearing the active filters to see more projects.'
+                  }
+                  action={
+                    hasFilters ? { label: 'Clear all filters', href: '/projects' } : undefined
+                  }
+                />
               </FadeUp>
             ) : (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">

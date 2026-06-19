@@ -15,20 +15,21 @@ export function BlogCard({ post }: Props) {
 
   return (
     <article className="border-border bg-surface flex flex-col overflow-hidden rounded-xl border transition-shadow hover:shadow-md">
-      {cover && (
-        <Link
-          href={`/blog/${post.slug ?? post.id}`}
-          className="block aspect-video overflow-hidden"
-          tabIndex={-1}
-          aria-hidden
-        >
-          <MediaImage
-            doc={cover}
-            sizes="(max-width:768px) 100vw, 50vw"
-            className="h-full w-full object-cover"
-          />
-        </Link>
-      )}
+      {/* Image area — always rendered for consistent card height */}
+      <Link
+        href={`/blog/${post.slug ?? post.id}`}
+        className="block aspect-video overflow-hidden"
+        tabIndex={-1}
+        aria-hidden
+      >
+        <MediaImage
+          doc={cover}
+          seed={post.id}
+          placeholderLabel={`Illustration placeholder for ${post.title}`}
+          sizes="(max-width:768px) 100vw, 50vw"
+          className="h-full w-full object-cover"
+        />
+      </Link>
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex flex-wrap gap-2">
           {tags.slice(0, 3).map((tag) => (
