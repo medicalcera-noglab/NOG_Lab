@@ -128,6 +128,29 @@ src/lib/
 
 ---
 
+## RichText Component
+
+`src/components/RichText.tsx` renders a Payload Lexical `richText` field value as React JSX
+using the official `@payloadcms/richtext-lexical/react` serializer. It is a **Server Component**
+(no `'use client'`), safe to use anywhere in the App Router. No `dangerouslySetInnerHTML`.
+
+```tsx
+import { RichText } from '@/components/RichText'
+
+// data comes from a Payload query richText field — e.g. person.bio, project.summary
+;<RichText data={person.bio} className="max-w-3xl text-base" />
+```
+
+Rules:
+
+- Always pass the raw richText field value from a Payload doc — never construct the object manually.
+- The component applies the `.richtext` CSS class (typography styles in `globals.css`) plus any
+  `className` you pass. Use `className` for layout constraints like `max-w-3xl`.
+- `disableContainer` removes the wrapping `<div>` for inline rendering contexts.
+- Reuse this component in Projects, Blog, Research pages, etc. — never inline a custom serializer.
+
+---
+
 ## MediaImage Component
 
 `src/components/MediaImage.tsx` renders a Payload `media` document as a responsive
