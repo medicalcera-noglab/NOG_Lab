@@ -1,0 +1,29 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Asia/Karachi
+    open-pull-requests-limit: 5
+    groups:
+      payload:
+        patterns: ["payload", "@payloadcms/*"]
+      nextjs:
+        patterns: ["next", "next-*", "@next/*"]
+      aws-sdk:
+        patterns: ["@aws-sdk/*"]
+    ignore:
+      # Avoid auto-upgrading major versions of core framework — review manually
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "payload"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

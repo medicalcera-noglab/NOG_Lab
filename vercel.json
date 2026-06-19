@@ -1,0 +1,18 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "regions": ["iad1"],
+  "functions": {
+    "src/app/(payload)/api/cron/citations/route.ts": { "maxDuration": 300 },
+    "src/app/(payload)/api/cron/publish-scheduled/route.ts": { "maxDuration": 60 },
+    "src/app/(payload)/admin/**": { "maxDuration": 30 }
+  },
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.noglab.org" }],
+      "destination": "https://noglab.org/$1",
+      "permanent": true
+    }
+  ]
+}

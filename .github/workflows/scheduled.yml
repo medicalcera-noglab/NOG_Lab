@@ -1,0 +1,121 @@
+name: Scheduled Jobs
+
+on:
+  schedule:
+    # Citation counts — daily at 01:00 UTC (Crossref polite pool)
+    - cron: '0 1 * * *'
+    # Publish-scheduled content — hourly
+    - cron: '0 * * * *'
+    # Database backup — daily at 02:30 UTC (after citations finish)
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Which job to run manually'
+        required: true
+        type: choice
+        options: [citations, publish-scheduled, backup]
+
+jobs:
+  # ── Citation count refresh ─────────────────────────────────────────────────
+  citations:
+    name: Refresh citation counts
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'citations' ||
+      github.event_name == 'schedule' && startsWith(github.event.schedule, '0 1')
+
+    steps:
+      - name: Trigger citation cron
+        run: |
+          curl -f -X GET "${{ secrets.NEXT_PUBLIC_SITE_URL }}/api/cron/citations" \
+               -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+               --max-time 300
+        # Allow up to 5 minutes for large publication lists
+
+  # ── Publish scheduled content ─────────────────────────────────────────────
+  publish-scheduled:
+    name: Publish scheduled content
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'publish-scheduled' ||
+      github.event_name == 'schedule' && startsWith(github.event.schedule, '0 * * * *')
+
+    steps:
+      - name: Trigger publish-scheduled cron
+        run: |
+          curl -f -X GET "${{ secrets.NEXT_PUBLIC_SITE_URL }}/api/cron/publish-scheduled" \
+               -H "authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+               --max-time 60
+
+  # ── Daily encrypted database backup to R2 ─────────────────────────────────
+  backup:
+    name: pg_dump → encrypt → R2
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'backup' ||
+      github.event_name == 'schedule' && startsWith(github.event.schedule, '30 2')
+
+    steps:
+      - name: Install tools
+        run: |
+          sudo apt-get install -y postgresql-client gnupg awscli
+
+      - name: Import GPG public key
+        run: |
+          echo "${{ secrets.BACKUP_GPG_PUBLIC_KEY }}" | gpg --import
+
+      - name: Dump database
+        env:
+          PGPASSWORD: ''  # Connection string includes credentials
+        run: |
+          STAMP=$(date -u +%Y%m%dT%H%M%SZ)
+          DUMP_FILE="noglab-${STAMP}.pgdump"
+          pg_dump "${{ secrets.NEON_DIRECT_URL }}" \
+            --format=custom \
+            --no-password \
+            --file="${DUMP_FILE}"
+          echo "DUMP_FILE=${DUMP_FILE}" >> $GITHUB_ENV
+          echo "STAMP=${STAMP}" >> $GITHUB_ENV
+
+      - name: Encrypt with GPG
+        run: |
+          gpg --batch --yes \
+              --trust-model always \
+              --recipient "${{ secrets.BACKUP_GPG_KEY_ID }}" \
+              --output "${DUMP_FILE}.gpg" \
+              --encrypt "${DUMP_FILE}"
+          rm "${DUMP_FILE}"
+          echo "ENCRYPTED_FILE=${DUMP_FILE}.gpg" >> $GITHUB_ENV
+
+      - name: Upload to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          aws s3 cp "${ENCRYPTED_FILE}" \
+            "s3://${{ secrets.R2_BUCKET }}/backups/${ENCRYPTED_FILE}" \
+            --endpoint-url "https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com"
+
+      - name: Prune backups older than 30 days
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          CUTOFF=$(date -u -d '30 days ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || \
+                   date -u -v-30d +%Y-%m-%dT%H:%M:%SZ)  # macOS fallback (not needed on ubuntu)
+          ENDPOINT="https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com"
+          aws s3api list-objects-v2 \
+            --bucket "${{ secrets.R2_BUCKET }}" \
+            --prefix "backups/" \
+            --query "Contents[?LastModified<='${CUTOFF}'].Key" \
+            --output text \
+            --endpoint-url "${ENDPOINT}" | \
+          tr '\t' '\n' | \
+          while read -r key; do
+            [ -z "$key" ] && continue
+            echo "Deleting old backup: ${key}"
+            aws s3 rm "s3://${{ secrets.R2_BUCKET }}/${key}" --endpoint-url "${ENDPOINT}"
+          done

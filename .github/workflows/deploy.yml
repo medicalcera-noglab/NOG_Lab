@@ -1,0 +1,42 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Migrate · Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Run migrations against the DIRECT (non-pooled) Neon connection string.
+      # The runtime app uses the POOLED string (DATABASE_URL); migrations need
+      # the direct string to avoid PgBouncer transaction-mode limits.
+      - name: Run Payload migrations
+        run: npx payload migrate
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DIRECT_URL }}
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+
+      # Deploy to Vercel. The app runtime uses the POOLED DATABASE_URL which
+      # is configured as an env var in the Vercel project settings (not here).
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: --prod
+          working-directory: ./
