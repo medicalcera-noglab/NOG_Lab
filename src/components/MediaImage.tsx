@@ -1,10 +1,28 @@
 import Image from 'next/image'
+import { PlaceholderSvg } from '@/components/placeholders/PlaceholderSvg'
+import { cn } from '@/lib/utils'
 import type { Media } from '@/../../payload-types'
 
+type MediaDoc = Pick<Media, 'alt' | 'url'> & Partial<Pick<Media, 'width' | 'height' | 'sizes'>>
+
 interface MediaImageProps {
-  /** Payload media document (or partial). `alt` and `url` are required. */
-  doc: Pick<Media, 'alt' | 'url'> & Partial<Pick<Media, 'width' | 'height' | 'sizes'>>
-  /** Tailwind / CSS class forwarded to the <Image> wrapper div. */
+  /**
+   * Payload media document (or partial).
+   * When null / undefined (or when `url` is absent), a deterministic
+   * microbiome-themed SVG placeholder is rendered instead.
+   */
+  doc: MediaDoc | null | undefined
+  /**
+   * Seed for the deterministic placeholder variant.
+   * Pass the record's id or slug so the illustration is stable across loads.
+   */
+  seed?: string | number
+  /**
+   * Accessible label on the placeholder <figure>.
+   * Defaults to "Abstract microbiome illustration".
+   */
+  placeholderLabel?: string
+  /** Tailwind / CSS class forwarded to the element. */
   className?: string
   /**
    * Responsive `sizes` hint for the browser.
@@ -25,33 +43,50 @@ interface MediaImageProps {
  *    (thumbnail 300w, medium 800w, large 1600w) when present.
  *  - Falls back to the original `url` if a size is missing or the doc has
  *    no sizes at all (PDFs and MP4s never have sizes).
+ *  - When doc is null/undefined or url is absent, renders a deterministic
+ *    microbiome SVG placeholder seeded by the `seed` prop.
  *  - `alt` is always pulled from the Payload doc — never hardcoded.
  *  - Lazy-loads by default; pass `priority` for above-the-fold images.
+ *  - No layout shift: placeholder and real image occupy identical space.
  */
 export function MediaImage({
   doc,
+  seed = 0,
+  placeholderLabel = 'Abstract microbiome illustration',
   className,
   sizes = '(max-width: 640px) 100vw, (max-width: 1280px) 80vw, 1600px',
   priority = false,
   fill = false,
 }: MediaImageProps) {
-  const src = doc.url ?? ''
-  if (!src) return null
+  // ── Placeholder path ──────────────────────────────────────────────────────
+  // Guard on doc AND url so TypeScript narrows doc to non-null below.
+  if (!doc?.url) {
+    if (fill) {
+      return (
+        <figure
+          aria-label={placeholderLabel}
+          role="img"
+          className={cn('absolute inset-0 overflow-hidden', className)}
+        >
+          <PlaceholderSvg seed={seed} className="h-full w-full" />
+        </figure>
+      )
+    }
+    // Non-fill: render inline, deferring sizing to the parent container.
+    return (
+      <figure aria-label={placeholderLabel} role="img" className={cn('block w-full', className)}>
+        <PlaceholderSvg seed={seed} className="h-full w-full" />
+      </figure>
+    )
+  }
 
+  // ── Real image path (doc and doc.url are guaranteed non-null here) ────────
+  const src = doc.url
   const { thumbnail, medium, large } = doc.sizes ?? {}
-
-  // Build a srcSet string from the available size variants.
-  const srcSetParts: string[] = []
-  if (thumbnail?.url) srcSetParts.push(`${thumbnail.url} 300w`)
-  if (medium?.url) srcSetParts.push(`${medium.url} 800w`)
-  if (large?.url) srcSetParts.push(`${large.url} 1600w`)
 
   const width = doc.width ?? large?.width ?? medium?.width ?? thumbnail?.width ?? undefined
   const height = doc.height ?? large?.height ?? medium?.height ?? thumbnail?.height ?? undefined
 
-  // next/image doesn't accept the `srcSet` prop directly — we pass the best
-  // available src (largest size or original) and rely on the loader + sizes
-  // hint for responsive delivery via CDN.
   const bestSrc = large?.url ?? medium?.url ?? thumbnail?.url ?? src
 
   const sharedProps = {
