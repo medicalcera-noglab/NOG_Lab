@@ -123,6 +123,28 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
     {
+      name: 'roleLabels',
+      type: 'group',
+      label: 'People Role Labels',
+      admin: {
+        description: 'Display labels for each role on the /people page tabs.',
+      },
+      fields: [
+        { name: 'all', type: 'text', defaultValue: 'All', label: 'All (active)' },
+        { name: 'pi', type: 'text', defaultValue: 'Principal Investigators', label: 'PI' },
+        {
+          name: 'postdoc',
+          type: 'text',
+          defaultValue: 'Postdoctoral Researchers',
+          label: 'Postdoc',
+        },
+        { name: 'phd', type: 'text', defaultValue: 'PhD Students', label: 'PhD' },
+        { name: 'ms', type: 'text', defaultValue: 'MS Students', label: 'MS' },
+        { name: 'staff', type: 'text', defaultValue: 'Staff', label: 'Staff' },
+        { name: 'alumni', type: 'text', defaultValue: 'Alumni', label: 'Alumni' },
+      ],
+    },
+    {
       name: 'newsletterEmbedUrl',
       type: 'text',
       label: 'Newsletter Embed URL',
