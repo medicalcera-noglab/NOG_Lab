@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { doiLimiter, checkLimit, getIp } from '@/lib/rateLimit'
 
 // ── SSRF guard ────────────────────────────────────────────────────────────────
 // This endpoint ONLY ever calls this base URL — never a user-supplied host.
@@ -39,6 +40,9 @@ function mapType(
 }
 
 export async function POST(req: NextRequest) {
+  const { success } = await checkLimit(doiLimiter, `doi:${getIp(req)}`)
+  if (!success) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 })
+
   // ── Auth: admin or editor only ─────────────────────────────────────────────
   const payload = await getPayload({ config })
   const { user } = await payload.auth({ headers: req.headers })

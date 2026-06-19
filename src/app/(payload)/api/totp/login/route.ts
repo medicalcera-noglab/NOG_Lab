@@ -19,7 +19,9 @@ import config from '@payload-config'
 import { cookies } from 'next/headers'
 import { verifyTotpToken, decryptSecret, consumeBackupCode } from '@/lib/totp'
 import { NextResponse, type NextRequest } from 'next/server'
-import { sign, verify } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
+import { authLimiter, checkLimit, getIp } from '@/lib/rateLimit'
+const { sign, verify } = jwt
 
 const CHALLENGE_COOKIE = 'totp-challenge'
 const CHALLENGE_TTL = 5 * 60 // seconds
@@ -48,6 +50,10 @@ interface TotpLoginUserRow {
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  const { success } = await checkLimit(authLimiter, `totp:${getIp(req)}`)
+  if (!success)
+    return NextResponse.json({ error: 'Too many attempts. Try again later.' }, { status: 429 })
+
   const payload = await getPayload({ config })
   const cookieStore = await cookies()
 

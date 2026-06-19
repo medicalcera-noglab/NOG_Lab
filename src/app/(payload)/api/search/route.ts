@@ -1,10 +1,14 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getSearchProvider } from '@/lib/search'
+import { apiLimiter, checkLimit, getIp } from '@/lib/rateLimit'
 
 // Never cache — results must reflect current DB state and published-only content.
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  const { success } = await checkLimit(apiLimiter, `search:${getIp(req)}`)
+  if (!success) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 })
+
   const q = req.nextUrl.searchParams.get('q')?.trim() ?? ''
   const limitParam = req.nextUrl.searchParams.get('limit')
   const limitPerGroup = Math.min(Math.max(parseInt(limitParam ?? '5', 10), 1), 20)

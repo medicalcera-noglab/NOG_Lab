@@ -1,9 +1,11 @@
 'use server'
 
 import { z } from 'zod'
+import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { verifyRecaptcha } from '../recaptcha'
+import { formLimiter, checkLimit } from '../rateLimit'
 
 const MAX_FILE_MB = 10
 const MAX_BYTES = MAX_FILE_MB * 1024 * 1024
@@ -28,6 +30,14 @@ export interface JoinFormState {
 }
 
 export async function submitJoin(_prev: JoinFormState, formData: FormData): Promise<JoinFormState> {
+  const ip =
+    (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    (await headers()).get('x-real-ip') ??
+    '127.0.0.1'
+  const { success: rateLimitOk } = await checkLimit(formLimiter, `join:${ip}`)
+  if (!rateLimitOk)
+    return { success: false, error: 'Too many submissions. Please wait before trying again.' }
+
   const raw = {
     name: formData.get('name'),
     email: formData.get('email'),

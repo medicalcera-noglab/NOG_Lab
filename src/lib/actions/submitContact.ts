@@ -1,9 +1,11 @@
 'use server'
 
 import { z } from 'zod'
+import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { verifyRecaptcha } from '../recaptcha'
+import { formLimiter, checkLimit } from '../rateLimit'
 
 const schema = z.object({
   name: z.string().min(1).max(200),
@@ -22,6 +24,14 @@ export async function submitContact(
   _prev: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
+  const ip =
+    (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    (await headers()).get('x-real-ip') ??
+    '127.0.0.1'
+  const { success: rateLimitOk } = await checkLimit(formLimiter, `contact:${ip}`)
+  if (!rateLimitOk)
+    return { success: false, error: 'Too many submissions. Please wait before trying again.' }
+
   const raw = {
     name: formData.get('name'),
     email: formData.get('email'),

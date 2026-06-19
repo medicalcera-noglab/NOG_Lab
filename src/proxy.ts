@@ -2,10 +2,18 @@
  * Unified proxy / middleware layer.
  *
  * Responsibilities (in order):
- *   1. HTTPS enforcement in production
- *   2. Admin auth redirect (UX gate — real authz is in Payload access control)
- *   3. next-intl locale routing for public frontend routes
- *   4. Security headers on every response
+ *   1. www → non-www canonical redirect (production only)
+ *   2. HTTPS enforcement (production only)
+ *   3. Admin auth redirect (UX gate — real authz is in Payload access control)
+ *   4. next-intl locale routing for public frontend routes
+ *   5. Security headers — HSTS, CSP (nonce-based), X-Frame-Options, etc. — on every response
+ *
+ * CSP third-party allowlist:
+ *   script-src   — reCAPTCHA (google.com, gstatic.com); nonce for all inline scripts
+ *   style-src    — 'unsafe-inline' required for Tailwind utilities & framer-motion
+ *   img-src      — OSM tiles (light), CARTO tiles (dark), R2 media CDN
+ *   frame-src    — Google Maps embed + reCAPTCHA iframe
+ *   connect-src  — Crossref API (DOI fetch / citation cron)
  *
  * cookies() and headers() are async in Next.js 16 — always await them.
  */
@@ -15,63 +23,128 @@ import { routing } from './i18n/routing'
 
 const intlMiddleware = createMiddleware(routing)
 
-const SECURITY_HEADERS: Record<string, string> = {
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-  // CSP stub — will be tightened in the security hardening step.
-  'Content-Security-Policy': [
+// R2 public CDN hostname (no trailing slash) for img-src.
+// Falls back to wildcard r2.dev subdomain if env var not set.
+const r2PublicHost = (() => {
+  const raw = process.env.R2_PUBLIC_URL ?? ''
+  try {
+    return raw ? new URL(raw).origin : 'https://*.r2.dev'
+  } catch {
+    return 'https://*.r2.dev'
+  }
+})()
+
+function buildCsp(nonce: string): string {
+  return [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    // nonce covers Next.js hydration scripts + any inline <script>; no unsafe-inline
+    `script-src 'self' 'nonce-${nonce}' https://www.google.com https://www.gstatic.com`,
+    // unsafe-inline required for Tailwind utility style="" and framer-motion DOM mutations
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob:",
+    // OSM tiles (light theme) + CARTO tiles (dark theme) + R2 media CDN
+    `img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com ${r2PublicHost}`,
     "font-src 'self'",
-    "connect-src 'self'",
+    // Google Maps embed (on contact page) + reCAPTCHA v3 iframe
+    'frame-src https://www.google.com',
+    // Crossref DOI/citation API
+    "connect-src 'self' https://api.crossref.org",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
     "frame-ancestors 'none'",
-  ].join('; '),
+    'upgrade-insecure-requests',
+  ].join('; ')
 }
 
-function applyHeaders(res: NextResponse): NextResponse {
-  if (process.env.NODE_ENV === 'production') {
-    res.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+function applyHeaders(res: NextResponse, nonce: string): NextResponse {
+  const isProd = process.env.NODE_ENV === 'production'
+  if (isProd) {
+    res.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
   }
-  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
-    res.headers.set(key, value)
-  }
+  res.headers.set('Content-Security-Policy', buildCsp(nonce))
+  res.headers.set('X-Content-Type-Options', 'nosniff')
+  res.headers.set('X-Frame-Options', 'DENY')
+  res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
   return res
 }
 
 export function middleware(request: NextRequest): NextResponse {
-  const { pathname, protocol, host } = request.nextUrl
+  const { pathname } = request.nextUrl
   const isProd = process.env.NODE_ENV === 'production'
 
-  // 1. HTTPS enforcement.
-  if (isProd && protocol === 'http:') {
-    const httpsUrl = `https://${host}${pathname}${request.nextUrl.search}`
-    return NextResponse.redirect(httpsUrl, { status: 301 })
+  // 1. www → non-www canonical redirect.
+  if (isProd && request.nextUrl.hostname === `www.${request.nextUrl.host.replace(/^www\./, '')}`) {
+    const url = request.nextUrl.clone()
+    url.hostname = url.hostname.replace(/^www\./, '')
+    return NextResponse.redirect(url, { status: 301 })
   }
 
-  // 2. Admin auth redirect (UX only — Payload owns real access control).
+  // 2. HTTPS enforcement.
+  if (isProd && request.nextUrl.protocol === 'http:') {
+    const url = request.nextUrl.clone()
+    url.protocol = 'https:'
+    const nonce = buildNonce()
+    return applyHeaders(NextResponse.redirect(url, { status: 301 }), nonce)
+  }
+
+  // Generate a fresh nonce for this request.
+  const nonce = buildNonce()
+
+  // Modified request headers so Server Components can read x-nonce via headers().
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-nonce', nonce)
+
+  // 3. Admin auth redirect (UX only — Payload owns real access control).
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
     const token = request.cookies.get('payload-token')?.value
     if (!token) {
       const loginUrl = new URL('/admin/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
-      return applyHeaders(NextResponse.redirect(loginUrl))
+      return applyHeaders(NextResponse.redirect(loginUrl), nonce)
     }
   }
 
-  // 3. Locale routing for public frontend routes only.
+  // 4. Locale routing for public frontend routes only.
   const isPublicFrontend = !pathname.startsWith('/admin') && !pathname.startsWith('/api')
-  const res = isPublicFrontend ? intlMiddleware(request) : NextResponse.next()
 
-  return applyHeaders(res)
+  let res: NextResponse
+  if (isPublicFrontend) {
+    // Run intl middleware for locale detection / prefix redirects.
+    const intlRes = intlMiddleware(request)
+
+    if (intlRes.status >= 300 && intlRes.status < 400) {
+      // intl wants a redirect (e.g. /ur → /ur/...) — honour it with security headers.
+      return applyHeaders(intlRes, nonce)
+    }
+
+    // Pass-through: create our own NextResponse.next() with the nonce in request
+    // headers so Server Components can read it via headers()['x-nonce'].
+    res = NextResponse.next({ request: { headers: requestHeaders } })
+
+    // Copy locale cookie and intl internal headers from the intl response.
+    intlRes.cookies.getAll().forEach(({ name, value, ...opts }) => {
+      res.cookies.set(name, value, opts as Parameters<typeof res.cookies.set>[2])
+    })
+    intlRes.headers.forEach((value, key) => {
+      if (key.toLowerCase().startsWith('x-next-intl')) res.headers.set(key, value)
+    })
+  } else {
+    res = NextResponse.next({ request: { headers: requestHeaders } })
+  }
+
+  return applyHeaders(res, nonce)
+}
+
+function buildNonce(): string {
+  const arr = new Uint8Array(16)
+  crypto.getRandomValues(arr)
+  // btoa(String.fromCharCode(...arr)) is safe for 16 bytes — no stack overflow risk.
+  return btoa(String.fromCharCode(...Array.from(arr)))
 }
 
 export const config = {
   matcher: [
-    // Exclude Next.js internals and common static file extensions.
     '/((?!_next/static|_next/image|favicon.ico|[^?]*\\.(?:webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
   ],
 }
