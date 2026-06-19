@@ -22,6 +22,11 @@ export const Publications: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: 'Digital Object Identifier — must be unique.',
+        components: {
+          // Renders a "Fetch metadata from DOI" button that calls POST /api/doi-fetch
+          // and populates the form fields from Crossref.
+          afterInput: ['@/components/admin/DoiFetchButton#DoiFetchButton'],
+        },
       },
     },
     {
