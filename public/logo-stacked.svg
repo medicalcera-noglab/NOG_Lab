@@ -1,0 +1,49 @@
+<svg viewBox="0 0 200 145" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NOG Lab — stacked lockup">
+  <!--
+    Stacked lockup: mark centred at top, wordmark below.
+    Mark is the 64×64 geometry scaled ×1.5 and translated so its
+    centre sits at (100, 52):  offset = (100 - 32×1.5, 52 - 32×1.5) = (52, 4)
+  -->
+  <!-- Outer cell (r=45, was 30×1.5) -->
+  <circle cx="100" cy="52" r="45" fill="#0E6E6E"/>
+  <!-- Membrane ring (r=33, was 22×1.5) -->
+  <circle cx="100" cy="52" r="33" fill="none" stroke="white" stroke-width="2" stroke-opacity="0.30"/>
+  <!-- Satellites (r=8.25, was 5.5×1.5) -->
+  <!-- top:    (32×1.5+52, 13×1.5+4) = (100, 23.5) -->
+  <!-- bl:     (15.5×1.5+52, 41.5×1.5+4) = (75.25, 66.25) -->
+  <!-- br:     (48.5×1.5+52, 41.5×1.5+4) = (124.75, 66.25) -->
+  <circle cx="100"  cy="23.5" r="8.25" fill="white" fill-opacity="0.88"/>
+  <circle cx="75"   cy="66"   r="8.25" fill="white" fill-opacity="0.88"/>
+  <circle cx="125"  cy="66"   r="8.25" fill="white" fill-opacity="0.88"/>
+  <!-- Filaments (scaled endpoints) -->
+  <!-- top line: (32×1.5+52, 19×1.5+4)→(32×1.5+52, 26×1.5+4) = (100,32.5)→(100,43) -->
+  <line x1="100" y1="32.5" x2="100" y2="42.5" stroke="white" stroke-width="2.25" stroke-linecap="round" stroke-opacity="0.38"/>
+  <!-- br line:  (44×1.5+52, 39×1.5+4)→(38.5×1.5+52, 35×1.5+4) = (118, 62.5)→(109.75, 56.5) -->
+  <line x1="118"  y1="62.5" x2="110" y2="56.5" stroke="white" stroke-width="2.25" stroke-linecap="round" stroke-opacity="0.38"/>
+  <!-- bl line:  (20×1.5+52, 39×1.5+4)→(25.5×1.5+52, 35×1.5+4) = (82, 62.5)→(90.25, 56.5) -->
+  <line x1="82"   y1="62.5" x2="90"  y2="56.5" stroke="white" stroke-width="2.25" stroke-linecap="round" stroke-opacity="0.38"/>
+  <!-- Nucleus (r=10.5, was 7×1.5) -->
+  <circle cx="100" cy="52" r="10.5" fill="#E2725B"/>
+
+  <!-- Wordmark: "NOG Lab" -->
+  <!-- "NOG" in heading weight -->
+  <text
+    x="100" y="116"
+    font-family="'Plus Jakarta Sans', 'Inter', system-ui, sans-serif"
+    font-weight="700"
+    font-size="22"
+    fill="#0E6E6E"
+    text-anchor="middle"
+    letter-spacing="-0.3"
+  >NOG Lab</text>
+  <!-- Tagline in lighter weight -->
+  <text
+    x="100" y="134"
+    font-family="'Inter', system-ui, sans-serif"
+    font-weight="400"
+    font-size="9"
+    fill="#6b6b68"
+    text-anchor="middle"
+    letter-spacing="0.8"
+  >NUTRITION · ORAL · GUT MICROBIOME</text>
+</svg>
