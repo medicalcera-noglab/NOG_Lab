@@ -2,6 +2,8 @@ import * as migration_20240101000000_enable_postgis from './20240101000000_enabl
 import * as migration_20260618_201421 from './20260618_201421'
 import * as migration_20260618_201422_postgis_geography from './20260618_201422_postgis_geography'
 import * as migration_20260619_000000_users_totp_fields from './20260619_000000_users_totp_fields'
+import * as migration_20260619_120000_applicant_files from './20260619_120000_applicant_files'
+import * as migration_20260619_120001_media_image_sizes from './20260619_120001_media_image_sizes'
 
 export const migrations = [
   {
@@ -23,5 +25,15 @@ export const migrations = [
     up: migration_20260619_000000_users_totp_fields.up,
     down: migration_20260619_000000_users_totp_fields.down,
     name: '20260619_000000_users_totp_fields',
+  },
+  {
+    up: migration_20260619_120000_applicant_files.up,
+    down: migration_20260619_120000_applicant_files.down,
+    name: '20260619_120000_applicant_files',
+  },
+  {
+    up: migration_20260619_120001_media_image_sizes.up,
+    down: migration_20260619_120001_media_image_sizes.down,
+    name: '20260619_120001_media_image_sizes',
   },
 ]

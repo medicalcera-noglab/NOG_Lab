@@ -44,12 +44,13 @@ export const Inquiries: CollectionConfig = {
     {
       name: 'cv',
       type: 'upload',
-      relationTo: 'media',
+      // Private collection — served via signed URLs, not public CDN.
+      relationTo: 'applicant_files',
     },
     {
       name: 'sop',
       type: 'upload',
-      relationTo: 'media',
+      relationTo: 'applicant_files',
       admin: { description: 'Statement of Purpose (join inquiries only)' },
     },
     {
