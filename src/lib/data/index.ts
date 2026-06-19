@@ -7,3 +7,12 @@ export {
   getStudySiteCount,
   type HomeCounts,
 } from './home'
+export {
+  getAllPeople,
+  getPersonBySlug,
+  getPersonPublications,
+  getPersonProjects,
+  getAllPeopleSlugs,
+  isAlumni,
+  type Person,
+} from './people'
