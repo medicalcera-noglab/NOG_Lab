@@ -117,12 +117,44 @@ src/app/
 src/components/
   ui/                  ← Button, Container, Section
   motifs/              ← CellBlob, GrainTexture, MolecularDots
+  MediaImage.tsx       ← theme-aware Payload media renderer (see below)
   FadeUp.tsx
 src/providers/
   ThemeProvider.tsx
 src/lib/
   utils.ts             ← cn() helper
+  storage.ts           ← R2 adapter builder (returns [] in dev without creds)
 ```
+
+---
+
+## MediaImage Component
+
+`src/components/MediaImage.tsx` renders a Payload `media` document as a responsive
+`next/image`. It pulls `alt` from the doc (never hardcoded), builds the srcSet from
+the three WebP size variants (300w / 800w / 1600w), and falls back gracefully when a
+size is absent.
+
+```tsx
+import { MediaImage } from '@/components/MediaImage'
+import type { Media } from '../../../payload-types'
+
+// doc comes from a Payload query — never hardcoded content.
+;<MediaImage
+  doc={doc as Media}
+  sizes="(max-width: 768px) 100vw, 50vw"
+  priority // for above-the-fold images
+  className="rounded-lg"
+/>
+```
+
+Rules:
+
+- Always pass the full `Media` doc from a Payload query — never construct the object
+  from literals (Golden Rule applies to image metadata too).
+- Use `priority` only on above-the-fold images (LCP candidate).
+- Use `fill` when the parent is a positioned container with explicit dimensions.
+- PDFs and MP4s have no `sizes` object — `MediaImage` renders the original URL.
 
 ---
 

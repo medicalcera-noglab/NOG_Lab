@@ -5,9 +5,11 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { migrations } from './migrations/index'
 import { buildEmailAdapter } from './src/lib/email'
+import { buildStoragePlugin } from './src/lib/storage'
 
 import { Users } from './src/collections/Users'
 import { Media } from './src/collections/Media'
+import { ApplicantFiles } from './src/collections/ApplicantFiles'
 import { ResearchThemes } from './src/collections/ResearchThemes'
 import { People } from './src/collections/People'
 import { Publications } from './src/collections/Publications'
@@ -37,6 +39,7 @@ export default buildConfig({
   collections: [
     Users,
     Media,
+    ApplicantFiles,
     // Research
     ResearchThemes,
     People,
@@ -53,6 +56,7 @@ export default buildConfig({
     // Admin / audit
     AuditLog,
   ],
+  plugins: buildStoragePlugin(),
   globals: [SiteSettings],
   editor: lexicalEditor(),
   db: postgresAdapter({
