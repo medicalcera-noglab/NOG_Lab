@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, isAuthenticated } from '../access'
+import { revalidateCollaborators } from '../hooks/revalidateCache'
 
 export const Collaborators: CollectionConfig = {
   slug: 'collaborators',
@@ -13,6 +14,9 @@ export const Collaborators: CollectionConfig = {
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
+  },
+  hooks: {
+    afterChange: [revalidateCollaborators],
   },
   fields: [
     {

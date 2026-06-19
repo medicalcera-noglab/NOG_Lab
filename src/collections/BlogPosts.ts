@@ -5,6 +5,7 @@ import { computeReadingTimeHook } from '../hooks/computeReadingTime'
 import { setPublishedAtHook } from '../hooks/setPublishedAt'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { notifyEditorsHook } from '../hooks/notifyEditors'
+import { revalidateBlogPosts } from '../hooks/revalidateCache'
 
 const preventContributorPublish = ({
   data,
@@ -53,7 +54,7 @@ export const BlogPosts: CollectionConfig = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       preventContributorPublish as any,
     ],
-    afterChange: [notifyEditorsHook],
+    afterChange: [notifyEditorsHook, revalidateBlogPosts],
   },
   fields: [
     {

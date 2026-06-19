@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
+import { revalidateMediaCoverage } from '../hooks/revalidateCache'
 
 export const MediaCoverage: CollectionConfig = {
   slug: 'media_coverage',
@@ -13,6 +14,9 @@ export const MediaCoverage: CollectionConfig = {
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
+  },
+  hooks: {
+    afterChange: [revalidateMediaCoverage],
   },
   fields: [
     {

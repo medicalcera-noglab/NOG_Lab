@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, isAuthenticated } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
+import { revalidatePeople } from '../hooks/revalidateCache'
 
 export const People: CollectionConfig = {
   slug: 'people',
@@ -17,6 +18,7 @@ export const People: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [makeSlugHook('name')],
+    afterChange: [revalidatePeople],
   },
   fields: [
     {

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { setPublishedAtHook } from '../hooks/setPublishedAt'
+import { revalidateImpactStories } from '../hooks/revalidateCache'
 
 export const ImpactStories: CollectionConfig = {
   slug: 'impact_stories',
@@ -23,6 +24,7 @@ export const ImpactStories: CollectionConfig = {
   hooks: {
     beforeValidate: [makeSlugHook('title')],
     beforeChange: [setPublishedAtHook],
+    afterChange: [revalidateImpactStories],
   },
   fields: [
     {

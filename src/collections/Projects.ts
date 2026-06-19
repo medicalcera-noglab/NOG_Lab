@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, isAuthenticated } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { makeEnsureUniqueFeaturedHook } from '../hooks/ensureUniqueFeature'
+import { revalidateProjects } from '../hooks/revalidateCache'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -19,6 +20,7 @@ export const Projects: CollectionConfig = {
   hooks: {
     beforeValidate: [makeSlugHook('title')],
     beforeChange: [makeEnsureUniqueFeaturedHook('projects')],
+    afterChange: [revalidateProjects],
   },
   fields: [
     {

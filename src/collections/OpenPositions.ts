@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, isAuthenticated } from '../access'
+import { revalidateOpenPositions } from '../hooks/revalidateCache'
 
 export const OpenPositions: CollectionConfig = {
   slug: 'open_positions',
@@ -13,6 +14,9 @@ export const OpenPositions: CollectionConfig = {
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
+  },
+  hooks: {
+    afterChange: [revalidateOpenPositions],
   },
   fields: [
     {

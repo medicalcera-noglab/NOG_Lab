@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
+import { revalidateAbout } from '../hooks/revalidateCache'
 
 export const About: GlobalConfig = {
   slug: 'about',
@@ -16,6 +17,9 @@ export const About: GlobalConfig = {
   access: {
     read: () => true,
     update: isAdminOrEditor,
+  },
+  hooks: {
+    afterChange: [revalidateAbout],
   },
   fields: [
     {

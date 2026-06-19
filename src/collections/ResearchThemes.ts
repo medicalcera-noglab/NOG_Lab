@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, isAuthenticated } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
+import { revalidateResearchThemes } from '../hooks/revalidateCache'
 
 export const ResearchThemes: CollectionConfig = {
   slug: 'research_themes',
@@ -17,6 +18,7 @@ export const ResearchThemes: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [makeSlugHook('name')],
+    afterChange: [revalidateResearchThemes],
   },
   fields: [
     {
