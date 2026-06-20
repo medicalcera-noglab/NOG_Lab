@@ -29,25 +29,17 @@ export type PageSeoKey =
   | 'join'
   | 'contact'
 
-/** Extract title, description, and ogImage URL for a specific page key + locale. */
+/** Extract title, description, and ogImage URL for a specific page key. */
 export function resolvePageSeo(
   pageSeo: PageSeo | null,
   key: PageSeoKey,
-  locale = 'en',
 ): { title?: string; description?: string; ogImageUrl?: string } {
   if (!pageSeo) return {}
   const group = pageSeo[key] as Record<string, unknown> | undefined
   if (!group) return {}
 
-  const title =
-    (locale === 'ur' ? (group.titleUr as string | undefined) : undefined) ||
-    (group.title as string | undefined) ||
-    undefined
-
-  const description =
-    (locale === 'ur' ? (group.descriptionUr as string | undefined) : undefined) ||
-    (group.description as string | undefined) ||
-    undefined
+  const title = (group.title as string | undefined) || undefined
+  const description = (group.description as string | undefined) || undefined
 
   const ogMedia =
     group.ogImage && typeof group.ogImage === 'object' ? (group.ogImage as Media) : null

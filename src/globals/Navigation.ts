@@ -32,12 +32,6 @@ export const Navigation: GlobalConfig = {
           name: 'label',
           type: 'text',
           required: true,
-          label: 'Label (English)',
-        },
-        {
-          name: 'labelUr',
-          type: 'text',
-          label: 'Label (اردو)',
         },
         {
           name: 'href',
@@ -70,12 +64,6 @@ export const Navigation: GlobalConfig = {
           name: 'title',
           type: 'text',
           required: true,
-          label: 'Group Title (English)',
-        },
-        {
-          name: 'titleUr',
-          type: 'text',
-          label: 'Group Title (اردو)',
         },
         {
           name: 'links',
@@ -86,12 +74,6 @@ export const Navigation: GlobalConfig = {
               name: 'label',
               type: 'text',
               required: true,
-              label: 'Label (English)',
-            },
-            {
-              name: 'labelUr',
-              type: 'text',
-              label: 'Label (اردو)',
             },
             {
               name: 'href',
