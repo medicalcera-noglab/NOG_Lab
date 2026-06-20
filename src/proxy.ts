@@ -114,19 +114,25 @@ export function middleware(request: NextRequest): NextResponse {
 
   let res: NextResponse
   if (isPublicFrontend) {
-    // Run intl middleware for locale detection / prefix redirects.
+    // Run intl middleware for locale detection / prefix redirects / rewrites.
     const intlRes = intlMiddleware(request)
 
     if (intlRes.status >= 300 && intlRes.status < 400) {
-      // intl wants a redirect (e.g. /ur → /ur/...) — honour it with security headers.
+      // intl wants a redirect — honour it with security headers.
       return applyHeaders(intlRes, nonce)
     }
 
-    // Pass-through: create our own NextResponse.next() with the nonce in request
-    // headers so Server Components can read it via headers()['x-nonce'].
-    res = NextResponse.next({ request: { headers: requestHeaders } })
+    // Check if intl wants to rewrite the URL (e.g. /ur → / with locale=ur).
+    // We must honour the rewrite; ignoring it causes next-intl locale routes to 404.
+    const rewriteUrl = intlRes.headers.get('x-middleware-rewrite')
+    if (rewriteUrl) {
+      res = NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } })
+    } else {
+      // Plain pass-through — just forward with the nonce in request headers.
+      res = NextResponse.next({ request: { headers: requestHeaders } })
+    }
 
-    // Copy locale cookie and intl internal headers from the intl response.
+    // Copy locale cookie and next-intl internal headers from the intl response.
     intlRes.cookies.getAll().forEach(({ name, value, ...opts }) => {
       res.cookies.set(name, value, opts as Parameters<typeof res.cookies.set>[2])
     })
