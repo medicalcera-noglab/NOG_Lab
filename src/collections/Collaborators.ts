@@ -57,5 +57,14 @@ export const Collaborators: CollectionConfig = {
       defaultValue: 0,
       admin: { position: 'sidebar' },
     },
+    {
+      name: 'isDemo',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Demo content — remove with npm run seed:clear-demo.',
+      },
+    },
   ],
 }

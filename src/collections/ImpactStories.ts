@@ -79,5 +79,14 @@ export const ImpactStories: CollectionConfig = {
       relationTo: 'projects',
       hasMany: true,
     },
+    {
+      name: 'isDemo',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Demo content — remove with npm run seed:clear-demo.',
+      },
+    },
   ],
 }

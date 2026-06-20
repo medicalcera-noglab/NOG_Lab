@@ -165,5 +165,14 @@ export const BlogPosts: CollectionConfig = {
         condition: (_, siblingData) => Boolean(siblingData?.id),
       },
     },
+    {
+      name: 'isDemo',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Demo content — remove with npm run seed:clear-demo.',
+      },
+    },
   ],
 }

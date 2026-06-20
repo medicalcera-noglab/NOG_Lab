@@ -51,5 +51,14 @@ export const OpenPositions: CollectionConfig = {
         description: 'Uncheck to hide from the public site.',
       },
     },
+    {
+      name: 'isDemo',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Demo content — remove with npm run seed:clear-demo.',
+      },
+    },
   ],
 }
