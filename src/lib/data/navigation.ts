@@ -15,12 +15,3 @@ export const getNavigation = unstable_cache(
   ['navigation-global'],
   { revalidate: 300, tags: ['navigation'] },
 )
-
-/** Pick the right label for the current locale (falls back to EN label). */
-export function pickLabel(
-  label: string | null | undefined,
-  labelUr: string | null | undefined,
-  locale: string,
-): string {
-  return locale === 'ur' && labelUr ? labelUr : (label ?? '')
-}

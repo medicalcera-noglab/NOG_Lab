@@ -8,7 +8,6 @@ import { Menu, X, Sun, Moon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { NavItem } from '@/lib/nav'
 import { NavSearch } from './search/NavSearch'
-import { LocaleSwitcher } from './LocaleSwitcher'
 
 interface NavMenuProps {
   links: NavItem[]
@@ -180,10 +179,6 @@ export function NavMenu({ links }: NavMenuProps) {
                   )}
                 </button>
               )}
-            </div>
-
-            <div className="mt-2 px-4">
-              <LocaleSwitcher />
             </div>
           </nav>
         </div>

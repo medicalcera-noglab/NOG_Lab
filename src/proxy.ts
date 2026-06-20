@@ -18,10 +18,6 @@
  * cookies() and headers() are async in Next.js 16 — always await them.
  */
 import { NextResponse, type NextRequest } from 'next/server'
-import createMiddleware from 'next-intl/middleware'
-import { routing } from './i18n/routing'
-
-const intlMiddleware = createMiddleware(routing)
 
 // R2 public CDN hostname (no trailing slash) for img-src.
 // Falls back to wildcard r2.dev subdomain if env var not set.
@@ -109,39 +105,8 @@ export function middleware(request: NextRequest): NextResponse {
     }
   }
 
-  // 4. Locale routing for public frontend routes only.
-  const isPublicFrontend = !pathname.startsWith('/admin') && !pathname.startsWith('/api')
-
-  let res: NextResponse
-  if (isPublicFrontend) {
-    // Run intl middleware for locale detection / prefix redirects / rewrites.
-    const intlRes = intlMiddleware(request)
-
-    if (intlRes.status >= 300 && intlRes.status < 400) {
-      // intl wants a redirect — honour it with security headers.
-      return applyHeaders(intlRes, nonce)
-    }
-
-    // Check if intl wants to rewrite the URL (e.g. /ur → / with locale=ur).
-    // We must honour the rewrite; ignoring it causes next-intl locale routes to 404.
-    const rewriteUrl = intlRes.headers.get('x-middleware-rewrite')
-    if (rewriteUrl) {
-      res = NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } })
-    } else {
-      // Plain pass-through — just forward with the nonce in request headers.
-      res = NextResponse.next({ request: { headers: requestHeaders } })
-    }
-
-    // Copy locale cookie and next-intl internal headers from the intl response.
-    intlRes.cookies.getAll().forEach(({ name, value, ...opts }) => {
-      res.cookies.set(name, value, opts as Parameters<typeof res.cookies.set>[2])
-    })
-    intlRes.headers.forEach((value, key) => {
-      if (key.toLowerCase().startsWith('x-next-intl')) res.headers.set(key, value)
-    })
-  } else {
-    res = NextResponse.next({ request: { headers: requestHeaders } })
-  }
+  // 4. Pass-through with nonce in request headers so Server Components can read x-nonce.
+  const res = NextResponse.next({ request: { headers: requestHeaders } })
 
   return applyHeaders(res, nonce)
 }

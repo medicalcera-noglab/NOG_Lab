@@ -2,7 +2,6 @@ import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { NavMenu } from './NavMenu'
-import { LocaleSwitcher } from './LocaleSwitcher'
 import { Container } from './ui/Container'
 import { MediaImage } from './MediaImage'
 import { cn } from '@/lib/utils'
@@ -23,7 +22,6 @@ export async function Navbar() {
     .filter((l) => l.isVisible !== false)
     .map((l) => ({
       label: l.label,
-      labelUr: l.labelUr,
       href: l.href,
       isExternal: l.isExternal,
       isVisible: l.isVisible,
@@ -101,13 +99,8 @@ export async function Navbar() {
             ))}
           </ul>
 
-          {/* Locale switcher + theme toggle + mobile menu (client) */}
-          <div className="flex items-center gap-1">
-            <div className="hidden md:flex">
-              <LocaleSwitcher />
-            </div>
-            <NavMenu links={headerLinks} />
-          </div>
+          {/* Theme toggle + mobile menu (client) */}
+          <NavMenu links={headerLinks} />
         </nav>
       </Container>
     </header>
