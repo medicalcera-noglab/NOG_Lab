@@ -23,9 +23,9 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { DoiFetchButton as DoiFetchButton_3d938f66d5e079436496f4b778f87934 } from '@/components/admin/DoiFetchButton'
 import { MapPicker as MapPicker_e5079da11d3c9f4bf1d1da8f05f623e4 } from '@/components/admin/MapPicker'
-import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
-import { Dashboard as Dashboard_0e7b23c75ea046975e1784ba01f82886 } from '@/components/admin/Dashboard'
 import { InquiriesCsvButton as InquiriesCsvButton_82a1cfcc9173c430c0c737930930cc47 } from '@/components/admin/InquiriesCsvButton'
+import { Dashboard as Dashboard_0e7b23c75ea046975e1784ba01f82886 } from '@/components/admin/Dashboard'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
 export const importMap = {
@@ -54,7 +54,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/components/admin/DoiFetchButton#DoiFetchButton": DoiFetchButton_3d938f66d5e079436496f4b778f87934,
   "@/components/admin/MapPicker#MapPicker": MapPicker_e5079da11d3c9f4bf1d1da8f05f623e4,
-  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@/components/admin/InquiriesCsvButton#InquiriesCsvButton": InquiriesCsvButton_82a1cfcc9173c430c0c737930930cc47,
   "@/components/admin/Dashboard#Dashboard": Dashboard_0e7b23c75ea046975e1784ba01f82886,
-  "@/components/admin/InquiriesCsvButton#InquiriesCsvButton": InquiriesCsvButton_82a1cfcc9173c430c0c737930930cc47
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

@@ -1,6 +1,10 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+  // PostGIS must exist before geometry columns are created
+  await db.execute(sql`CREATE EXTENSION IF NOT EXISTS postgis`)
+  await db.execute(sql`CREATE EXTENSION IF NOT EXISTS postgis_topology`)
+
   await db.execute(sql`
    CREATE TYPE "public"."enum_users_role" AS ENUM('super_admin', 'editor', 'contributor');
   CREATE TYPE "public"."enum_people_role" AS ENUM('pi', 'postdoc', 'phd', 'ms', 'staff', 'alumni');
