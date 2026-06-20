@@ -25,6 +25,7 @@ import { ImpactStories } from './src/collections/ImpactStories'
 import { MediaCoverage } from './src/collections/MediaCoverage'
 import { SiteSettings } from './src/globals/SiteSettings'
 import { About } from './src/globals/About'
+import { LegalPages } from './src/globals/LegalPages'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -70,7 +71,7 @@ export default buildConfig({
     AuditLog,
   ],
   plugins: buildStoragePlugin(),
-  globals: [SiteSettings, About],
+  globals: [SiteSettings, About, LegalPages],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: {

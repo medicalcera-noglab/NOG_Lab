@@ -2,18 +2,21 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { ExternalLink, BookOpen, MapPin } from 'lucide-react'
 import { getSiteSettings } from '@/lib/data'
+import { getLegalPages } from '@/lib/data/legal'
 import { lexicalToText } from '@/lib/richtext'
 import { PRIMARY_NAV } from '@/lib/nav'
 import { Container } from './ui/Container'
 import { MediaImage } from './MediaImage'
+import { CookiePreferencesLink } from './CookiePreferencesLink'
 import type { Media } from '@/../../payload-types'
 
 const SOCIAL_LINK_CLASS =
   'flex items-center gap-2 text-sm text-muted hover:text-fg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded'
 
 export async function Footer() {
-  const [settings, t, tNav] = await Promise.all([
+  const [settings, legal, t, tNav] = await Promise.all([
     getSiteSettings(),
+    getLegalPages(),
     getTranslations('footer'),
     getTranslations('nav'),
   ])
@@ -85,6 +88,34 @@ export async function Footer() {
               ))}
             </ul>
           </nav>
+
+          {/* Legal */}
+          <div>
+            <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
+              {t('legalSection')}
+            </p>
+            <ul role="list" className="space-y-2">
+              <li>
+                <Link
+                  href="/privacy"
+                  className="text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
+                >
+                  {legal?.privacyPolicyTitle ?? t('privacyPolicy')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
+                >
+                  {legal?.termsOfUseTitle ?? t('termsOfUse')}
+                </Link>
+              </li>
+              <li>
+                <CookiePreferencesLink />
+              </li>
+            </ul>
+          </div>
 
           {/* Social */}
           {hasSocial && (

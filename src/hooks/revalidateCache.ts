@@ -42,3 +42,5 @@ export const revalidateOpenPositions = makeRevalidateHook(['open_positions'])
 export const revalidateSiteSettings = makeGlobalRevalidateHook(['site_settings'])
 
 export const revalidateAbout = makeGlobalRevalidateHook(['about'])
+
+export const revalidateLegalPages = makeGlobalRevalidateHook(['legal_pages'])

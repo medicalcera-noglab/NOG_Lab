@@ -8,6 +8,8 @@ import * as migration_20260619_200000_site_settings_role_labels from './20260619
 import * as migration_20260619_210000_projects_related_publications from './20260619_210000_projects_related_publications'
 import * as migration_20260619_300000_search_fts from './20260619_300000_search_fts'
 import * as migration_20260619_400000_add_localization from './20260619_400000_add_localization'
+import * as migration_20260620_000000_legal_pages from './20260620_000000_legal_pages'
+import * as migration_20260620_000001_site_settings_logo_dark from './20260620_000001_site_settings_logo_dark'
 
 export const migrations = [
   {
@@ -59,5 +61,15 @@ export const migrations = [
     up: migration_20260619_400000_add_localization.up,
     down: migration_20260619_400000_add_localization.down,
     name: '20260619_400000_add_localization',
+  },
+  {
+    up: migration_20260620_000000_legal_pages.up,
+    down: migration_20260620_000000_legal_pages.down,
+    name: '20260620_000000_legal_pages',
+  },
+  {
+    up: migration_20260620_000001_site_settings_logo_dark.up,
+    down: migration_20260620_000001_site_settings_logo_dark.down,
+    name: '20260620_000001_site_settings_logo_dark',
   },
 ]
