@@ -7,14 +7,17 @@ import { JoinForm } from '@/components/forms/JoinForm'
 import { getAbout } from '@/lib/data/about'
 import { getOpenPositions } from '@/lib/data/positions'
 import { getSiteSettings } from '@/lib/data/site-settings'
+import { getPageSeo, resolvePageSeo } from '@/lib/data'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'join')
   return buildMetadata(
     {
-      title: 'Join the Lab',
-      description: `Open positions and how to apply to ${settings.labName}.`,
+      title: seo.title ?? 'Join the Lab',
+      description: seo.description ?? `Open positions and how to apply to ${settings.labName}.`,
       canonical: '/join',
+      ogImage: seo.ogImageUrl,
     },
     settings,
   )

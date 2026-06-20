@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
-import { getSiteSettings } from '@/lib/data'
+import { getSiteSettings, getPageSeo, resolvePageSeo } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { RichText } from '@/components/RichText'
@@ -9,12 +9,16 @@ import { getImpactStories, getMediaCoverage, getImpactKPIs } from '@/lib/data/im
 import type { Media } from '../../../../payload-types'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'impact')
   return buildMetadata(
     {
-      title: 'Impact',
-      description: 'Research impact: publications, citations, grants, and community stories.',
+      title: seo.title ?? 'Impact',
+      description:
+        seo.description ??
+        'Research impact: publications, citations, grants, and community stories.',
       canonical: '/impact',
+      ogImage: seo.ogImageUrl,
     },
     settings,
   )

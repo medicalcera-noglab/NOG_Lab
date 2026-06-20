@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
-import { getSiteSettings } from '@/lib/data'
+import { getSiteSettings, getPageSeo, resolvePageSeo } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { MediaImage } from '@/components/MediaImage'
@@ -9,12 +9,16 @@ import { EmptyState } from '@/components/placeholders'
 import type { Media } from '../../../../payload-types'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'collaborations')
   return buildMetadata(
     {
-      title: 'Collaborations',
-      description: 'Our global network of research partners, institutions, and collaborators.',
+      title: seo.title ?? 'Collaborations',
+      description:
+        seo.description ??
+        'Our global network of research partners, institutions, and collaborators.',
       canonical: '/collaborations',
+      ogImage: seo.ogImageUrl,
     },
     settings,
   )

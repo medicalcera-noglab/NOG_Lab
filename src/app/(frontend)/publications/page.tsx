@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
-import { getSiteSettings } from '@/lib/data'
+import { getSiteSettings, getPageSeo, resolvePageSeo } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { PublicationListItem } from '@/components/publications/PublicationListItem'
 import { PublicationFilters } from '@/components/publications/PublicationFilters'
@@ -11,12 +11,15 @@ import { EmptyState } from '@/components/placeholders'
 import { cn } from '@/lib/utils'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'publications')
   return buildMetadata(
     {
-      title: 'Publications',
-      description: 'Peer-reviewed articles, preprints, and book chapters from the NOG Lab.',
+      title: seo.title ?? 'Publications',
+      description:
+        seo.description ?? 'Peer-reviewed articles, preprints, and book chapters from the NOG Lab.',
       canonical: '/publications',
+      ogImage: seo.ogImageUrl,
     },
     settings,
   )

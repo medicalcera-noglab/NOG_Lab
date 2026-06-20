@@ -7,6 +7,8 @@ import {
   getAllResearchThemes,
   getFilteredProjects,
   getProjectFilterOptions,
+  getPageSeo,
+  resolvePageSeo,
 } from '@/lib/data'
 import { Section } from '@/components/ui/Section'
 import { Container } from '@/components/ui/Container'
@@ -33,8 +35,17 @@ import { cn } from '@/lib/utils'
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
-  return buildMetadata({ title: 'Projects', canonical: '/projects' }, settings)
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'projects')
+  return buildMetadata(
+    {
+      title: seo.title ?? 'Projects',
+      canonical: '/projects',
+      description: seo.description,
+      ogImage: seo.ogImageUrl,
+    },
+    settings,
+  )
 }
 
 interface ProjectsPageProps {

@@ -6,14 +6,17 @@ import { Section } from '@/components/ui/Section'
 import { ContactForm } from '@/components/forms/ContactForm'
 import { MapEmbed } from '@/components/contact/MapEmbed'
 import { getSiteSettings } from '@/lib/data/site-settings'
+import { getPageSeo, resolvePageSeo } from '@/lib/data'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'contact')
   return buildMetadata(
     {
-      title: 'Contact',
-      description: `Get in touch with ${settings.labName}.`,
+      title: seo.title ?? 'Contact',
+      description: seo.description ?? `Get in touch with ${settings.labName}.`,
       canonical: '/contact',
+      ogImage: seo.ogImageUrl,
     },
     settings,
   )

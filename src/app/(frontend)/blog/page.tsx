@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
-import { getSiteSettings } from '@/lib/data'
+import { getSiteSettings, getPageSeo, resolvePageSeo } from '@/lib/data'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
@@ -9,12 +9,15 @@ import { getBlogList } from '@/lib/data/blog'
 import { EmptyState } from '@/components/placeholders'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'blog')
   return buildMetadata(
     {
-      title: 'Blog',
-      description: 'Insights, commentary, and research updates from the NOG Lab.',
+      title: seo.title ?? 'Blog',
+      description:
+        seo.description ?? 'Insights, commentary, and research updates from the NOG Lab.',
       canonical: '/blog',
+      ogImage: seo.ogImageUrl,
     },
     settings,
   )

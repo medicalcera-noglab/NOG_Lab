@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
-import { getSiteSettings, getResearchPageData } from '@/lib/data'
+import { getSiteSettings, getResearchPageData, getPageSeo, resolvePageSeo } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { FadeUp } from '@/components/FadeUp'
 import { ResearchInPageNav } from '@/components/research/ResearchInPageNav'
@@ -10,8 +10,17 @@ import type { Project, Publication, Person, ResearchTheme } from '../../../../pa
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
-  return buildMetadata({ title: 'Research', canonical: '/research' }, settings)
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'research')
+  return buildMetadata(
+    {
+      title: seo.title ?? 'Research',
+      canonical: '/research',
+      description: seo.description,
+      ogImage: seo.ogImageUrl,
+    },
+    settings,
+  )
 }
 
 export default async function ResearchPage() {

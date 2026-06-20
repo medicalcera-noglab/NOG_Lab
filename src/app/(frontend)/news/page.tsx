@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
-import { getSiteSettings } from '@/lib/data'
+import { getSiteSettings, getPageSeo, resolvePageSeo } from '@/lib/data'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
@@ -10,12 +10,15 @@ import type { NewsCategory } from '@/lib/data/news'
 import { EmptyState } from '@/components/placeholders'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'news')
   return buildMetadata(
     {
-      title: 'News & Events',
-      description: 'Awards, grants, talks, conferences, and press from the NOG Lab.',
+      title: seo.title ?? 'News & Events',
+      description:
+        seo.description ?? 'Awards, grants, talks, conferences, and press from the NOG Lab.',
       canonical: '/news',
+      ogImage: seo.ogImageUrl,
     },
     settings,
   )

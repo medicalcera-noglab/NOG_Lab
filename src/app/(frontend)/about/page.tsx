@@ -8,15 +8,19 @@ import { MediaImage } from '@/components/MediaImage'
 import { FacilitiesGallery } from '@/components/about/FacilitiesGallery'
 import { getAbout } from '@/lib/data/about'
 import { getSiteSettings } from '@/lib/data/site-settings'
+import { getPageSeo, resolvePageSeo } from '@/lib/data'
 import type { Media } from '../../../../payload-types'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'about')
   return buildMetadata(
     {
-      title: 'About',
-      description: 'Our mission, leadership, institutional affiliation, and facilities.',
+      title: seo.title ?? 'About',
+      description:
+        seo.description ?? 'Our mission, leadership, institutional affiliation, and facilities.',
       canonical: '/about',
+      ogImage: seo.ogImageUrl,
     },
     settings,
   )
