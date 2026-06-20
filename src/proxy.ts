@@ -35,10 +35,12 @@ const r2PublicHost = (() => {
 })()
 
 function buildCsp(nonce: string): string {
+  const isDev = process.env.NODE_ENV !== 'production'
   return [
     "default-src 'self'",
-    // nonce covers Next.js hydration scripts + any inline <script>; no unsafe-inline
-    `script-src 'self' 'nonce-${nonce}' https://www.google.com https://www.gstatic.com`,
+    // nonce covers Next.js hydration scripts + any inline <script>; no unsafe-inline.
+    // unsafe-eval is needed in dev mode: React uses eval() for stack-trace reconstruction.
+    `script-src 'self' 'nonce-${nonce}' https://www.google.com https://www.gstatic.com${isDev ? " 'unsafe-eval'" : ''}`,
     // unsafe-inline required for Tailwind utility style="" and framer-motion DOM mutations
     "style-src 'self' 'unsafe-inline'",
     // OSM tiles (light theme) + CARTO tiles (dark theme) + R2 media CDN
