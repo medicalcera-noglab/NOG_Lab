@@ -44,3 +44,7 @@ export const revalidateSiteSettings = makeGlobalRevalidateHook(['site_settings']
 export const revalidateAbout = makeGlobalRevalidateHook(['about'])
 
 export const revalidateLegalPages = makeGlobalRevalidateHook(['legal_pages'])
+
+export const revalidateNavigation = makeGlobalRevalidateHook(['navigation'])
+
+export const revalidatePageSeo = makeGlobalRevalidateHook(['page_seo'])

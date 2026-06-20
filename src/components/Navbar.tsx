@@ -1,19 +1,33 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
-import { getSiteSettings } from '@/lib/data'
-import { PRIMARY_NAV } from '@/lib/nav'
+import { getSiteSettings, getNavigation } from '@/lib/data'
 import { NavMenu } from './NavMenu'
 import { LocaleSwitcher } from './LocaleSwitcher'
 import { Container } from './ui/Container'
 import { MediaImage } from './MediaImage'
 import { cn } from '@/lib/utils'
 import type { Media } from '@/../../payload-types'
+import type { NavItem } from '@/lib/nav'
 
 export async function Navbar() {
-  const [settings, t] = await Promise.all([getSiteSettings(), getTranslations('nav')])
+  const [settings, navData, t] = await Promise.all([
+    getSiteSettings(),
+    getNavigation(),
+    getTranslations('nav'),
+  ])
 
   const logo = typeof settings.logo === 'object' ? (settings.logo as Media) : null
   const logoDark = typeof settings.logoDark === 'object' ? (settings.logoDark as Media) : null
+
+  const headerLinks: NavItem[] = (navData?.headerLinks ?? [])
+    .filter((l) => l.isVisible !== false)
+    .map((l) => ({
+      label: l.label,
+      labelUr: l.labelUr,
+      href: l.href,
+      isExternal: l.isExternal,
+      isVisible: l.isVisible,
+    }))
 
   return (
     <header
@@ -36,7 +50,6 @@ export async function Navbar() {
           >
             {logo ? (
               <>
-                {/* Light-mode logo */}
                 <span className={cn('block h-8 w-8', logoDark ? 'dark:hidden' : '')}>
                   <MediaImage
                     doc={logo}
@@ -45,7 +58,6 @@ export async function Navbar() {
                     priority
                   />
                 </span>
-                {/* Dark-mode logo (only rendered when logoDark is configured) */}
                 {logoDark && (
                   <span className="hidden h-8 w-8 dark:block">
                     <MediaImage
@@ -70,10 +82,12 @@ export async function Navbar() {
 
           {/* Desktop nav links */}
           <ul role="list" className="hidden flex-1 items-center justify-center gap-1 md:flex">
-            {PRIMARY_NAV.map((link) => (
+            {headerLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
+                  target={link.isExternal ? '_blank' : undefined}
+                  rel={link.isExternal ? 'noopener noreferrer' : undefined}
                   className={cn(
                     'rounded-lg px-3 py-2 text-sm font-medium',
                     'text-muted hover:text-fg hover:bg-surface-raised',
@@ -81,7 +95,7 @@ export async function Navbar() {
                     'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                   )}
                 >
-                  {t(link.msgKey)}
+                  {link.label}
                 </Link>
               </li>
             ))}
@@ -92,7 +106,7 @@ export async function Navbar() {
             <div className="hidden md:flex">
               <LocaleSwitcher />
             </div>
-            <NavMenu links={PRIMARY_NAV} />
+            <NavMenu links={headerLinks} />
           </div>
         </nav>
       </Container>

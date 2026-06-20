@@ -1,24 +1,26 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { ExternalLink, BookOpen, MapPin } from 'lucide-react'
-import { getSiteSettings } from '@/lib/data'
+import { getSiteSettings, getNavigation } from '@/lib/data'
 import { getLegalPages } from '@/lib/data/legal'
 import { lexicalToText } from '@/lib/richtext'
-import { PRIMARY_NAV } from '@/lib/nav'
 import { Container } from './ui/Container'
 import { MediaImage } from './MediaImage'
 import { CookiePreferencesLink } from './CookiePreferencesLink'
 import type { Media } from '@/../../payload-types'
 
+const LINK_CLASS =
+  'text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none'
+
 const SOCIAL_LINK_CLASS =
   'flex items-center gap-2 text-sm text-muted hover:text-fg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded'
 
 export async function Footer() {
-  const [settings, legal, t, tNav] = await Promise.all([
+  const [settings, navData, legal, t] = await Promise.all([
     getSiteSettings(),
+    getNavigation(),
     getLegalPages(),
     getTranslations('footer'),
-    getTranslations('nav'),
   ])
 
   const social = settings.social ?? {}
@@ -32,13 +34,14 @@ export async function Footer() {
   const logo = typeof settings.logo === 'object' ? (settings.logo as Media) : null
   const logoDark = typeof settings.logoDark === 'object' ? (settings.logoDark as Media) : null
 
+  const footerGroups = navData?.footerGroups ?? []
+
   return (
     <footer className="border-border bg-surface mt-auto border-t">
       <Container>
         <div className="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-4 lg:col-span-2">
-            {/* Logo mark */}
             {logo && (
               <div className="flex items-center gap-3">
                 <span className={logoDark ? 'block dark:hidden' : 'block'}>
@@ -70,44 +73,42 @@ export async function Footer() {
             )}
           </div>
 
-          {/* Navigation */}
-          <nav aria-label={t('footerNav')}>
-            <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
-              {t('siteSection')}
-            </p>
-            <ul role="list" className="space-y-2">
-              {PRIMARY_NAV.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
-                  >
-                    {tNav(link.msgKey)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {/* CMS-driven footer nav groups */}
+          {footerGroups.map((group) => (
+            <nav key={group.id ?? group.title} aria-label={group.title}>
+              <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
+                {group.title}
+              </p>
+              <ul role="list" className="space-y-2">
+                {(group.links ?? []).map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      target={link.isExternal ? '_blank' : undefined}
+                      rel={link.isExternal ? 'noopener noreferrer' : undefined}
+                      className={LINK_CLASS}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
 
-          {/* Legal */}
+          {/* Legal — always present */}
           <div>
             <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
               {t('legalSection')}
             </p>
             <ul role="list" className="space-y-2">
               <li>
-                <Link
-                  href="/privacy"
-                  className="text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
-                >
+                <Link href="/privacy" className={LINK_CLASS}>
                   {legal?.privacyPolicyTitle ?? t('privacyPolicy')}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/terms"
-                  className="text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
-                >
+                <Link href="/terms" className={LINK_CLASS}>
                   {legal?.termsOfUseTitle ?? t('termsOfUse')}
                 </Link>
               </li>

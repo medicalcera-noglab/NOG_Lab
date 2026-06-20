@@ -6,12 +6,12 @@ import { useTheme } from 'next-themes'
 import { useTranslations } from 'next-intl'
 import { Menu, X, Sun, Moon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { NavLink } from '@/lib/nav'
+import type { NavItem } from '@/lib/nav'
 import { NavSearch } from './search/NavSearch'
 import { LocaleSwitcher } from './LocaleSwitcher'
 
 interface NavMenuProps {
-  links: NavLink[]
+  links: NavItem[]
 }
 
 // Hydration-safe client detection — returns false on server, true on client.
@@ -153,7 +153,7 @@ export function NavMenu({ links }: NavMenuProps) {
                   'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                 )}
               >
-                {t(link.msgKey)}
+                {link.label}
               </Link>
             ))}
 
