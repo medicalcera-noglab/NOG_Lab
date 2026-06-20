@@ -1,24 +1,38 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { HeroCellField } from './HeroCellField'
 import { Container } from '@/components/ui/Container'
 import { GrainTexture } from '@/components/motifs/GrainTexture'
 import { cn } from '@/lib/utils'
-import type { SiteSetting } from '../../../payload-types'
+import type { SiteSetting, Media } from '../../../payload-types'
 
 interface HeroSectionProps {
   labName: string
   tagline: SiteSetting['tagline']
   ctaPrimary: SiteSetting['heroCtaPrimary']
   ctaSecondary: SiteSetting['heroCtaSecondary']
+  heroMedia?: SiteSetting['heroMedia']
 }
 
-export function HeroSection({ labName, tagline, ctaPrimary, ctaSecondary }: HeroSectionProps) {
+export function HeroSection({
+  labName,
+  tagline,
+  ctaPrimary,
+  ctaSecondary,
+  heroMedia,
+}: HeroSectionProps) {
+  const style = heroMedia?.style ?? 'particles'
+  const videoDoc =
+    heroMedia?.video && typeof heroMedia.video === 'object' ? (heroMedia.video as Media) : null
+  const imageDoc =
+    heroMedia?.image && typeof heroMedia.image === 'object' ? (heroMedia.image as Media) : null
+
   return (
     <section
       aria-label="Lab introduction"
       className="relative flex min-h-[calc(100vh-64px)] items-center overflow-hidden"
     >
-      {/* ── Static gradient background — paints immediately (LCP) ── */}
+      {/* ── Static gradient — always renders first (LCP paint) ── */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -29,11 +43,37 @@ export function HeroSection({ labName, tagline, ctaPrimary, ctaSecondary }: Hero
         }}
       />
 
+      {/* ── Hero background layer (mutually exclusive) ── */}
+      {style === 'video' && videoDoc?.url && (
+        <video
+          aria-hidden="true"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover opacity-30 motion-safe:block motion-reduce:hidden"
+          src={videoDoc.url}
+        />
+      )}
+
+      {style === 'image' && imageDoc && (
+        <div aria-hidden="true" className="absolute inset-0">
+          <Image
+            src={imageDoc.url ?? ''}
+            alt=""
+            fill
+            className="object-cover opacity-25"
+            sizes="100vw"
+            priority
+          />
+        </div>
+      )}
+
       {/* Film-grain micrograph texture */}
       <GrainTexture className="absolute inset-0" opacity={0.04} />
 
-      {/* Animated cell blobs (client, hydrated after first paint) */}
-      <HeroCellField />
+      {/* Animated cell blobs — only when style is particles (client, hydrated after first paint) */}
+      {style === 'particles' && <HeroCellField />}
 
       {/* ── Hero content ────────────────────────────────────────── */}
       <Container className="relative z-10 py-24 md:py-32">
@@ -46,7 +86,7 @@ export function HeroSection({ labName, tagline, ctaPrimary, ctaSecondary }: Hero
             Khyber Medical University
           </p>
 
-          {/* Heading — this is the LCP text node in the HTML */}
+          {/* Heading — LCP text node */}
           <h1
             className={cn(
               'font-heading text-fg text-4xl leading-tight font-bold',

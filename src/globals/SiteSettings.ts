@@ -111,6 +111,42 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
     {
+      name: 'heroMedia',
+      type: 'group',
+      label: 'Hero Background',
+      admin: {
+        description:
+          'Control the home-page hero background. "Particles" = animated SVG blobs (default). "Video" = looping video. "Image" = static photo.',
+      },
+      fields: [
+        {
+          name: 'style',
+          type: 'select',
+          label: 'Style',
+          defaultValue: 'particles',
+          options: [
+            { label: 'Animated Particles (default)', value: 'particles' },
+            { label: 'Looping Video', value: 'video' },
+            { label: 'Static Image', value: 'image' },
+          ],
+        },
+        {
+          name: 'video',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Hero Video (MP4)',
+          admin: { condition: (data) => data?.heroMedia?.style === 'video' },
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Hero Image',
+          admin: { condition: (data) => data?.heroMedia?.style === 'image' },
+        },
+      ],
+    },
+    {
       name: 'heroCtaPrimary',
       type: 'group',
       label: 'Hero CTA — Primary',

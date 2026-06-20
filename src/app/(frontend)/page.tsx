@@ -7,6 +7,8 @@ import {
   getLatestNews,
   getCollaborators,
   getStudySiteCount,
+  getPageSeo,
+  resolvePageSeo,
 } from '@/lib/data'
 import { HeroSection } from '@/components/home/HeroSection'
 import { BigQuestionsStrip } from '@/components/home/BigQuestionsStrip'
@@ -19,8 +21,12 @@ import { PartnerStrip } from '@/components/home/PartnerStrip'
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
-  return buildMetadata({ canonical: '/' }, settings)
+  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
+  const seo = resolvePageSeo(pageSeo, 'home')
+  return buildMetadata(
+    { canonical: '/', title: seo.title, description: seo.description, ogImage: seo.ogImageUrl },
+    settings,
+  )
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
@@ -67,6 +73,7 @@ export default async function HomePage() {
         tagline={settings.tagline}
         ctaPrimary={settings.heroCtaPrimary}
         ctaSecondary={settings.heroCtaSecondary}
+        heroMedia={settings.heroMedia}
       />
 
       {settings.bigQuestions?.length ? (
