@@ -49,3 +49,5 @@ export { getBlogList, getBlogBySlug, getRelatedPosts, getAllBlogSlugs } from './
 export { getAllCollaborators } from './collaborators'
 export { getOpenPositions } from './positions'
 export { getLegalPages } from './legal'
+export { getNavigation, pickLabel } from './navigation'
+export { getPageSeo, resolvePageSeo, type PageSeoKey } from './page-seo'

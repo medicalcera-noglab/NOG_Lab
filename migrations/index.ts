@@ -10,6 +10,9 @@ import * as migration_20260619_300000_search_fts from './20260619_300000_search_
 import * as migration_20260619_400000_add_localization from './20260619_400000_add_localization'
 import * as migration_20260620_000000_legal_pages from './20260620_000000_legal_pages'
 import * as migration_20260620_000001_site_settings_logo_dark from './20260620_000001_site_settings_logo_dark'
+import * as migration_20260620_000002_navigation from './20260620_000002_navigation'
+import * as migration_20260620_000003_hero_media from './20260620_000003_hero_media'
+import * as migration_20260620_000004_page_seo from './20260620_000004_page_seo'
 
 export const migrations = [
   {
@@ -71,5 +74,20 @@ export const migrations = [
     up: migration_20260620_000001_site_settings_logo_dark.up,
     down: migration_20260620_000001_site_settings_logo_dark.down,
     name: '20260620_000001_site_settings_logo_dark',
+  },
+  {
+    up: migration_20260620_000002_navigation.up,
+    down: migration_20260620_000002_navigation.down,
+    name: '20260620_000002_navigation',
+  },
+  {
+    up: migration_20260620_000003_hero_media.up,
+    down: migration_20260620_000003_hero_media.down,
+    name: '20260620_000003_hero_media',
+  },
+  {
+    up: migration_20260620_000004_page_seo.up,
+    down: migration_20260620_000004_page_seo.down,
+    name: '20260620_000004_page_seo',
   },
 ]

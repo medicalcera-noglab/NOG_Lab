@@ -26,6 +26,8 @@ import { MediaCoverage } from './src/collections/MediaCoverage'
 import { SiteSettings } from './src/globals/SiteSettings'
 import { About } from './src/globals/About'
 import { LegalPages } from './src/globals/LegalPages'
+import { Navigation } from './src/globals/Navigation'
+import { PageSeo } from './src/globals/PageSeo'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -46,6 +48,13 @@ export default buildConfig({
     },
     meta: {
       titleSuffix: ' — NOG Lab Admin',
+    },
+    components: {
+      views: {
+        dashboard: {
+          Component: '@/components/admin/Dashboard#Dashboard',
+        },
+      },
     },
   },
   collections: [
@@ -71,7 +80,7 @@ export default buildConfig({
     AuditLog,
   ],
   plugins: buildStoragePlugin(),
-  globals: [SiteSettings, About, LegalPages],
+  globals: [SiteSettings, About, LegalPages, Navigation, PageSeo],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: {
