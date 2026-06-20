@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminOrEditor, isAuthenticated } from '../access'
+import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { revalidatePeople } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
@@ -12,7 +12,7 @@ export const People: CollectionConfig = {
     defaultColumns: ['name', 'role', 'displayOrder', 'is_active'],
   },
   access: {
-    read: isAuthenticated,
+    read: () => true,
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,

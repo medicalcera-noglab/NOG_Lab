@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminOrEditor, isAuthenticated } from '../access'
+import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { makeEnsureUniqueFeaturedHook } from '../hooks/ensureUniqueFeature'
 import { revalidateProjects } from '../hooks/revalidateCache'
@@ -13,7 +13,7 @@ export const Projects: CollectionConfig = {
     defaultColumns: ['title', 'status', 'isFeaturedHome', 'updatedAt'],
   },
   access: {
-    read: isAuthenticated,
+    read: () => true,
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,

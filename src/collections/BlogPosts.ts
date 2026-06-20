@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminOrEditor, isAuthenticated, isOwnerDraftOnly, canCreateContent } from '../access'
+import { isAdminOrEditor, isOwnerDraftOnly, canCreateContent } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { computeReadingTimeHook } from '../hooks/computeReadingTime'
 import { setPublishedAtHook } from '../hooks/setPublishedAt'
@@ -41,7 +41,7 @@ export const BlogPosts: CollectionConfig = {
     drafts: true,
   },
   access: {
-    read: isAuthenticated,
+    read: ({ req }) => (req.user ? true : { status: { equals: 'published' } }),
     create: canCreateContent,
     update: isOwnerDraftOnly,
     delete: isAdminOrEditor,

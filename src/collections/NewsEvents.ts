@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminOrEditor, isAuthenticated, isOwnerDraftOnly, canCreateContent } from '../access'
+import { isAdminOrEditor, isOwnerDraftOnly, canCreateContent } from '../access'
 import { setPublishedAtHook } from '../hooks/setPublishedAt'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { makeEnsureUniqueFeaturedHook } from '../hooks/ensureUniqueFeature'
@@ -40,7 +40,7 @@ export const NewsEvents: CollectionConfig = {
     drafts: true,
   },
   access: {
-    read: isAuthenticated,
+    read: ({ req }) => (req.user ? true : { status: { equals: 'published' } }),
     create: canCreateContent,
     update: isOwnerDraftOnly,
     delete: isAdminOrEditor,

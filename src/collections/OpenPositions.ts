@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminOrEditor, isAuthenticated } from '../access'
+import { isAdminOrEditor } from '../access'
 import { revalidateOpenPositions } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
@@ -11,7 +11,7 @@ export const OpenPositions: CollectionConfig = {
     defaultColumns: ['title', 'type', 'is_active', 'updatedAt'],
   },
   access: {
-    read: isAuthenticated,
+    read: () => true,
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,

@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminOrEditor, isAuthenticated, isOwnMediaOrAdmin } from '../access'
+import { isAdminOrEditor, isOwnMediaOrAdmin } from '../access'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { makeValidateMimeBytes, PUBLIC_MEDIA_MIMES } from '../hooks/validateMimeBytes'
 
@@ -41,7 +41,7 @@ export const Media: CollectionConfig = {
   },
   access: {
     // Public CDN handles unauthenticated reads; auth only needed for admin UI.
-    read: isAuthenticated,
+    read: () => true,
     create: isOwnMediaOrAdmin,
     update: isOwnMediaOrAdmin,
     delete: isAdminOrEditor,

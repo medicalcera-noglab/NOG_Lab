@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminOrEditor, isAuthenticated } from '../access'
+import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { revalidateResearchThemes } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
@@ -12,7 +12,7 @@ export const ResearchThemes: CollectionConfig = {
     defaultColumns: ['name', 'color', 'displayOrder'],
   },
   access: {
-    read: isAuthenticated,
+    read: () => true,
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
