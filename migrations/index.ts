@@ -19,6 +19,7 @@ import * as migration_20260621_000001_research_theme_image from './20260621_0000
 import * as migration_20260621_000002_versioned_snapshot_col from './20260621_000002_versioned_snapshot_col'
 import * as migration_20260621_000003_locked_docs_applicant_files from './20260621_000003_locked_docs_applicant_files'
 import * as migration_20260621_000004_versioned_published_locale from './20260621_000004_versioned_published_locale'
+import * as migration_20260621_000005_navigation_varchar_id from './20260621_000005_navigation_varchar_id'
 
 export const migrations = [
   {
@@ -125,5 +126,10 @@ export const migrations = [
     up: migration_20260621_000004_versioned_published_locale.up,
     down: migration_20260621_000004_versioned_published_locale.down,
     name: '20260621_000004_versioned_published_locale',
+  },
+  {
+    up: migration_20260621_000005_navigation_varchar_id.up,
+    down: migration_20260621_000005_navigation_varchar_id.down,
+    name: '20260621_000005_navigation_varchar_id',
   },
 ]
