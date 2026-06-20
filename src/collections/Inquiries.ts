@@ -7,6 +7,9 @@ export const Inquiries: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Forms',
     defaultColumns: ['name', 'email', 'formType', 'isRead', 'createdAt'],
+    components: {
+      afterList: ['@/components/admin/InquiriesCsvButton#InquiriesCsvButton'],
+    },
   },
   access: {
     // Admin/editor manage; public creation is wired in a later step via API
