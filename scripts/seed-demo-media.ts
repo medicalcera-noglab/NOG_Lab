@@ -64,7 +64,7 @@ const SPECS: ImageSpec[] = [
     id: 'theme-oral',
     alt: 'Scanning electron micrograph of Streptococcus bacteria in oral dental biofilm',
     sources: [
-      { type: 'wikimedia', query: 'oral Streptococcus bacteria SEM dental plaque biofilm' },
+      { type: 'wikimedia', query: 'Lactobacillus acidophilus bacteria' },
       { type: 'unsplash', query: 'dental bacteria microscope science oral health' },
       { type: 'pexels', query: 'bacteria microscope laboratory science close-up' },
     ],
@@ -73,7 +73,7 @@ const SPECS: ImageSpec[] = [
     id: 'theme-gut',
     alt: 'Colourised scanning electron micrograph of Lactobacillus intestinal bacteria',
     sources: [
-      { type: 'wikimedia', query: 'gut Lactobacillus intestinal bacteria SEM colorized NIAID' },
+      { type: 'wikimedia', query: 'Lactobacillus acidophilus bacteria' },
       { type: 'unsplash', query: 'gut microbiome bacteria science intestinal' },
       { type: 'pexels', query: 'science bacteria gut health laboratory' },
     ],
@@ -84,7 +84,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'fresh vegetables whole foods nutrition colourful diversity' },
       { type: 'pexels', query: 'vegetables fresh food nutrition colourful healthy' },
-      { type: 'wikimedia', query: 'vegetables fresh colourful food nutrition market' },
+      { type: 'wikimedia', query: 'food nutrition plate healthy eating' },
     ],
   },
   {
@@ -93,7 +93,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'DNA genomics bioinformatics computer screen data analysis' },
       { type: 'pexels', query: 'DNA sequencing genetics computer data code' },
-      { type: 'wikimedia', query: 'DNA gel electrophoresis sequencing laboratory agarose' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
   {
@@ -102,6 +102,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'pexels', query: 'doctor patient consultation community health clinic' },
       { type: 'unsplash', query: 'healthcare community clinic doctor patient consultation' },
+      { type: 'wikimedia', query: 'researcher scientist portrait professional' },
     ],
   },
 
@@ -113,6 +114,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'DNA sequencer laboratory genomics instrument machine' },
       { type: 'pexels', query: 'laboratory equipment scientific instrument genomics' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
   {
@@ -122,6 +124,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'scientist pipette laboratory bench microbiology sample' },
       { type: 'pexels', query: 'scientist pipette laboratory research bench' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
   {
@@ -134,6 +137,7 @@ const SPECS: ImageSpec[] = [
         query: 'multiple monitors computer programming data science workstation',
       },
       { type: 'pexels', query: 'multiple screens computer data analysis workstation' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
 
@@ -144,6 +148,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'professional man portrait headshot neutral background suit' },
       { type: 'pexels', query: 'professional man portrait headshot neutral background' },
+      { type: 'wikimedia', query: 'academic professor university portrait photo' },
     ],
   },
   {
@@ -152,6 +157,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'professional woman portrait headshot researcher scientist' },
       { type: 'pexels', query: 'professional woman portrait headshot researcher neutral' },
+      { type: 'wikimedia', query: 'professional portrait headshot person' },
     ],
   },
   {
@@ -160,6 +166,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'young man professional portrait graduate student headshot' },
       { type: 'pexels', query: 'young man professional portrait headshot student' },
+      { type: 'wikimedia', query: 'graduation student university academic' },
     ],
   },
   {
@@ -168,6 +175,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'young woman professional portrait graduate student headshot' },
       { type: 'pexels', query: 'young woman professional portrait headshot student' },
+      { type: 'wikimedia', query: 'graduation student university academic' },
     ],
   },
   {
@@ -176,6 +184,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'man laboratory technician professional portrait headshot' },
       { type: 'pexels', query: 'man laboratory professional portrait headshot' },
+      { type: 'wikimedia', query: 'professional portrait headshot person' },
     ],
   },
   {
@@ -184,6 +193,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'woman academic researcher professional portrait headshot' },
       { type: 'pexels', query: 'woman academic professional portrait headshot researcher' },
+      { type: 'wikimedia', query: 'researcher scientist portrait professional' },
     ],
   },
 
@@ -194,6 +204,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'child health nutrition assessment community clinic paediatric' },
       { type: 'pexels', query: 'child health clinic nutrition assessment paediatric' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
   {
@@ -202,6 +213,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'oral sample collection saliva laboratory swab researcher' },
       { type: 'pexels', query: 'saliva swab oral laboratory collection sample' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
   {
@@ -210,6 +222,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'code terminal programming pipeline data science computer' },
       { type: 'pexels', query: 'code terminal computer data analysis programming' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
 
@@ -223,6 +236,7 @@ const SPECS: ImageSpec[] = [
         query: 'fresh whole foods vegetables fruit nutrition gut health diversity',
       },
       { type: 'pexels', query: 'healthy food vegetables fruit nutrition whole grain' },
+      { type: 'wikimedia', query: 'food nutrition plate healthy eating' },
     ],
   },
   {
@@ -231,6 +245,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'sterile swab laboratory sample collection scientist close-up' },
       { type: 'pexels', query: 'laboratory swab sample scientist close-up collection' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
 
@@ -241,6 +256,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'academic conference hall speaker science presentation lecture' },
       { type: 'pexels', query: 'conference presentation science academic lecture hall' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
   {
@@ -249,6 +265,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'research team meeting collaboration science project documents' },
       { type: 'pexels', query: 'team meeting collaboration research science documents' },
+      { type: 'wikimedia', query: 'scientist researcher laboratory work' },
     ],
   },
   {
@@ -257,6 +274,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'graduate students university laboratory research team working' },
       { type: 'pexels', query: 'students university laboratory research team working' },
+      { type: 'wikimedia', query: 'graduation student university academic' },
     ],
   },
 
@@ -267,6 +285,7 @@ const SPECS: ImageSpec[] = [
     sources: [
       { type: 'unsplash', query: 'child nutrition measurement health worker community centre' },
       { type: 'pexels', query: 'child health nutrition measurement community health worker' },
+      { type: 'wikimedia', query: 'food nutrition plate healthy eating' },
     ],
   },
 ]
@@ -337,7 +356,8 @@ async function fetchWikimediaImage(query: string): Promise<ImageResult | null> {
     formatversion: '2',
     gsrlimit: '20',
   })
-  const apiUrl = `https://commons.wikimedia.org/w/api.php?${params}`
+  // Use api.wikimedia.org — commons.wikimedia.org may be DNS-filtered locally.
+  const apiUrl = `https://api.wikimedia.org/w/api.php?${params}`
 
   const res = await fetch(apiUrl, {
     headers: {
