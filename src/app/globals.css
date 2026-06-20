@@ -146,6 +146,27 @@ body {
   }
 }
 
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
 /* Hero animation pause — applied when the user clicks "Pause animation".
    Targets all descendants of the .hero-paused container so JS only
    needs to toggle one class on the parent. */

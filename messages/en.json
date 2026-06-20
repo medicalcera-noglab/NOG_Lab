@@ -60,11 +60,30 @@
     "footerNav": "Footer navigation",
     "siteSection": "Site",
     "connectSection": "Connect",
+    "legalSection": "Legal",
     "newsletter": "Newsletter subscription form",
     "twitter": "Twitter / X (opens in new tab)",
     "linkedin": "LinkedIn (opens in new tab)",
     "researchgate": "ResearchGate (opens in new tab)",
-    "github": "GitHub (opens in new tab)"
+    "github": "GitHub (opens in new tab)",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfUse": "Terms of Use",
+    "cookiePreferences": "Cookie preferences"
+  },
+  "consent": {
+    "bannerLabel": "Cookie consent",
+    "bannerText": "We use privacy-first analytics (Plausible — no personal data, no cookies) to understand how the site is used. You can decline and the site still works fully.",
+    "privacyLink": "Privacy Policy",
+    "accept": "Accept analytics",
+    "decline": "Decline",
+    "preferencesLabel": "Cookie preferences",
+    "currentlyGranted": "Analytics are currently enabled.",
+    "currentlyDenied": "Analytics are currently disabled.",
+    "changeButton": "Change preference"
+  },
+  "legal": {
+    "noContent": "This page is being drafted. Please check back soon.",
+    "lastUpdated": "Last updated"
   },
   "contact": {
     "nameLabel": "Name",

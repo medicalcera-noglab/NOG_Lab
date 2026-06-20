@@ -1,37 +1,53 @@
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { ThemeProvider } from '@/providers/ThemeProvider'
+import { ConsentProvider } from '@/providers/ConsentProvider'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
+import { CookieBanner } from '@/components/CookieBanner'
+import { Analytics } from '@/components/Analytics'
+import { getSiteSettings } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale()
-  const [messages, t] = await Promise.all([getMessages(), getTranslations('nav')])
+  const [messages, t, settings] = await Promise.all([
+    getMessages(),
+    getTranslations('nav'),
+    getSiteSettings(),
+  ])
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <ThemeProvider>
-        {/* Skip-to-content — visible on focus, transparent otherwise */}
-        <a
-          href="#main-content"
-          className={cn(
-            'sr-only focus:not-sr-only',
-            'fixed start-2 top-2 z-50 rounded-lg px-4 py-2 text-sm font-medium',
-            'bg-primary text-primary-fg',
-            'focus:ring-ring focus:ring-offset-bg focus:ring-2 focus:ring-offset-2 focus:outline-none',
-          )}
-        >
-          {t('skipToContent')}
-        </a>
+        <ConsentProvider>
+          {/* Skip-to-content — visible on focus, transparent otherwise */}
+          <a
+            href="#main-content"
+            className={cn(
+              'sr-only focus:not-sr-only',
+              'fixed start-2 top-2 z-50 rounded-lg px-4 py-2 text-sm font-medium',
+              'bg-primary text-primary-fg',
+              'focus:ring-ring focus:ring-offset-bg focus:ring-2 focus:ring-offset-2 focus:outline-none',
+            )}
+          >
+            {t('skipToContent')}
+          </a>
 
-        <Navbar />
+          <Navbar />
 
-        <main id="main-content" tabIndex={-1} className="outline-none">
-          {children}
-        </main>
+          <main id="main-content" tabIndex={-1} className="outline-none">
+            {children}
+          </main>
 
-        <Footer />
+          <Footer />
+
+          {/* Cookie consent banner — renders only until user makes a choice */}
+          <CookieBanner />
+
+          {/* Privacy-first analytics — loads only after consent is granted */}
+          <Analytics analyticsId={settings.analyticsId} />
+        </ConsentProvider>
       </ThemeProvider>
     </NextIntlClientProvider>
   )
