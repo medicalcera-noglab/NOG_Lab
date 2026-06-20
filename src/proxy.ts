@@ -96,7 +96,9 @@ export function middleware(request: NextRequest): NextResponse {
   requestHeaders.set('x-nonce', nonce)
 
   // 3. Admin auth redirect (UX only — Payload owns real access control).
-  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+  // Allow /admin/login and /admin/create-first-user through without a token.
+  const adminPublicPaths = ['/admin/login', '/admin/create-first-user']
+  if (pathname.startsWith('/admin') && !adminPublicPaths.some((p) => pathname.startsWith(p))) {
     const token = request.cookies.get('payload-token')?.value
     if (!token) {
       const loginUrl = new URL('/admin/login', request.url)
@@ -142,6 +144,9 @@ function buildNonce(): string {
   // btoa(String.fromCharCode(...arr)) is safe for 16 bytes — no stack overflow risk.
   return btoa(String.fromCharCode(...Array.from(arr)))
 }
+
+// Next.js 16 proxy convention requires the function to be exported as `proxy`.
+export { middleware as proxy }
 
 export const config = {
   matcher: [
