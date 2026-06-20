@@ -14,6 +14,8 @@
     "seed": "tsx scripts/seed.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
     "seed:clear-demo": "tsx scripts/clear-demo.ts",
+    "seed:demo-media": "tsx scripts/seed-demo-media.ts",
+    "seed:clear-demo-media": "tsx scripts/clear-demo-media.ts",
     "payload": "payload",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -196,6 +196,24 @@ Never commit `payload-types.ts` if it has only whitespace diffs (regenerate only
 
 ---
 
+## Demo Imagery — Preview Only
+
+`npm run seed:demo-media` populates every image slot with free-license imagery:
+
+| Source            | License          | Key needed?           |
+| ----------------- | ---------------- | --------------------- |
+| Wikimedia Commons | CC0 / CC BY / PD | No                    |
+| Unsplash          | Unsplash License | `UNSPLASH_ACCESS_KEY` |
+| Pexels            | Pexels License   | `PEXELS_API_KEY`      |
+
+All demo media docs carry `isDemo:true` and full `sourceUrl` / `sourceAuthor` /
+`sourceLicense` metadata. Remove them with `npm run seed:clear-demo-media`.
+
+**Replace every demo image with the lab's own photography before launch.**
+Placeholder portraits especially — they are generic stock images, not real people.
+
+---
+
 ## What NOT to Do
 
 - Do not hardcode content text in `.tsx` files (see Golden Rule).
