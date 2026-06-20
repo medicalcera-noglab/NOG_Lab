@@ -14,6 +14,8 @@ import * as migration_20260620_000002_navigation from './20260620_000002_navigat
 import * as migration_20260620_000003_hero_media from './20260620_000003_hero_media'
 import * as migration_20260620_000004_page_seo from './20260620_000004_page_seo'
 import * as migration_20260620_000005_is_demo from './20260620_000005_is_demo'
+import * as migration_20260621_000000_media_source_fields from './20260621_000000_media_source_fields'
+import * as migration_20260621_000001_research_theme_image from './20260621_000001_research_theme_image'
 
 export const migrations = [
   {
@@ -95,5 +97,15 @@ export const migrations = [
     up: migration_20260620_000005_is_demo.up,
     down: migration_20260620_000005_is_demo.down,
     name: '20260620_000005_is_demo',
+  },
+  {
+    up: migration_20260621_000000_media_source_fields.up,
+    down: migration_20260621_000000_media_source_fields.down,
+    name: '20260621_000000_media_source_fields',
+  },
+  {
+    up: migration_20260621_000001_research_theme_image.up,
+    down: migration_20260621_000001_research_theme_image.down,
+    name: '20260621_000001_research_theme_image',
   },
 ]

@@ -64,6 +64,42 @@ export const Media: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'sourceUrl',
+      type: 'text',
+      label: 'Source URL',
+      admin: {
+        position: 'sidebar',
+        description: 'Original URL where this image was obtained.',
+      },
+    },
+    {
+      name: 'sourceAuthor',
+      type: 'text',
+      label: 'Photographer / Author',
+      admin: {
+        position: 'sidebar',
+        description: 'Attribution for the creator.',
+      },
+    },
+    {
+      name: 'sourceLicense',
+      type: 'text',
+      label: 'License',
+      admin: {
+        position: 'sidebar',
+        description: 'License for this image, e.g. CC BY 4.0 or Unsplash License.',
+      },
+    },
+    {
+      name: 'isDemo',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Demo image — remove with npm run seed:clear-demo-media.',
+      },
+    },
+    {
       name: 'createdBy',
       type: 'relationship',
       relationTo: 'users',

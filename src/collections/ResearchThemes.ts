@@ -60,6 +60,15 @@ export const ResearchThemes: CollectionConfig = {
       },
     },
     {
+      name: 'themeImage',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Theme Image',
+      admin: {
+        description: 'Illustration displayed in the research theme section.',
+      },
+    },
+    {
       name: 'methods',
       type: 'array',
       fields: [
