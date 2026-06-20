@@ -1,17 +1,25 @@
 import { revalidateTag } from 'next/cache'
 import type { CollectionAfterChangeHook, GlobalAfterChangeHook } from 'payload'
 
+function tryRevalidateTag(tag: string) {
+  try {
+    revalidateTag(tag, 'default')
+  } catch {
+    // no-op outside Next.js request context (e.g. seed scripts)
+  }
+}
+
 /** Factory: returns an afterChange hook that revalidates one or more cache tags. */
 export function makeRevalidateHook(tags: string[]): CollectionAfterChangeHook {
   return () => {
-    for (const tag of tags) revalidateTag(tag, 'default')
+    for (const tag of tags) tryRevalidateTag(tag)
   }
 }
 
 /** Factory: returns a global afterChange hook that revalidates one or more cache tags. */
 export function makeGlobalRevalidateHook(tags: string[]): GlobalAfterChangeHook {
   return () => {
-    for (const tag of tags) revalidateTag(tag, 'default')
+    for (const tag of tags) tryRevalidateTag(tag)
   }
 }
 

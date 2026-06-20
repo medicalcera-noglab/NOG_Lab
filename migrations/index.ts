@@ -16,6 +16,9 @@ import * as migration_20260620_000004_page_seo from './20260620_000004_page_seo'
 import * as migration_20260620_000005_is_demo from './20260620_000005_is_demo'
 import * as migration_20260621_000000_media_source_fields from './20260621_000000_media_source_fields'
 import * as migration_20260621_000001_research_theme_image from './20260621_000001_research_theme_image'
+import * as migration_20260621_000002_versioned_snapshot_col from './20260621_000002_versioned_snapshot_col'
+import * as migration_20260621_000003_locked_docs_applicant_files from './20260621_000003_locked_docs_applicant_files'
+import * as migration_20260621_000004_versioned_published_locale from './20260621_000004_versioned_published_locale'
 
 export const migrations = [
   {
@@ -107,5 +110,20 @@ export const migrations = [
     up: migration_20260621_000001_research_theme_image.up,
     down: migration_20260621_000001_research_theme_image.down,
     name: '20260621_000001_research_theme_image',
+  },
+  {
+    up: migration_20260621_000002_versioned_snapshot_col.up,
+    down: migration_20260621_000002_versioned_snapshot_col.down,
+    name: '20260621_000002_versioned_snapshot_col',
+  },
+  {
+    up: migration_20260621_000003_locked_docs_applicant_files.up,
+    down: migration_20260621_000003_locked_docs_applicant_files.down,
+    name: '20260621_000003_locked_docs_applicant_files',
+  },
+  {
+    up: migration_20260621_000004_versioned_published_locale.up,
+    down: migration_20260621_000004_versioned_published_locale.down,
+    name: '20260621_000004_versioned_published_locale',
   },
 ]
