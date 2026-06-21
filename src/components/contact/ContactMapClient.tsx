@@ -70,7 +70,7 @@ export function ContactMapClient() {
   return (
     <div
       ref={containerRef}
-      className="border-border aspect-video w-full overflow-hidden rounded-xl border"
+      className="border-border aspect-[4/3] w-full overflow-hidden rounded-xl border sm:aspect-video"
       role="img"
       aria-label="Map showing Khyber Medical University, Peshawar"
     />

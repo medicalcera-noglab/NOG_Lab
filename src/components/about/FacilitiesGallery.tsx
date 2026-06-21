@@ -90,14 +90,14 @@ export function FacilitiesGallery({ facilities }: Props) {
                   <>
                     <button
                       onClick={prev}
-                      className="bg-ink/60 absolute top-1/2 left-0 -translate-y-1/2 rounded-full p-2 text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                      className="bg-ink/60 absolute top-1/2 left-2 -translate-y-1/2 rounded-full p-2 text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
                       aria-label="Previous"
                     >
                       <ChevronLeft size={24} />
                     </button>
                     <button
                       onClick={next}
-                      className="bg-ink/60 absolute top-1/2 right-0 -translate-y-1/2 rounded-full p-2 text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                      className="bg-ink/60 absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-2 text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
                       aria-label="Next"
                     >
                       <ChevronRight size={24} />
