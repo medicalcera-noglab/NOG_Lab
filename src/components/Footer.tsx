@@ -15,7 +15,7 @@ const LINK_CLASS =
   'text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none'
 
 const SOCIAL_CLASS =
-  'inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted hover:border-accent hover:text-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+  'inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-0.5 text-xs text-muted hover:border-accent hover:text-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-2'
 
 export async function Footer() {
   const [settings, navData, legal] = await Promise.all([
@@ -42,76 +42,72 @@ export async function Footer() {
   const footerGroups = navData?.footerGroups ?? []
 
   return (
-    <footer className="border-border relative mt-auto overflow-hidden border-t">
-      {/* Decorative microbiome cell motif — bottom-right corner */}
+    <footer className="border-border bg-surface relative mt-auto overflow-hidden border-t">
+      {/* Decorative blobs — clipped by overflow-hidden */}
       <CellBlob
-        className="absolute -right-40 -bottom-32 h-[28rem] w-[28rem] opacity-40"
+        className="absolute -right-32 -bottom-24 h-72 w-72 opacity-30"
         color="var(--color-teal)"
       />
       <CellBlob
-        className="absolute top-0 -left-48 h-80 w-80 opacity-20"
+        className="absolute -top-12 -left-40 h-56 w-56 opacity-15"
         color="var(--color-sand)"
       />
 
-      <Container className="relative z-10">
-        {/* ── Main grid ─────────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-14 md:grid-cols-3 lg:grid-cols-5">
-          {/* Brand block — 2 cols on lg */}
-          <div className="col-span-2 space-y-5 lg:col-span-2">
+      <Container className="relative z-10 max-w-screen-2xl">
+        {/* ── Main row: brand | nav groups ────────────────────────────────── */}
+        <div className="flex flex-col gap-10 py-10 lg:flex-row lg:gap-16">
+          {/* Brand block */}
+          <div className="shrink-0 space-y-3 lg:w-52">
             {/* Logo + wordmark */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               {logo ? (
                 <>
-                  <span className={logo && logoDark ? 'block dark:hidden' : 'block'}>
-                    <MediaImage doc={logo} sizes="36px" className="h-9 w-9 object-contain" />
+                  <span className={logoDark ? 'block dark:hidden' : 'block'}>
+                    <MediaImage doc={logo} sizes="28px" className="h-7 w-7 object-contain" />
                   </span>
                   {logoDark && (
                     <span className="hidden dark:block">
-                      <MediaImage doc={logoDark} sizes="36px" className="h-9 w-9 object-contain" />
+                      <MediaImage doc={logoDark} sizes="28px" className="h-7 w-7 object-contain" />
                     </span>
                   )}
                 </>
               ) : (
                 <>
-                  <span className="relative block h-9 w-9 dark:hidden" aria-hidden="true">
-                    <Image src="/logo.svg" alt="" fill sizes="36px" className="object-contain" />
+                  <span className="relative block h-7 w-7 dark:hidden" aria-hidden="true">
+                    <Image src="/logo.svg" alt="" fill sizes="28px" className="object-contain" />
                   </span>
-                  <span className="relative hidden h-9 w-9 dark:block" aria-hidden="true">
+                  <span className="relative hidden h-7 w-7 dark:block" aria-hidden="true">
                     <Image
                       src="/logo-white.svg"
                       alt=""
                       fill
-                      sizes="36px"
+                      sizes="28px"
                       className="object-contain"
                     />
                   </span>
                 </>
               )}
-              <span className="font-heading text-primary text-lg font-bold">
+              <span className="font-heading text-primary text-base font-bold">
                 {settings.labName}
               </span>
             </div>
 
-            {/* Mission tagline */}
+            {/* Mission */}
             {footerBodyText && (
-              <p className="text-muted max-w-xs text-sm leading-relaxed">{footerBodyText}</p>
+              <p className="text-muted text-xs leading-relaxed">{footerBodyText}</p>
             )}
 
             {/* Address */}
             {settings.contactAddress && (
-              <address className="text-muted flex items-start gap-2 text-sm not-italic">
-                <MapPin
-                  size={14}
-                  className="text-primary mt-0.5 flex-shrink-0"
-                  aria-hidden="true"
-                />
+              <address className="text-muted flex items-start gap-1.5 text-xs not-italic">
+                <MapPin size={12} className="text-primary mt-0.5 shrink-0" aria-hidden="true" />
                 <span className="whitespace-pre-line">{settings.contactAddress}</span>
               </address>
             )}
 
-            {/* Socials — compact chips inside brand block */}
+            {/* Social chips */}
             {hasSocial && (
-              <div className="flex flex-wrap gap-2" aria-label="Social media">
+              <div className="flex flex-wrap gap-1.5" aria-label="Social media">
                 {social.twitter && (
                   <a
                     href={social.twitter}
@@ -120,7 +116,7 @@ export async function Footer() {
                     aria-label="Twitter / X (opens in new tab)"
                     className={SOCIAL_CLASS}
                   >
-                    <ExternalLink size={11} aria-hidden="true" />X / Twitter
+                    <ExternalLink size={10} aria-hidden="true" />X
                   </a>
                 )}
                 {social.linkedin && (
@@ -131,7 +127,7 @@ export async function Footer() {
                     aria-label="LinkedIn (opens in new tab)"
                     className={SOCIAL_CLASS}
                   >
-                    <ExternalLink size={11} aria-hidden="true" />
+                    <ExternalLink size={10} aria-hidden="true" />
                     LinkedIn
                   </a>
                 )}
@@ -143,8 +139,8 @@ export async function Footer() {
                     aria-label="ResearchGate (opens in new tab)"
                     className={SOCIAL_CLASS}
                   >
-                    <BookOpen size={11} aria-hidden="true" />
-                    ResearchGate
+                    <BookOpen size={10} aria-hidden="true" />
+                    RG
                   </a>
                 )}
                 {social.github && (
@@ -155,7 +151,7 @@ export async function Footer() {
                     aria-label="GitHub (opens in new tab)"
                     className={SOCIAL_CLASS}
                   >
-                    <ExternalLink size={11} aria-hidden="true" />
+                    <ExternalLink size={10} aria-hidden="true" />
                     GitHub
                   </a>
                 )}
@@ -163,38 +159,47 @@ export async function Footer() {
             )}
           </div>
 
-          {/* CMS-driven footer nav groups */}
-          {footerGroups.map((group) => (
-            <nav key={group.id ?? group.title} aria-label={group.title}>
-              <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
-                {group.title}
-              </p>
-              <ul role="list" className="space-y-2.5">
-                {(group.links ?? []).map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      target={link.isExternal ? '_blank' : undefined}
-                      rel={link.isExternal ? 'noopener noreferrer' : undefined}
-                      className={LINK_CLASS}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
+          {/* CMS-driven nav groups — auto-fill remaining space */}
+          {footerGroups.length > 0 && (
+            <div
+              className="grid flex-1 gap-x-8 gap-y-8"
+              style={{
+                gridTemplateColumns: `repeat(${Math.min(footerGroups.length, 4)}, minmax(0,1fr))`,
+              }}
+            >
+              {footerGroups.map((group) => (
+                <nav key={group.id ?? group.title} aria-label={group.title}>
+                  <p className="text-muted mb-3 text-xs font-semibold tracking-wider uppercase">
+                    {group.title}
+                  </p>
+                  <ul role="list" className="space-y-2">
+                    {(group.links ?? []).map((link) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          target={link.isExternal ? '_blank' : undefined}
+                          rel={link.isExternal ? 'noopener noreferrer' : undefined}
+                          className={LINK_CLASS}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* ── Newsletter / brochure row ─────────────────────────────────────── */}
+        {/* ── Newsletter / brochure ─────────────────────────────────────────── */}
         {(settings.newsletterEmbedUrl || brochureUrl) && (
-          <div className="border-border flex flex-col items-start gap-6 border-t py-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="border-border flex flex-col items-start gap-4 border-t py-6 sm:flex-row sm:items-center sm:justify-between">
             {settings.newsletterEmbedUrl && (
               <iframe
                 src={settings.newsletterEmbedUrl}
                 title="Newsletter subscription form"
-                className="h-24 w-full max-w-lg border-0 sm:flex-1"
+                className="h-20 w-full max-w-md border-0 sm:flex-1"
                 loading="lazy"
               />
             )}
@@ -205,7 +210,7 @@ export async function Footer() {
                 rel="noopener noreferrer"
                 className={buttonVariants({ variant: 'secondary', size: 'sm' })}
               >
-                <Download size={15} aria-hidden="true" />
+                <Download size={14} aria-hidden="true" />
                 Download Brochure
               </a>
             )}
@@ -213,11 +218,11 @@ export async function Footer() {
         )}
 
         {/* ── Bottom bar ───────────────────────────────────────────────────── */}
-        <div className="border-border flex flex-wrap items-center justify-between gap-4 border-t py-5">
+        <div className="border-border flex flex-wrap items-center justify-between gap-3 border-t py-4">
           <p className="text-muted text-xs">
             {settings.copyright ?? `© ${new Date().getFullYear()} ${settings.labName}`}
           </p>
-          <nav aria-label="Legal" className="flex flex-wrap items-center gap-4">
+          <nav aria-label="Legal" className="flex flex-wrap items-center gap-3">
             <Link href="/privacy" className={LINK_CLASS}>
               {legal?.privacyPolicyTitle ?? 'Privacy Policy'}
             </Link>

@@ -30,7 +30,7 @@ export async function Navbar() {
         'bg-bg/90 supports-backdrop-blur:bg-bg/80 backdrop-blur-md',
       )}
     >
-      <Container>
+      <Container className="max-w-none">
         <nav
           aria-label="Primary navigation"
           className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-6"
