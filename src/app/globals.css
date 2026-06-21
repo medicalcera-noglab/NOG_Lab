@@ -114,6 +114,21 @@ body {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  /* Prevent horizontal overflow across the whole page */
+  overflow-x: hidden;
+}
+
+/* Safe-area insets for notched phones (iPhone X+).
+   Applied to the shared Container via padding env() vars. */
+.container-safe {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* Global image overflow guard — every img/video never escapes its container. */
+img,
+video {
+  max-width: 100%;
 }
 
 /* ─────────────────────────────────────────────
