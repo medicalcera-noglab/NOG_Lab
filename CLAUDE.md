@@ -7,16 +7,17 @@ Read it in full before touching any code.
 
 ## Stack & Versions
 
-| Layer     | Choice                                                               | Version |
-| --------- | -------------------------------------------------------------------- | ------- |
-| Framework | Next.js (App Router, TypeScript strict, Turbopack)                   | 16.x    |
-| CMS       | Payload CMS (embedded in /app)                                       | 3.x     |
-| Database  | PostgreSQL + PostGIS, Drizzle via Payload's Postgres adapter         | —       |
-| Styling   | Tailwind CSS v4                                                      | 4.x     |
-| Theme     | next-themes (`data-theme` attribute, localStorage)                   | 0.4.x   |
-| Animation | framer-motion                                                        | 12.x    |
-| Icons     | Lucide React (line icons only)                                       | —       |
-| Fonts     | Plus Jakarta Sans 700 (headings), Inter 400/500 (body) via next/font | —       |
+| Layer     | Choice                                                                                    | Version |
+| --------- | ----------------------------------------------------------------------------------------- | ------- |
+| Framework | Next.js (App Router, TypeScript strict, Turbopack)                                        | 16.x    |
+| CMS       | Payload CMS (embedded in /app)                                                            | 3.x     |
+| Database  | PostgreSQL + PostGIS, Drizzle via Payload's Postgres adapter                              | —       |
+| Styling   | Tailwind CSS v4                                                                           | 4.x     |
+| Theme     | next-themes (`data-theme` attribute, localStorage)                                        | 0.4.x   |
+| Animation | framer-motion                                                                             | 12.x    |
+| Icons     | Lucide React (line icons only)                                                            | —       |
+| Fonts     | Plus Jakarta Sans 700 (headings), Inter 400/500 (body) via next/font                      | —       |
+| i18n      | **English-only** — no next-intl, no Payload localization. Re-add via next-intl if needed. | —       |
 
 ---
 
@@ -103,16 +104,15 @@ Use CSS variables directly only for inline styles or one-offs: `var(--accent)`.
 ```
 src/app/
   (frontend)/          ← public site (all public-facing pages)
-    layout.tsx         ← wraps with ThemeProvider
+    layout.tsx         ← root: html/body/fonts/globals.css + ThemeProvider
     page.tsx           ← home
   (payload)/           ← Payload admin (never import into frontend)
     admin/
       [[...segments]]/ ← Payload RootPage
+      layout.tsx       ← Payload RootLayout + IdleTimeout
       importMap.js     ← auto-generated; run `npm run payload generate:importmap`
     api/
       [...slug]/       ← Payload REST API
-    layout.tsx         ← passthrough (no ThemeProvider)
-  layout.tsx           ← root: fonts, globals.css, html/body
   globals.css          ← design tokens, Tailwind @theme, keyframes
 src/components/
   ui/                  ← Button, Container, Section
