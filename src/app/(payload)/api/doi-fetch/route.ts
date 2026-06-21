@@ -2,23 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { doiLimiter, checkLimit, getIp } from '@/lib/rateLimit'
+import { parseDoi } from '@/lib/doiUtils'
 
-// ── SSRF guard ────────────────────────────────────────────────────────────────
 // This endpoint ONLY ever calls this base URL — never a user-supplied host.
 const CROSSREF_BASE = 'https://api.crossref.org/works/'
-
-// Valid DOI: starts with "10.", 4+ digits, slash, non-empty suffix.
-const DOI_RE = /^10\.\d{4,}\/.+$/
-
-/** Extract a bare DOI from a user input string (accepts doi.org URLs). */
-function parseDoi(raw: string): string | null {
-  const s = raw.trim()
-  let bare = s
-  if (bare.startsWith('https://doi.org/')) bare = bare.slice(16)
-  else if (bare.startsWith('http://doi.org/')) bare = bare.slice(15)
-  else if (bare.startsWith('doi.org/')) bare = bare.slice(8)
-  return DOI_RE.test(bare) ? bare : null
-}
 
 /** Strip JATS XML / HTML markup from Crossref abstract strings. */
 function stripMarkup(s: string): string {
