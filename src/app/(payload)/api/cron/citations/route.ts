@@ -31,6 +31,7 @@ async function fetchCrossrefCitationCount(doi: string, userAgent: string): Promi
       headers: { 'User-Agent': userAgent, Accept: 'application/json' },
       // No cache: always fetch fresh counts
       cache: 'no-store',
+      signal: AbortSignal.timeout(8_000),
     })
     if (!res.ok) return null
     const data = (await res.json()) as { message?: { 'is-referenced-by-count'?: number } }

@@ -71,6 +71,7 @@ export async function POST(req: NextRequest) {
       headers: { 'User-Agent': userAgent, Accept: 'application/json' },
       // Cache Crossref responses in the fetch cache for 1 hour.
       next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(8_000),
     })
     if (!res.ok) {
       if (res.status === 404) {
