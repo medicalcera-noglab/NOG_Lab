@@ -36,6 +36,9 @@ jobs:
         env:
           NODE_ENV: test
 
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+
   lighthouse:
     name: Lighthouse CI
     runs-on: ubuntu-latest
