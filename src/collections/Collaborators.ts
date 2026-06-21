@@ -7,8 +7,12 @@ export const Collaborators: CollectionConfig = {
   slug: 'collaborators',
   admin: {
     useAsTitle: 'name',
-    group: 'Lab',
+    group: 'Team',
     defaultColumns: ['name', 'type', 'country', 'displayOrder'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: () => true,

@@ -7,9 +7,13 @@ export const About: GlobalConfig = {
   slug: 'about',
   label: 'About Page',
   admin: {
-    group: 'Content',
+    group: 'Pages',
     description:
       'Content for /about — mission, director message, KMU affiliation, facilities, testimonials.',
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   versions: {
     drafts: true,

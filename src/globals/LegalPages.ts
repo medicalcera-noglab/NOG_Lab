@@ -7,8 +7,12 @@ export const LegalPages: GlobalConfig = {
   slug: 'legal_pages',
   label: 'Legal Pages',
   admin: {
-    group: 'Content',
+    group: 'Pages',
     description: 'Privacy Policy and Terms of Use — displayed at /privacy and /terms.',
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   versions: {
     drafts: true,

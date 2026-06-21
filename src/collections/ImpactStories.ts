@@ -7,10 +7,15 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const ImpactStories: CollectionConfig = {
   slug: 'impact_stories',
+  labels: { singular: 'Impact Story', plural: 'Impact Stories' },
   admin: {
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['title', 'status', 'publishedAt'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   versions: {
     drafts: true,

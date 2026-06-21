@@ -49,9 +49,13 @@ export const PageSeo: GlobalConfig = {
   slug: 'page_seo',
   label: 'Page SEO',
   admin: {
-    group: 'Admin',
+    group: 'Site Config',
     description:
       'Per-page SEO overrides — title, description, and OG image for each static page. All fields are optional; blank = use global defaults.',
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: isAdminOrEditor,

@@ -6,10 +6,15 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const ResearchThemes: CollectionConfig = {
   slug: 'research_themes',
+  labels: { singular: 'Research Theme', plural: 'Research Themes' },
   admin: {
     useAsTitle: 'name',
     group: 'Research',
     defaultColumns: ['name', 'color', 'displayOrder'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: () => true,

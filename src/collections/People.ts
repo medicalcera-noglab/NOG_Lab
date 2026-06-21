@@ -8,8 +8,12 @@ export const People: CollectionConfig = {
   slug: 'people',
   admin: {
     useAsTitle: 'name',
-    group: 'Lab',
+    group: 'Team',
     defaultColumns: ['name', 'role', 'displayOrder', 'is_active'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: () => true,

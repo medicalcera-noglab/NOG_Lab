@@ -31,6 +31,7 @@ const preventContributorPublish = ({
 
 export const NewsEvents: CollectionConfig = {
   slug: 'news_events',
+  labels: { singular: 'News & Event', plural: 'News & Events' },
   admin: {
     useAsTitle: 'title',
     group: 'Content',

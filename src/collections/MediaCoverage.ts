@@ -5,10 +5,15 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const MediaCoverage: CollectionConfig = {
   slug: 'media_coverage',
+  labels: { singular: 'Media Coverage', plural: 'Media Coverage' },
   admin: {
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['outlet', 'title', 'date'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: () => true,

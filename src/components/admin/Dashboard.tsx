@@ -1,32 +1,34 @@
 import type { AdminViewProps } from 'payload'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayload, type Payload } from 'payload'
 import Link from 'next/link'
 
-async function getCounts() {
-  const payload = await getPayload({ config })
-  const [publications, projects, people, collaborators, unreadInquiries] = await Promise.all([
-    payload.count({ collection: 'publications', overrideAccess: true }),
-    payload.count({ collection: 'projects', overrideAccess: true }),
-    payload.count({ collection: 'people', overrideAccess: true }),
-    payload.count({ collection: 'collaborators', overrideAccess: true }),
-    payload.count({
-      collection: 'inquiries',
-      overrideAccess: true,
-      where: { isRead: { equals: false } },
-    }),
-  ])
+async function getCounts(payload: Payload) {
+  const [publications, projects, people, collaborators, unreadInquiries, blogPosts, newsEvents] =
+    await Promise.all([
+      payload.count({ collection: 'publications', overrideAccess: true }),
+      payload.count({ collection: 'projects', overrideAccess: true }),
+      payload.count({ collection: 'people', overrideAccess: true }),
+      payload.count({ collection: 'collaborators', overrideAccess: true }),
+      payload.count({
+        collection: 'inquiries',
+        overrideAccess: true,
+        where: { isRead: { equals: false } },
+      }),
+      payload.count({ collection: 'blog_posts', overrideAccess: true }),
+      payload.count({ collection: 'news_events', overrideAccess: true }),
+    ])
   return {
     publications: publications.totalDocs,
     projects: projects.totalDocs,
     people: people.totalDocs,
     collaborators: collaborators.totalDocs,
     unreadInquiries: unreadInquiries.totalDocs,
+    blogPosts: blogPosts.totalDocs,
+    newsEvents: newsEvents.totalDocs,
   }
 }
 
-async function getRecentActivity() {
-  const payload = await getPayload({ config })
+async function getRecentActivity(payload: Payload) {
   const result = await payload.find({
     collection: 'audit_log',
     overrideAccess: true,
@@ -37,32 +39,108 @@ async function getRecentActivity() {
   return result.docs
 }
 
-export async function Dashboard(_props: AdminViewProps) {
-  const [counts, activity] = await Promise.all([getCounts(), getRecentActivity()])
+export async function Dashboard(props: AdminViewProps) {
+  const { default: config } = await import('@payload-config')
+  const payload = await getPayload({ config })
 
-  const kpis = [
-    { label: 'Publications', value: counts.publications, href: '/admin/collections/publications' },
-    { label: 'Projects', value: counts.projects, href: '/admin/collections/projects' },
-    { label: 'People', value: counts.people, href: '/admin/collections/people' },
+  const user = (props as { initPageResult?: { req?: { user?: { role?: string } } } })
+    ?.initPageResult?.req?.user
+  const role = user?.role ?? 'contributor'
+
+  const isSuperAdmin = role === 'super_admin'
+  const isEditor = role === 'editor'
+
+  const [counts, activity] = await Promise.all([
+    getCounts(payload),
+    isSuperAdmin ? getRecentActivity(payload) : Promise.resolve([]),
+  ])
+
+  // KPIs scoped to role
+  const allKpis = [
+    {
+      label: 'Publications',
+      value: counts.publications,
+      href: '/admin/collections/publications',
+      roles: ['super_admin', 'editor'],
+    },
+    {
+      label: 'Projects',
+      value: counts.projects,
+      href: '/admin/collections/projects',
+      roles: ['super_admin', 'editor'],
+    },
+    {
+      label: 'People',
+      value: counts.people,
+      href: '/admin/collections/people',
+      roles: ['super_admin', 'editor'],
+    },
     {
       label: 'Collaborators',
       value: counts.collaborators,
       href: '/admin/collections/collaborators',
+      roles: ['super_admin', 'editor'],
     },
     {
       label: 'Unread Inquiries',
       value: counts.unreadInquiries,
       href: '/admin/collections/inquiries',
       highlight: counts.unreadInquiries > 0,
+      roles: ['super_admin', 'editor'],
+    },
+    {
+      label: 'Blog Posts',
+      value: counts.blogPosts,
+      href: '/admin/collections/blog-posts',
+      roles: ['super_admin', 'editor', 'contributor'],
+    },
+    {
+      label: 'News & Events',
+      value: counts.newsEvents,
+      href: '/admin/collections/news-events',
+      roles: ['super_admin', 'editor', 'contributor'],
     },
   ]
 
-  const quickActions = [
-    { label: 'New Publication', href: '/admin/collections/publications/create' },
-    { label: 'New Blog Post', href: '/admin/collections/blog-posts/create' },
-    { label: 'New Project', href: '/admin/collections/projects/create' },
-    { label: 'View Inquiries', href: '/admin/collections/inquiries' },
+  const kpis = allKpis.filter((k) => k.roles.includes(role))
+
+  // Quick actions scoped to role
+  const allActions = [
+    {
+      label: 'New Publication',
+      href: '/admin/collections/publications/create',
+      roles: ['super_admin', 'editor'],
+    },
+    {
+      label: 'New Project',
+      href: '/admin/collections/projects/create',
+      roles: ['super_admin', 'editor'],
+    },
+    {
+      label: 'New Blog Post',
+      href: '/admin/collections/blog-posts/create',
+      roles: ['super_admin', 'editor', 'contributor'],
+    },
+    {
+      label: 'New News & Event',
+      href: '/admin/collections/news-events/create',
+      roles: ['super_admin', 'editor', 'contributor'],
+    },
+    {
+      label: 'View Inquiries',
+      href: '/admin/collections/inquiries',
+      roles: ['super_admin', 'editor'],
+    },
+    {
+      label: 'Manage Users',
+      href: '/admin/collections/users',
+      roles: ['super_admin'],
+    },
   ]
+
+  const quickActions = allActions.filter((a) => a.roles.includes(role))
+
+  const roleLabel = isSuperAdmin ? 'Super Admin' : isEditor ? 'Editor' : 'Contributor'
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', fontFamily: 'inherit' }}>
@@ -76,7 +154,19 @@ export async function Dashboard(_props: AdminViewProps) {
           fontSize: '0.9rem',
         }}
       >
-        Site overview — live counts from the database.
+        Welcome back —{' '}
+        <span
+          style={{
+            display: 'inline-block',
+            padding: '0.1rem 0.5rem',
+            borderRadius: '0.25rem',
+            background: 'var(--theme-elevation-100, #f3f4f6)',
+            fontSize: '0.8rem',
+            fontWeight: 600,
+          }}
+        >
+          {roleLabel}
+        </span>
       </p>
 
       {/* KPI Cards */}
@@ -128,7 +218,7 @@ export async function Dashboard(_props: AdminViewProps) {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+          gridTemplateColumns: isSuperAdmin ? 'minmax(0, 1fr) minmax(0, 1fr)' : '1fr',
           gap: '2rem',
         }}
       >
@@ -158,64 +248,66 @@ export async function Dashboard(_props: AdminViewProps) {
           </div>
         </section>
 
-        {/* Recent Activity */}
-        <section>
-          <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>
-            Recent Activity
-          </h2>
-          {activity.length === 0 ? (
-            <p style={{ fontSize: '0.875rem', color: 'var(--theme-text-muted, #6b7280)' }}>
-              No activity yet.
-            </p>
-          ) : (
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {activity.map((entry) => {
-                const user =
-                  typeof entry.user === 'object' && entry.user !== null
-                    ? ((entry.user as { email?: string }).email ?? 'Unknown')
-                    : 'Unknown'
-                const when = entry.createdAt
-                  ? new Date(entry.createdAt).toLocaleString('en-GB', {
-                      day: '2-digit',
-                      month: 'short',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })
-                  : ''
-                return (
-                  <li
-                    key={entry.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'baseline',
-                      gap: '0.5rem',
-                      padding: '0.5rem 0',
-                      borderBottom: '1px solid var(--theme-border-color, #e5e7eb)',
-                      fontSize: '0.8rem',
-                    }}
-                  >
-                    <span>
-                      <strong>{user}</strong>{' '}
-                      <span style={{ color: 'var(--theme-text-muted, #6b7280)' }}>
-                        {entry.action} {entry.entityType}
-                      </span>
-                    </span>
-                    <span
+        {/* Recent Activity — super_admin only */}
+        {isSuperAdmin && (
+          <section>
+            <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>
+              Recent Activity
+            </h2>
+            {activity.length === 0 ? (
+              <p style={{ fontSize: '0.875rem', color: 'var(--theme-text-muted, #6b7280)' }}>
+                No activity yet.
+              </p>
+            ) : (
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {activity.map((entry) => {
+                  const userLabel =
+                    typeof entry.user === 'object' && entry.user !== null
+                      ? ((entry.user as { email?: string }).email ?? 'Unknown')
+                      : 'Unknown'
+                  const when = entry.createdAt
+                    ? new Date(entry.createdAt).toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : ''
+                  return (
+                    <li
+                      key={entry.id}
                       style={{
-                        color: 'var(--theme-text-muted, #6b7280)',
-                        whiteSpace: 'nowrap',
-                        flexShrink: 0,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'baseline',
+                        gap: '0.5rem',
+                        padding: '0.5rem 0',
+                        borderBottom: '1px solid var(--theme-border-color, #e5e7eb)',
+                        fontSize: '0.8rem',
                       }}
                     >
-                      {when}
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-        </section>
+                      <span>
+                        <strong>{userLabel}</strong>{' '}
+                        <span style={{ color: 'var(--theme-text-muted, #6b7280)' }}>
+                          {entry.action} {entry.entityType}
+                        </span>
+                      </span>
+                      <span
+                        style={{
+                          color: 'var(--theme-text-muted, #6b7280)',
+                          whiteSpace: 'nowrap',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {when}
+                      </span>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </section>
+        )}
       </div>
     </div>
   )

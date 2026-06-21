@@ -5,10 +5,15 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const OpenPositions: CollectionConfig = {
   slug: 'open_positions',
+  labels: { singular: 'Open Position', plural: 'Open Positions' },
   admin: {
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['title', 'type', 'is_active', 'updatedAt'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: () => true,

@@ -32,6 +32,7 @@ const preventContributorPublish = ({
 
 export const BlogPosts: CollectionConfig = {
   slug: 'blog_posts',
+  labels: { singular: 'Blog Post', plural: 'Blog Posts' },
   admin: {
     useAsTitle: 'title',
     group: 'Content',

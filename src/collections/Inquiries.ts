@@ -10,6 +10,10 @@ export const Inquiries: CollectionConfig = {
     components: {
       afterList: ['@/components/admin/InquiriesCsvButton#InquiriesCsvButton'],
     },
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     // Admin/editor manage; public creation is wired in a later step via API

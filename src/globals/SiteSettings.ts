@@ -7,8 +7,12 @@ export const SiteSettings: GlobalConfig = {
   slug: 'site_settings',
   label: 'Site Settings',
   admin: {
-    group: 'Admin',
+    group: 'Site Config',
     description: 'Global site configuration — lab name, branding, footer, SEO, CTAs.',
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return role !== 'super_admin'
+    },
   },
   versions: {
     drafts: true,

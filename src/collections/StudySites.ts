@@ -5,10 +5,15 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const StudySites: CollectionConfig = {
   slug: 'study_sites',
+  labels: { singular: 'Study Site', plural: 'Study Sites' },
   admin: {
     useAsTitle: 'name',
     group: 'Research',
     defaultColumns: ['name', 'district', 'province', 'project'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: () => true,

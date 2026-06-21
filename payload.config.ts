@@ -49,6 +49,12 @@ export default buildConfig({
       titleSuffix: ' — NOG Lab Admin',
     },
     components: {
+      graphics: {
+        Logo: '@/components/admin/AdminLogo#AdminLogo',
+        Icon: '@/components/admin/AdminIcon#AdminIcon',
+      },
+      beforeNavLinks: ['@/components/admin/NavRoleBadge#NavRoleBadge'],
+      afterNavLinks: ['@/components/admin/NavBackToSite#NavBackToSite'],
       views: {
         dashboard: {
           Component: '@/components/admin/Dashboard#Dashboard',
@@ -57,29 +63,39 @@ export default buildConfig({
     },
   },
   collections: [
-    Users,
-    Media,
-    ApplicantFiles,
-    // Research
-    ResearchThemes,
-    People,
-    Publications,
-    Projects,
-    StudySites,
-    Collaborators,
-    // Content
+    // Content — most-used group, appears first in sidebar
     BlogPosts,
     NewsEvents,
     OpenPositions,
     ImpactStories,
     MediaCoverage,
+    // Research
+    Publications,
+    Projects,
+    ResearchThemes,
+    StudySites,
+    // Team
+    People,
+    Collaborators,
+    // Media (uploads)
+    Media,
     // Forms
     Inquiries,
-    // Admin / audit
+    ApplicantFiles,
+    // Admin — user management + audit, always last
+    Users,
     AuditLog,
   ],
   plugins: buildStoragePlugin(),
-  globals: [SiteSettings, About, LegalPages, Navigation, PageSeo],
+  globals: [
+    // Pages — static site content
+    About,
+    LegalPages,
+    // Site Config — nav, SEO, branding
+    Navigation,
+    PageSeo,
+    SiteSettings,
+  ],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: {

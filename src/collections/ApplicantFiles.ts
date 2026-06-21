@@ -17,6 +17,7 @@ const validateMime = makeValidateMimeBytes(APPLICANT_FILE_MIMES)
 
 export const ApplicantFiles: CollectionConfig = {
   slug: 'applicant_files',
+  labels: { singular: 'Applicant File', plural: 'Applicant Files' },
   upload: {
     mimeTypes: [...APPLICANT_FILE_MIMES],
     // No imageSizes — PDFs and DOCX are never resized.

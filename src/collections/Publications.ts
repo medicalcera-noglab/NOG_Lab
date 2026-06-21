@@ -9,6 +9,10 @@ export const Publications: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Research',
     defaultColumns: ['title', 'year', 'type', 'isOpenAccess'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: () => true,

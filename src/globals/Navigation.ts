@@ -7,9 +7,13 @@ export const Navigation: GlobalConfig = {
   slug: 'navigation',
   label: 'Navigation',
   admin: {
-    group: 'Admin',
+    group: 'Site Config',
     description:
       'Header navigation links and footer link groups. Changes take effect on the next page view.',
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return !role || role === 'contributor'
+    },
   },
   access: {
     read: () => true,

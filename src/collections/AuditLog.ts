@@ -3,10 +3,15 @@ import { isSuperAdmin } from '../access'
 
 export const AuditLog: CollectionConfig = {
   slug: 'audit_log',
+  labels: { singular: 'Audit Log', plural: 'Audit Logs' },
   admin: {
     useAsTitle: 'action',
     group: 'Admin',
     defaultColumns: ['user', 'action', 'entityType', 'createdAt'],
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null)?.role
+      return role !== 'super_admin'
+    },
   },
   access: {
     read: isSuperAdmin,

@@ -24,9 +24,12 @@ function hasR2Creds(): boolean {
   return R2_REQUIRED_VARS.every((v) => Boolean(process.env[v]))
 }
 
+let _warnedOnce = false
+
 export function buildStoragePlugin(): Plugin[] {
   if (!hasR2Creds()) {
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV !== 'test' && !_warnedOnce) {
+      _warnedOnce = true
       console.warn(
         '[NOG Lab] R2 credentials missing (%s) — falling back to local disk storage. ' +
           'Set these env vars for cloud storage.',

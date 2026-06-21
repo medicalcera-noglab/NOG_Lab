@@ -48,6 +48,27 @@ async function seed() {
   )
   log(`Super-admin user: ${adminEmail} (id=${adminUser.id})`)
 
+  // ── 1b. Editor + Contributor accounts ─────────────────────────────────────
+  const editorEmail = process.env.SEED_EDITOR_EMAIL ?? 'editor@noglab.org'
+  const editorPassword = process.env.SEED_EDITOR_PASSWORD ?? 'editor-changeme!'
+  const editorUser = await findOrCreate(
+    payload,
+    'users',
+    { email: { equals: editorEmail } },
+    { email: editorEmail, password: editorPassword, role: 'editor' },
+  )
+  log(`Editor user: ${editorEmail} (id=${editorUser.id})`)
+
+  const contributorEmail = process.env.SEED_CONTRIBUTOR_EMAIL ?? 'contributor@noglab.org'
+  const contributorPassword = process.env.SEED_CONTRIBUTOR_PASSWORD ?? 'contributor-changeme!'
+  const contributorUser = await findOrCreate(
+    payload,
+    'users',
+    { email: { equals: contributorEmail } },
+    { email: contributorEmail, password: contributorPassword, role: 'contributor' },
+  )
+  log(`Contributor user: ${contributorEmail} (id=${contributorUser.id})`)
+
   // ── 2. Research themes ────────────────────────────────────────────────────
   const themeData = [
     {
