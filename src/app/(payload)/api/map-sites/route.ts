@@ -65,13 +65,12 @@ export async function GET(req: NextRequest) {
     params.push(themeFilter)
   }
 
-  // name/district/province are localized → stored in study_sites_locales
   const query = `
     SELECT
       ss.id,
-      ssl.name,
-      ssl.district,
-      ssl.province,
+      ss.name,
+      ss.district,
+      ss.province,
       ST_X(ss.location::geometry) AS lng,
       ST_Y(ss.location::geometry) AS lat,
       p.id     AS project_id,
@@ -83,7 +82,6 @@ export async function GET(req: NextRequest) {
       rt.color AS theme_color,
       rt.slug  AS theme_slug
     FROM study_sites ss
-    JOIN study_sites_locales ssl ON ssl._parent_id = ss.id AND ssl._locale = 'en'
     JOIN projects p ON p.id = ss.project_id
     LEFT JOIN research_themes rt ON rt.id = p.theme_id
     WHERE ${conditions.join(' AND ')}

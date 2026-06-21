@@ -20,6 +20,7 @@ import * as migration_20260621_000002_versioned_snapshot_col from './20260621_00
 import * as migration_20260621_000003_locked_docs_applicant_files from './20260621_000003_locked_docs_applicant_files'
 import * as migration_20260621_000004_versioned_published_locale from './20260621_000004_versioned_published_locale'
 import * as migration_20260621_000005_navigation_varchar_id from './20260621_000005_navigation_varchar_id'
+import * as migration_20260621_100000_drop_localization from './20260621_100000_drop_localization'
 
 export const migrations = [
   {
@@ -131,5 +132,10 @@ export const migrations = [
     up: migration_20260621_000005_navigation_varchar_id.up,
     down: migration_20260621_000005_navigation_varchar_id.down,
     name: '20260621_000005_navigation_varchar_id',
+  },
+  {
+    up: migration_20260621_100000_drop_localization.up,
+    down: migration_20260621_100000_drop_localization.down,
+    name: '20260621_100000_drop_localization',
   },
 ]
