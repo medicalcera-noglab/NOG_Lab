@@ -111,7 +111,7 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[240px_1fr]">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
             {/* ── Sidebar filters ── */}
             <Suspense>
               <PublicationFilters

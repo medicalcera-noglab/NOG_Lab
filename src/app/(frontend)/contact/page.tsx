@@ -40,7 +40,7 @@ export default async function ContactPage() {
 
       <Section className="pb-20">
         <Container>
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
             {/* Info column */}
             <div className="space-y-6">
               {settings?.contactAddress && (
