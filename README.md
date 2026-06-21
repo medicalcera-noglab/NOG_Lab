@@ -165,3 +165,62 @@ npm run payload generate:types
 ```
 
 `payload-types.ts` at the root is auto-generated — do not edit it manually.
+
+---
+
+## Go-Live Checklist
+
+### Infrastructure
+
+- [ ] Neon PostgreSQL provisioned with PostGIS; `DATABASE_URI` set in Vercel
+- [ ] `PAYLOAD_SECRET` set to ≥ 32 random chars (`openssl rand -hex 32`)
+- [ ] `NEXT_PUBLIC_SERVER_URL` set to the production domain (no trailing slash)
+- [ ] Cloudflare R2 bucket created; all five `R2_*` env vars set in Vercel
+- [ ] `CRON_SECRET` set in Vercel env vars **and** GitHub secrets (must match)
+- [ ] Custom domain configured in Vercel; SSL certificate auto-issued
+- [ ] Vercel deployment branch set to `main`
+
+### Observability
+
+- [ ] `NEXT_PUBLIC_SENTRY_DSN` set; test error captured in Sentry
+- [ ] `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` set in GitHub secrets
+- [ ] `/api/health` returns `{"status":"ok"}` in production
+- [ ] Plausible analytics `analyticsId` set in Site Settings global
+- [ ] Lighthouse CI scores ≥ 90 for all four categories on the Vercel preview
+
+### Content
+
+- [ ] Super admin account created (first-run Payload prompt)
+- [ ] TOTP 2FA enabled on the super admin account
+- [ ] All demo media (`isDemo:true`) replaced with lab's own photography
+- [ ] `npm run seed:clear-demo-media` run to remove placeholder images
+- [ ] People profiles, publications, and projects seeded with real data
+- [ ] Site Settings global filled in (lab name, tagline, contact email, social links)
+- [ ] Navigation links verified in the header and footer
+
+### Security
+
+- [ ] `npm audit --audit-level=high` returns zero findings
+- [ ] Security headers score A+ at [securityheaders.com](https://securityheaders.com)
+- [ ] GitHub secret scanning enabled on the repository
+- [ ] CodeQL scan shows zero critical/high findings
+
+### Ops Readiness
+
+- [ ] Neon PITR (point-in-time restore) verified — see `docs/RUNBOOK.md`
+- [ ] Cron jobs tested via manual `curl` (see runbook)
+- [ ] Rollback procedure tested in staging
+- [ ] At least one non-super-admin account created and role verified
+- [ ] `docs/ADMIN_GUIDE.md` shared with lab members who will manage content
+
+---
+
+## Documentation
+
+| File                                               | Audience                                   |
+| -------------------------------------------------- | ------------------------------------------ |
+| [`docs/ADMIN_GUIDE.md`](docs/ADMIN_GUIDE.md)       | Non-technical lab members managing content |
+| [`docs/RUNBOOK.md`](docs/RUNBOOK.md)               | Engineer on call                           |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)     | New developers                             |
+| [`docs/backup-restore.md`](docs/backup-restore.md) | Disaster recovery                          |
+| [`CLAUDE.md`](./CLAUDE.md)                         | AI coding assistant rules                  |

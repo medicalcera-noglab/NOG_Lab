@@ -104,7 +104,7 @@ Use CSS variables directly only for inline styles or one-offs: `var(--accent)`.
 ```
 src/app/
   (frontend)/          ← public site (all public-facing pages)
-    layout.tsx         ← root: html/body/fonts/globals.css + ThemeProvider
+    layout.tsx         ← root: html/body/fonts/globals.css + ThemeProvider + WebVitals
     page.tsx           ← home
   (payload)/           ← Payload admin (never import into frontend)
     admin/
@@ -113,17 +113,25 @@ src/app/
       importMap.js     ← auto-generated; run `npm run payload generate:importmap`
     api/
       [...slug]/       ← Payload REST API
+      health/          ← GET /api/health — DB liveness check (no auth)
   globals.css          ← design tokens, Tailwind @theme, keyframes
 src/components/
   ui/                  ← Button, Container, Section
   motifs/              ← CellBlob, GrainTexture, MolecularDots
   MediaImage.tsx       ← theme-aware Payload media renderer (see below)
+  WebVitals.tsx        ← forwards LCP/CLS/INP to Sentry; warns on poor scores in dev
   FadeUp.tsx
 src/providers/
   ThemeProvider.tsx
 src/lib/
   utils.ts             ← cn() helper
   storage.ts           ← R2 adapter builder (returns [] in dev without creds)
+  doiUtils.ts          ← parseDoi() — SSRF guard for DOI input
+  search/postgres.ts   ← FTS + trigram search provider
+src/instrumentation.ts ← loads sentry.server.config / sentry.edge.config at runtime
+sentry.client.config.ts
+sentry.server.config.ts
+sentry.edge.config.ts
 ```
 
 ---
@@ -211,6 +219,19 @@ All demo media docs carry `isDemo:true` and full `sourceUrl` / `sourceAuthor` /
 
 **Replace every demo image with the lab's own photography before launch.**
 Placeholder portraits especially — they are generic stock images, not real people.
+
+---
+
+## Observability
+
+- **Health endpoint**: `GET /api/health` — returns 200 `{status:"ok"}` or 503 on DB failure.
+  Use this for uptime monitors. No auth required.
+- **Sentry**: client + server + edge. Initialised only when `NEXT_PUBLIC_SENTRY_DSN` is set.
+  PII (cookies, email, IP) is stripped in `beforeSend`. Source maps uploaded via CI when
+  `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` are set as GitHub secrets.
+- **Core Web Vitals**: `WebVitals` client component forwards LCP/CLS/INP/FCP/TTFB to Sentry
+  measurements. Poor scores trigger a `console.warn` in development.
+- **Logging**: `console.info` in cron routes only. No `console.log` in production code.
 
 ---
 
