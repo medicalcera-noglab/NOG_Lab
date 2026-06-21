@@ -286,7 +286,11 @@ export function ProjectsMapClient({ sites, mini = false }: Props) {
     return () => window.removeEventListener('keydown', onKey)
   }, [sites])
 
-  const height = mini ? 'h-64' : isFullscreen ? 'fixed inset-0 z-[1000] h-screen' : 'h-[520px]'
+  const height = mini
+    ? 'h-56'
+    : isFullscreen
+      ? 'fixed inset-0 z-[1000] h-screen'
+      : 'h-[340px] sm:h-[520px]'
 
   return (
     <div className={cn('relative w-full', height)}>
@@ -369,7 +373,7 @@ export function ProjectsMapClient({ sites, mini = false }: Props) {
         <div
           id="accessible-site-list"
           className={cn(
-            'absolute bottom-10 left-2 z-[400] max-h-48 w-72 overflow-y-auto',
+            'absolute bottom-10 left-2 z-[400] max-h-48 w-[min(18rem,calc(100%-1rem))] overflow-y-auto',
             'bg-bg border-border rounded-lg border p-2 shadow-lg',
           )}
         >
@@ -398,7 +402,7 @@ export function ProjectsMapClient({ sites, mini = false }: Props) {
         </div>
       )}
 
-      {/* Side panel */}
+      {/* Side panel — bottom sheet on mobile, side panel on sm+ */}
       {selectedSite && (
         <div
           ref={panelRef}
@@ -407,9 +411,12 @@ export function ProjectsMapClient({ sites, mini = false }: Props) {
           aria-label={`Details for ${selectedSite.name}`}
           onKeyDown={onPanelKeyDown}
           className={cn(
-            'absolute top-0 right-0 z-[500] h-full w-72',
-            'bg-bg border-border border-l shadow-xl',
-            'overflow-y-auto p-4',
+            // Mobile: bottom sheet sliding up from bottom
+            'absolute inset-x-0 bottom-0 z-[500] max-h-[50%] rounded-t-xl',
+            'border-border border-t shadow-xl',
+            // sm+: traditional side panel on the right
+            'sm:inset-x-auto sm:top-0 sm:right-0 sm:bottom-auto sm:h-full sm:max-h-none sm:w-72 sm:rounded-none sm:border-t-0 sm:border-l',
+            'bg-bg overflow-y-auto p-4',
           )}
         >
           <button
