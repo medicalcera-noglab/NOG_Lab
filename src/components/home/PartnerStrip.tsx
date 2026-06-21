@@ -62,7 +62,7 @@ export function PartnerStrip({ collaborators }: PartnerStripProps) {
 function PartnerLogo({ collab, logo }: { collab: Collaborator; logo: Media | null }) {
   if (logo) {
     return (
-      <div className="relative h-10 w-32 grayscale transition-[filter] duration-200 hover:grayscale-0">
+      <div className="relative h-8 w-24 grayscale transition-[filter] duration-200 hover:grayscale-0 sm:h-10 sm:w-32">
         <MediaImage doc={logo} fill sizes="128px" className="object-contain" />
       </div>
     )

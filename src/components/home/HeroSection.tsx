@@ -30,7 +30,7 @@ export function HeroSection({
   return (
     <section
       aria-label="Lab introduction"
-      className="relative flex min-h-[calc(100vh-64px)] items-center overflow-hidden"
+      className="relative flex min-h-[60vh] items-center overflow-hidden sm:min-h-[calc(100vh-64px)]"
     >
       {/* ── Static gradient — always renders first (LCP paint) ── */}
       <div
@@ -76,11 +76,11 @@ export function HeroSection({
       {style === 'particles' && <HeroCellField />}
 
       {/* ── Hero content ────────────────────────────────────────── */}
-      <Container className="relative z-10 py-24 md:py-32">
+      <Container className="relative z-10 py-14 md:py-24 lg:py-32">
         <div className="max-w-3xl">
           {/* Eyebrow */}
           <p
-            className="text-primary mb-4 text-sm font-semibold tracking-[0.15em] uppercase"
+            className="text-primary mb-3 text-xs font-semibold tracking-[0.15em] uppercase sm:mb-4 sm:text-sm"
             aria-hidden="true"
           >
             Khyber Medical University
@@ -89,16 +89,16 @@ export function HeroSection({
           {/* Heading — LCP text node */}
           <h1
             className={cn(
-              'font-heading text-fg text-4xl leading-tight font-bold',
-              'sm:text-5xl lg:text-6xl xl:text-7xl',
-              'mb-6',
+              'font-heading text-fg text-3xl leading-tight font-bold',
+              'sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl',
+              'mb-4 sm:mb-6',
             )}
           >
             {labName}
           </h1>
 
           {tagline && (
-            <p className="text-muted mb-10 max-w-xl text-lg leading-relaxed sm:text-xl">
+            <p className="text-muted mb-8 max-w-xl text-base leading-relaxed sm:mb-10 sm:text-lg md:text-xl">
               {tagline}
             </p>
           )}

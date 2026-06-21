@@ -26,7 +26,7 @@ export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
       aria-label="Study sites map preview"
     >
       <Container>
-        <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
           {/* Text side */}
           <FadeUp>
             <div>
@@ -43,7 +43,7 @@ export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
                 scale.
               </p>
               <Link
-                href="/research/map"
+                href="/projects?view=map"
                 className={cn(
                   'text-primary mt-6 inline-flex items-center gap-2 text-sm font-semibold',
                   'transition-[gap] duration-150 hover:gap-3',

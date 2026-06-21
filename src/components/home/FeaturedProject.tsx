@@ -38,7 +38,7 @@ export function FeaturedProject({ project }: FeaturedProjectProps) {
           >
             {/* Image pane */}
             {coverImage && (
-              <div className="relative h-56 min-h-[320px] overflow-hidden md:col-span-3 md:h-auto">
+              <div className="relative h-48 overflow-hidden sm:h-56 md:col-span-3 md:h-auto md:min-h-[320px]">
                 <MediaImage
                   doc={coverImage}
                   fill
@@ -56,7 +56,7 @@ export function FeaturedProject({ project }: FeaturedProjectProps) {
             {/* Content pane */}
             <div
               className={cn(
-                'flex flex-col justify-between p-8 md:p-10',
+                'flex flex-col justify-between p-5 sm:p-8 md:p-10',
                 coverImage ? 'md:col-span-2' : 'md:col-span-5',
               )}
             >

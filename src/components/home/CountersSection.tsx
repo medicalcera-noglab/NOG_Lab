@@ -22,7 +22,7 @@ export function CountersSection({ counts }: CountersSectionProps) {
         <div
           role="list"
           aria-label="Lab statistics"
-          className="grid grid-cols-2 gap-10 md:grid-cols-4"
+          className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-10"
         >
           {COUNTER_DEFS.map(({ key, label }, i) => (
             <FadeUp key={key} delay={i * 0.1}>
