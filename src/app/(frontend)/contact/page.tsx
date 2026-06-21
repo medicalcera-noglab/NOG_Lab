@@ -4,7 +4,7 @@ import { MapPin, Mail } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { ContactForm } from '@/components/forms/ContactForm'
-import { MapEmbed } from '@/components/contact/MapEmbed'
+import { ContactMap } from '@/components/contact/ContactMap'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getPageSeo, resolvePageSeo } from '@/lib/data'
 
@@ -63,8 +63,8 @@ export default async function ContactPage() {
                 </div>
               )}
 
-              {/* Click-to-load Google Map */}
-              {settings?.googleMapsEmbedUrl && <MapEmbed src={settings.googleMapsEmbedUrl} />}
+              {/* Interactive Leaflet map — always shown */}
+              <ContactMap />
             </div>
 
             {/* Form column */}

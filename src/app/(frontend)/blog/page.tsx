@@ -85,7 +85,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
         </Container>
       </Section>
 
-      <Section className="pb-20">
+      <Section className="pt-4 pb-20 md:pt-6">
         <Container>
           {posts.length === 0 ? (
             <EmptyState

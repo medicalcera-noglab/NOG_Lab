@@ -210,7 +210,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
             ) : (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {projects.map((project, i) => (
-                  <FadeUp key={project.id} delay={i * 0.04}>
+                  <FadeUp key={project.id} delay={i * 0.04} className="h-full">
                     <ProjectCard project={project} />
                   </FadeUp>
                 ))}

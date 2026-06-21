@@ -630,6 +630,7 @@ async function main() {
           { label: 'Blog', href: '/blog', isExternal: false, isVisible: true },
           { label: 'About', href: '/about', isExternal: false, isVisible: true },
           { label: 'Contact', href: '/contact', isExternal: false, isVisible: true },
+          { label: 'Join Us', href: '/join', isExternal: false, isVisible: true },
         ],
         footerGroups: [
           {

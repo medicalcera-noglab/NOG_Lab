@@ -138,7 +138,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
                 : (roleLabels[person.role] ?? person.role)
 
               return (
-                <FadeUp key={person.id} delay={i * 0.04}>
+                <FadeUp key={person.id} delay={i * 0.04} className="h-full">
                   <PersonCard person={person} roleLabel={personRoleLabel} />
                 </FadeUp>
               )

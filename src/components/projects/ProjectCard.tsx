@@ -19,7 +19,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <article
       className={cn(
-        'group border-border bg-bg flex flex-col overflow-hidden rounded-xl border',
+        'group border-border bg-bg flex h-full flex-col overflow-hidden rounded-xl border',
         'transition-shadow duration-200 hover:shadow-md',
       )}
     >
