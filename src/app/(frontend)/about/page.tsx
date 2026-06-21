@@ -47,7 +47,7 @@ export default async function AboutPage() {
       {about?.mission && (
         <Section className="pt-20 pb-12">
           <Container>
-            <h1 className="mb-8 text-4xl font-bold">About NOG Lab</h1>
+            <h1 className="mb-8 text-3xl font-bold sm:text-4xl">About NOG Lab</h1>
             <RichText data={about.mission} className="max-w-3xl text-lg" />
           </Container>
         </Section>

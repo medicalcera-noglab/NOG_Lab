@@ -22,7 +22,7 @@ export default async function PrivacyPage() {
     <main id="main-content">
       <Container className="py-16 md:py-24">
         <div className="mx-auto max-w-3xl">
-          <h1 className="font-heading text-fg mb-10 text-4xl font-bold">{title}</h1>
+          <h1 className="font-heading text-fg mb-10 text-3xl font-bold sm:text-4xl">{title}</h1>
           {legal?.privacyPolicy ? (
             <RichText data={legal.privacyPolicy} className="max-w-none" />
           ) : (

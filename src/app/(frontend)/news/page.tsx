@@ -50,7 +50,7 @@ export default async function NewsPage({ searchParams }: PageProps) {
     <>
       <Section className="pt-20 pb-8">
         <Container>
-          <h1 className="mb-6 text-4xl font-bold">News &amp; Events</h1>
+          <h1 className="mb-6 text-3xl font-bold sm:text-4xl">News &amp; Events</h1>
 
           {/* Category filter */}
           <nav aria-label="Filter by category">

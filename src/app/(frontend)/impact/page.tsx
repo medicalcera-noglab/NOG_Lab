@@ -44,7 +44,7 @@ export default async function ImpactPage() {
     <>
       <Section className="pt-20 pb-12">
         <Container>
-          <h1 className="mb-4 text-4xl font-bold">Our Impact</h1>
+          <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Our Impact</h1>
           <p className="text-muted max-w-2xl text-lg">
             Measuring research outcomes through publications, student training, and community
             change.

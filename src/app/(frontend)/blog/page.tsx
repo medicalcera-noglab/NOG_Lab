@@ -44,7 +44,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
     <>
       <Section className="pt-20 pb-8">
         <Container>
-          <h1 className="mb-6 text-4xl font-bold">Blog</h1>
+          <h1 className="mb-6 text-3xl font-bold sm:text-4xl">Blog</h1>
 
           {allTags.length > 0 && (
             <nav aria-label="Filter by tag">
@@ -101,7 +101,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
           ) : (
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
               {posts.map((post) => (
-                <li key={post.id}>
+                <li key={post.id} className="h-full">
                   <BlogCard post={post} />
                 </li>
               ))}

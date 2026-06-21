@@ -39,7 +39,7 @@ export default async function JoinPage() {
     <>
       <Section className="pt-20 pb-12">
         <Container>
-          <h1 className="mb-4 text-4xl font-bold">Join the Lab</h1>
+          <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Join the Lab</h1>
           <p className="text-muted max-w-2xl text-lg">
             We welcome motivated researchers and students. See below for current openings.
           </p>

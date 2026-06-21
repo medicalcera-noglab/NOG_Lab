@@ -31,7 +31,7 @@ export default async function ContactPage() {
     <>
       <Section className="pt-20 pb-12">
         <Container>
-          <h1 className="mb-4 text-4xl font-bold">Contact Us</h1>
+          <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Contact Us</h1>
           <p className="text-muted max-w-xl text-lg">
             We&apos;d love to hear from you. Fill out the form or reach us directly.
           </p>

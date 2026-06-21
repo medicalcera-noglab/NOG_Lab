@@ -35,7 +35,7 @@ export default async function CollaborationsPage() {
     <>
       <Section className="pt-20 pb-12">
         <Container>
-          <h1 className="mb-4 text-4xl font-bold">Collaborations</h1>
+          <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Collaborations</h1>
           <p className="text-muted max-w-2xl text-lg">
             We work with institutions, funders, and researchers across the globe.
           </p>

@@ -94,7 +94,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
             <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
               Our team
             </p>
-            <h1 className="font-heading text-fg text-4xl font-bold">People</h1>
+            <h1 className="font-heading text-fg text-3xl font-bold sm:text-4xl">People</h1>
           </div>
         </FadeUp>
 
