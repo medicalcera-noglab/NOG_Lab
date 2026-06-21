@@ -16,12 +16,6 @@ function entry(
     lastModified: new Date(),
     changeFrequency,
     priority,
-    alternates: {
-      languages: {
-        en: `${SITE_URL}${path}`,
-        ur: `${SITE_URL}/ur${path}`,
-      },
-    },
   }
 }
 

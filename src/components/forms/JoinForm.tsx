@@ -1,7 +1,6 @@
 'use client'
 
 import { useActionState } from 'react'
-import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/Button'
 import { submitJoin, type JoinFormState } from '@/lib/actions/submitJoin'
 import type { OpenPosition } from '../../../payload-types'
@@ -14,7 +13,6 @@ interface Props {
 
 export function JoinForm({ positions }: Props) {
   const [state, action, pending] = useActionState(submitJoin, initial)
-  const t = useTranslations('join')
 
   if (state.success) {
     return (
@@ -22,8 +20,8 @@ export function JoinForm({ positions }: Props) {
         role="status"
         className="rounded-xl border border-green-200 bg-green-50 p-6 text-green-800"
       >
-        <p className="font-semibold">{t('successTitle')}</p>
-        <p className="mt-1 text-sm">{t('successDetail')}</p>
+        <p className="font-semibold">Application received!</p>
+        <p className="mt-1 text-sm">We&apos;ll review your application and be in touch.</p>
       </div>
     )
   }
@@ -53,14 +51,14 @@ export function JoinForm({ positions }: Props) {
       {positions.length > 0 && (
         <div>
           <label htmlFor="join-position" className="mb-1.5 block text-sm font-medium">
-            {t('positionLabel')}
+            Position of Interest
           </label>
           <select
             id="join-position"
             name="positionTitle"
             className="border-border bg-bg text-fg w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:ring-[var(--ring)] focus:outline-none"
           >
-            <option value="">{t('generalInquiry')}</option>
+            <option value="">— General Inquiry —</option>
             {positions.map((p) => (
               <option key={p.id} value={p.title}>
                 {p.title} ({p.type})
@@ -72,7 +70,7 @@ export function JoinForm({ positions }: Props) {
 
       <div>
         <label htmlFor="join-name" className="mb-1.5 block text-sm font-medium">
-          {t('nameLabel')} <span aria-hidden>{t('required')}</span>
+          Full Name <span aria-hidden>*</span>
         </label>
         <input
           id="join-name"
@@ -86,7 +84,7 @@ export function JoinForm({ positions }: Props) {
 
       <div>
         <label htmlFor="join-email" className="mb-1.5 block text-sm font-medium">
-          {t('emailLabel')} <span aria-hidden>{t('required')}</span>
+          Email <span aria-hidden>*</span>
         </label>
         <input
           id="join-email"
@@ -100,7 +98,7 @@ export function JoinForm({ positions }: Props) {
 
       <div>
         <label htmlFor="join-message" className="mb-1.5 block text-sm font-medium">
-          {t('messageLabel')} <span aria-hidden>{t('required')}</span>
+          Cover Letter / Message <span aria-hidden>*</span>
         </label>
         <textarea
           id="join-message"
@@ -113,7 +111,7 @@ export function JoinForm({ positions }: Props) {
 
       <div>
         <label htmlFor="join-cv" className="mb-1.5 block text-sm font-medium">
-          {t('cvLabel')} <span className="text-muted text-xs">{t('cvHint')}</span>
+          CV / Resume <span className="text-muted text-xs">(PDF or Word, max 10 MB)</span>
         </label>
         <input
           id="join-cv"
@@ -126,7 +124,8 @@ export function JoinForm({ positions }: Props) {
 
       <div>
         <label htmlFor="join-sop" className="mb-1.5 block text-sm font-medium">
-          {t('sopLabel')} <span className="text-muted text-xs">{t('sopHint')}</span>
+          Statement of Purpose{' '}
+          <span className="text-muted text-xs">(optional, PDF or Word, max 10 MB)</span>
         </label>
         <input
           id="join-sop"
@@ -138,7 +137,7 @@ export function JoinForm({ positions }: Props) {
       </div>
 
       <Button type="submit" disabled={pending}>
-        {pending ? t('submitting') : t('submit')}
+        {pending ? 'Submitting…' : 'Submit Application'}
       </Button>
     </form>
   )

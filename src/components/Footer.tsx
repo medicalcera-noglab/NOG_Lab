@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
 import { ExternalLink, BookOpen, MapPin } from 'lucide-react'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { getLegalPages } from '@/lib/data/legal'
@@ -16,11 +15,10 @@ const SOCIAL_LINK_CLASS =
   'flex items-center gap-2 text-sm text-muted hover:text-fg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded'
 
 export async function Footer() {
-  const [settings, navData, legal, t] = await Promise.all([
+  const [settings, navData, legal] = await Promise.all([
     getSiteSettings(),
     getNavigation(),
     getLegalPages(),
-    getTranslations('footer'),
   ])
 
   const social = settings.social ?? {}
@@ -98,18 +96,16 @@ export async function Footer() {
 
           {/* Legal — always present */}
           <div>
-            <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
-              {t('legalSection')}
-            </p>
+            <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">Legal</p>
             <ul role="list" className="space-y-2">
               <li>
                 <Link href="/privacy" className={LINK_CLASS}>
-                  {legal?.privacyPolicyTitle ?? t('privacyPolicy')}
+                  {legal?.privacyPolicyTitle ?? 'Privacy Policy'}
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className={LINK_CLASS}>
-                  {legal?.termsOfUseTitle ?? t('termsOfUse')}
+                  {legal?.termsOfUseTitle ?? 'Terms of Use'}
                 </Link>
               </li>
               <li>
@@ -122,7 +118,7 @@ export async function Footer() {
           {hasSocial && (
             <div>
               <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
-                {t('connectSection')}
+                Connect
               </p>
               <ul role="list" className="space-y-3">
                 {social.twitter && (
@@ -131,7 +127,7 @@ export async function Footer() {
                       href={social.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={t('twitter')}
+                      aria-label="Twitter / X (opens in new tab)"
                       className={SOCIAL_LINK_CLASS}
                     >
                       <ExternalLink size={13} aria-hidden="true" />
@@ -145,7 +141,7 @@ export async function Footer() {
                       href={social.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={t('linkedin')}
+                      aria-label="LinkedIn (opens in new tab)"
                       className={SOCIAL_LINK_CLASS}
                     >
                       <ExternalLink size={13} aria-hidden="true" />
@@ -159,7 +155,7 @@ export async function Footer() {
                       href={social.researchgate}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={t('researchgate')}
+                      aria-label="ResearchGate (opens in new tab)"
                       className={SOCIAL_LINK_CLASS}
                     >
                       <BookOpen size={13} aria-hidden="true" />
@@ -173,7 +169,7 @@ export async function Footer() {
                       href={social.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={t('github')}
+                      aria-label="GitHub (opens in new tab)"
                       className={SOCIAL_LINK_CLASS}
                     >
                       <ExternalLink size={13} aria-hidden="true" />
@@ -191,7 +187,7 @@ export async function Footer() {
           <div className="border-border border-t py-6">
             <iframe
               src={settings.newsletterEmbedUrl}
-              title={t('newsletter')}
+              title="Newsletter subscription form"
               className="h-24 w-full max-w-lg border-0"
               loading="lazy"
             />

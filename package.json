@@ -19,7 +19,8 @@
     "payload": "payload",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare": "husky"
+    "prepare": "husky",
+    "seed:users": "tsx --require ./scripts/load-env.cjs scripts/seed-users.ts"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs,cjs}": [
@@ -51,7 +52,6 @@
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",
-    "next-intl": "^4.13.0",
     "next-themes": "^0.4.6",
     "otplib": "^13.4.1",
     "payload": "^3.85.1",

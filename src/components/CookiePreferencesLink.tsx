@@ -1,12 +1,10 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useConsent } from '@/providers/ConsentProvider'
 import { cn } from '@/lib/utils'
 
 export function CookiePreferencesLink() {
   const { reset } = useConsent()
-  const t = useTranslations('footer')
 
   return (
     <button
@@ -17,7 +15,7 @@ export function CookiePreferencesLink() {
         'text-start',
       )}
     >
-      {t('cookiePreferences')}
+      Cookie preferences
     </button>
   )
 }

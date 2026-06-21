@@ -5,8 +5,7 @@
  *   1. www → non-www canonical redirect (production only)
  *   2. HTTPS enforcement (production only)
  *   3. Admin auth redirect (UX gate — real authz is in Payload access control)
- *   4. next-intl locale routing for public frontend routes
- *   5. Security headers — HSTS, CSP (nonce-based), X-Frame-Options, etc. — on every response
+ *   4. Security headers — HSTS, CSP (nonce-based), X-Frame-Options, etc. — on every response
  *
  * CSP third-party allowlist:
  *   script-src   — reCAPTCHA (google.com, gstatic.com); nonce for all inline scripts

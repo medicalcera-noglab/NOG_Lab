@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { getTranslations } from 'next-intl/server'
 import { buildMetadata } from '@/lib/metadata'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getLegalPages } from '@/lib/data/legal'
@@ -15,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TermsPage() {
-  const [legal, t] = await Promise.all([getLegalPages(), getTranslations('legal')])
+  const legal = await getLegalPages()
 
   const title = legal?.termsOfUseTitle ?? 'Terms of Use'
 
@@ -27,7 +26,7 @@ export default async function TermsPage() {
           {legal?.termsOfUse ? (
             <RichText data={legal.termsOfUse} className="max-w-none" />
           ) : (
-            <p className="text-muted text-base">{t('noContent')}</p>
+            <p className="text-muted text-base">Content coming soon.</p>
           )}
         </div>
       </Container>

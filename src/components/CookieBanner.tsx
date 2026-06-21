@@ -1,13 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
 import { useConsent } from '@/providers/ConsentProvider'
 import { cn } from '@/lib/utils'
 
 export function CookieBanner() {
   const { consent, grant, deny } = useConsent()
-  const t = useTranslations('consent')
 
   // useSyncExternalStore returns null (server snapshot) until the client
   // reads localStorage. Once mounted, null means "no preference yet" → show.
@@ -17,7 +15,7 @@ export function CookieBanner() {
     <div
       role="dialog"
       aria-live="polite"
-      aria-label={t('bannerLabel')}
+      aria-label="Cookie consent"
       className={cn(
         'border-border bg-surface fixed inset-x-0 bottom-0 z-50 border-t shadow-lg',
         'motion-safe:animate-[slideUp_220ms_ease-out]',
@@ -25,12 +23,13 @@ export function CookieBanner() {
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-6 lg:px-8">
         <p className="text-muted flex-1 text-sm leading-relaxed">
-          {t('bannerText')}{' '}
+          We use privacy-first analytics (Plausible — no personal data, no cookies) to understand
+          how the site is used. You can decline and the site still works fully.{' '}
           <Link
             href="/privacy"
             className="text-primary focus-visible:ring-ring rounded underline underline-offset-2 focus-visible:ring-2 focus-visible:outline-none"
           >
-            {t('privacyLink')}
+            Privacy Policy
           </Link>
         </p>
         <div className="flex flex-shrink-0 gap-2">
@@ -41,7 +40,7 @@ export function CookieBanner() {
               'focus-visible:ring-ring transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none',
             )}
           >
-            {t('decline')}
+            Decline
           </button>
           <button
             onClick={grant}
@@ -50,7 +49,7 @@ export function CookieBanner() {
               'hover:bg-accent-hover focus-visible:ring-ring transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none',
             )}
           >
-            {t('accept')}
+            Accept analytics
           </button>
         </div>
       </div>

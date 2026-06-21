@@ -1,4 +1,3 @@
-import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { NavMenu } from './NavMenu'
@@ -9,11 +8,7 @@ import type { Media } from '@/../../payload-types'
 import type { NavItem } from '@/lib/nav'
 
 export async function Navbar() {
-  const [settings, navData, t] = await Promise.all([
-    getSiteSettings(),
-    getNavigation(),
-    getTranslations('nav'),
-  ])
+  const [settings, navData] = await Promise.all([getSiteSettings(), getNavigation()])
 
   const logo = typeof settings.logo === 'object' ? (settings.logo as Media) : null
   const logoDark = typeof settings.logoDark === 'object' ? (settings.logoDark as Media) : null
@@ -35,11 +30,14 @@ export async function Navbar() {
       )}
     >
       <Container>
-        <nav aria-label={t('primaryNav')} className="flex h-16 items-center justify-between gap-6">
+        <nav
+          aria-label="Primary navigation"
+          className="flex h-16 items-center justify-between gap-6"
+        >
           {/* Logo / lab name */}
           <Link
             href="/"
-            aria-label={`${settings.labName} — ${t('logoHomeLabel')}`}
+            aria-label={`${settings.labName} — home`}
             className={cn(
               'flex flex-shrink-0 items-center gap-2.5',
               'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
