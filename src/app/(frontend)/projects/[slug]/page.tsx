@@ -150,7 +150,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
           {cover && (
             <FadeUp delay={0.03}>
               <div className="bg-surface-raised mb-10 overflow-hidden rounded-2xl">
-                <div className="relative aspect-[21/9]">
+                <div className="relative aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9]">
                   <MediaImage
                     doc={cover}
                     fill
@@ -221,7 +221,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
             </div>
           </FadeUp>
 
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[2fr_1fr]">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[2fr_1fr] lg:gap-12">
             {/* ── Main column ── */}
             <div>
               {/* Summary */}

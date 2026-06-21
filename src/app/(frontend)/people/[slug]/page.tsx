@@ -116,12 +116,12 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
 
           {/* Profile header */}
           <FadeUp delay={0.05}>
-            <div className="mb-12 grid grid-cols-1 items-start gap-10 md:grid-cols-[auto_1fr]">
+            <div className="mb-10 grid grid-cols-1 items-start gap-6 md:grid-cols-[auto_1fr] md:gap-10">
               {/* Photo */}
               <div className="mx-auto md:mx-0">
                 <div
                   className={cn(
-                    'relative h-48 w-48 overflow-hidden rounded-2xl',
+                    'relative h-36 w-36 overflow-hidden rounded-2xl sm:h-48 sm:w-48',
                     'border-border bg-surface-raised border shadow-sm',
                   )}
                 >
