@@ -55,11 +55,16 @@ export default async function ImpactPage() {
       {/* KPI Dashboard */}
       <Section className="bg-surface py-12">
         <Container>
-          <ul className="grid grid-cols-2 gap-6 md:grid-cols-4" role="list">
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-6" role="list">
             {kpiItems.map((kpi) => (
-              <li key={kpi.label} className="border-border bg-bg rounded-xl border p-6 text-center">
-                <p className="text-accent text-4xl font-bold">{kpi.value}</p>
-                <p className="text-muted mt-1 text-sm">{kpi.label}</p>
+              <li
+                key={kpi.label}
+                className="border-border bg-bg rounded-xl border p-4 text-center sm:p-6"
+              >
+                <p className="text-accent text-2xl font-bold sm:text-3xl md:text-4xl">
+                  {kpi.value}
+                </p>
+                <p className="text-muted mt-1 text-xs sm:text-sm">{kpi.label}</p>
               </li>
             ))}
           </ul>
@@ -108,7 +113,7 @@ export default async function ImpactPage() {
           <Container>
             <h2 className="mb-8 text-2xl font-bold">Media Coverage</h2>
             <ol
-              className="border-border relative ml-4 space-y-8 border-l"
+              className="border-border relative ml-3 space-y-8 border-l sm:ml-4"
               aria-label="Media coverage timeline"
             >
               {coverage.map((item) => {

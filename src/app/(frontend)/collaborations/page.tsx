@@ -49,11 +49,11 @@ export default async function CollaborationsPage() {
             <h2 className="text-muted mb-8 text-sm text-xl font-semibold tracking-wider uppercase">
               Our Partners
             </h2>
-            <ul className="flex flex-wrap items-center justify-center gap-8" role="list">
+            <ul className="flex flex-wrap items-center justify-center gap-6" role="list">
               {withLogo.map((c) => {
                 const logo = c.logo as Media
                 const card = (
-                  <div className="flex h-16 w-32 items-center justify-center opacity-70 transition-opacity hover:opacity-100">
+                  <div className="flex h-10 w-24 items-center justify-center opacity-70 transition-opacity hover:opacity-100 sm:h-12 sm:w-28 md:h-16 md:w-32">
                     <MediaImage
                       doc={logo}
                       sizes="128px"
