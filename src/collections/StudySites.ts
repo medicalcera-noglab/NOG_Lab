@@ -30,19 +30,16 @@ export const StudySites: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
-      localized: true,
     },
     {
       name: 'district',
       type: 'text',
       required: true,
-      localized: true,
     },
     {
       name: 'province',
       type: 'text',
       required: true,
-      localized: true,
     },
     {
       name: 'project',

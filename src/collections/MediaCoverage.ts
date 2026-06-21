@@ -31,14 +31,12 @@ export const MediaCoverage: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Media Outlet / Publication',
-      localized: true,
     },
     {
       name: 'title',
       type: 'text',
       required: true,
       label: 'Article Title',
-      localized: true,
     },
     {
       name: 'url',

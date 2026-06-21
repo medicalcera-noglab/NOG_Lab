@@ -31,13 +31,11 @@ export const SiteSettings: GlobalConfig = {
       type: 'text',
       required: true,
       label: 'Lab Name',
-      localized: true,
     },
     {
       name: 'tagline',
       type: 'text',
       label: 'Tagline',
-      localized: true,
     },
     {
       name: 'logo',
@@ -59,13 +57,11 @@ export const SiteSettings: GlobalConfig = {
       name: 'footerText',
       type: 'richText',
       label: 'Footer Text',
-      localized: true,
     },
     {
       name: 'copyright',
       type: 'text',
       label: 'Copyright Line',
-      localized: true,
     },
     {
       name: 'social',
@@ -82,7 +78,6 @@ export const SiteSettings: GlobalConfig = {
       name: 'contactAddress',
       type: 'textarea',
       label: 'Contact / Mailing Address',
-      localized: true,
     },
     {
       name: 'analyticsId',
@@ -155,7 +150,7 @@ export const SiteSettings: GlobalConfig = {
       type: 'group',
       label: 'Hero CTA — Primary',
       fields: [
-        { name: 'label', type: 'text', localized: true },
+        { name: 'label', type: 'text' },
         { name: 'href', type: 'text' },
       ],
     },
@@ -164,7 +159,7 @@ export const SiteSettings: GlobalConfig = {
       type: 'group',
       label: 'Hero CTA — Secondary',
       fields: [
-        { name: 'label', type: 'text', localized: true },
+        { name: 'label', type: 'text' },
         { name: 'href', type: 'text' },
       ],
     },
@@ -180,7 +175,6 @@ export const SiteSettings: GlobalConfig = {
           name: 'question',
           type: 'text',
           required: true,
-          localized: true,
         },
       ],
     },
@@ -192,25 +186,23 @@ export const SiteSettings: GlobalConfig = {
         description: 'Display labels for each role on the /people page tabs.',
       },
       fields: [
-        { name: 'all', type: 'text', defaultValue: 'All', label: 'All (active)', localized: true },
+        { name: 'all', type: 'text', defaultValue: 'All', label: 'All (active)' },
         {
           name: 'pi',
           type: 'text',
           defaultValue: 'Principal Investigators',
           label: 'PI',
-          localized: true,
         },
         {
           name: 'postdoc',
           type: 'text',
           defaultValue: 'Postdoctoral Researchers',
           label: 'Postdoc',
-          localized: true,
         },
-        { name: 'phd', type: 'text', defaultValue: 'PhD Students', label: 'PhD', localized: true },
-        { name: 'ms', type: 'text', defaultValue: 'MS Students', label: 'MS', localized: true },
-        { name: 'staff', type: 'text', defaultValue: 'Staff', label: 'Staff', localized: true },
-        { name: 'alumni', type: 'text', defaultValue: 'Alumni', label: 'Alumni', localized: true },
+        { name: 'phd', type: 'text', defaultValue: 'PhD Students', label: 'PhD' },
+        { name: 'ms', type: 'text', defaultValue: 'MS Students', label: 'MS' },
+        { name: 'staff', type: 'text', defaultValue: 'Staff', label: 'Staff' },
+        { name: 'alumni', type: 'text', defaultValue: 'Alumni', label: 'Alumni' },
       ],
     },
     {
@@ -237,7 +229,7 @@ export const SiteSettings: GlobalConfig = {
       name: 'noOpenPositionsMessage',
       type: 'text',
       label: 'No Open Positions Message',
-      localized: true,
+
       admin: {
         description: 'Shown on /join when no active positions exist.',
       },

@@ -33,27 +33,25 @@ export const LegalPages: GlobalConfig = {
       name: 'privacyPolicyTitle',
       type: 'text',
       label: 'Privacy Policy — Page Title',
-      localized: true,
+
       defaultValue: 'Privacy Policy',
     },
     {
       name: 'privacyPolicy',
       type: 'richText',
       label: 'Privacy Policy — Body',
-      localized: true,
     },
     {
       name: 'termsOfUseTitle',
       type: 'text',
       label: 'Terms of Use — Page Title',
-      localized: true,
+
       defaultValue: 'Terms of Use',
     },
     {
       name: 'termsOfUse',
       type: 'richText',
       label: 'Terms of Use — Body',
-      localized: true,
     },
   ],
 }

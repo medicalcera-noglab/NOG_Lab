@@ -35,11 +35,6 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   sharp,
-  localization: {
-    locales: [{ label: 'English', code: 'en' }],
-    defaultLocale: 'en',
-    fallback: false,
-  },
   admin: {
     user: 'users',
     importMap: {

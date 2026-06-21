@@ -31,13 +31,11 @@ export const About: GlobalConfig = {
       name: 'mission',
       type: 'richText',
       label: 'Mission Statement',
-      localized: true,
     },
     {
       name: 'directorMessage',
       type: 'richText',
       label: "Director's Message",
-      localized: true,
     },
     {
       name: 'directorPortrait',
@@ -49,7 +47,6 @@ export const About: GlobalConfig = {
       name: 'kmuAffiliation',
       type: 'richText',
       label: 'KMU Affiliation Block',
-      localized: true,
     },
     {
       name: 'facilities',
@@ -65,7 +62,6 @@ export const About: GlobalConfig = {
         {
           name: 'caption',
           type: 'text',
-          localized: true,
         },
       ],
     },
@@ -78,19 +74,16 @@ export const About: GlobalConfig = {
           name: 'quote',
           type: 'textarea',
           required: true,
-          localized: true,
         },
         {
           name: 'name',
           type: 'text',
           required: true,
-          localized: true,
         },
         {
           name: 'role',
           type: 'text',
           required: true,
-          localized: true,
         },
         {
           name: 'photo',

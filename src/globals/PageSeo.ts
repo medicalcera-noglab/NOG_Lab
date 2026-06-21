@@ -6,26 +6,16 @@ const seoFields: Field[] = [
   {
     name: 'title',
     type: 'text',
-    label: 'Page Title (English)',
+    label: 'Page Title',
     admin: {
       description: 'Overrides the default page title. Leave blank to use the hardcoded page title.',
     },
   },
   {
-    name: 'titleUr',
-    type: 'text',
-    label: 'Page Title (اردو)',
-  },
-  {
     name: 'description',
     type: 'textarea',
-    label: 'Meta Description (English)',
+    label: 'Meta Description',
     admin: { description: 'Overrides the meta description. Aim for 150–160 characters.' },
-  },
-  {
-    name: 'descriptionUr',
-    type: 'textarea',
-    label: 'Meta Description (اردو)',
   },
   {
     name: 'ogImage',
