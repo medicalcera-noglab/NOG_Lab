@@ -6,6 +6,7 @@ import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CookieBanner } from '@/components/CookieBanner'
 import { Analytics } from '@/components/Analytics'
+import { WebVitals } from '@/components/WebVitals'
 import { getSiteSettings } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import '../globals.css'
@@ -68,6 +69,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
             <CookieBanner />
 
             <Analytics analyticsId={settings.analyticsId} />
+            <WebVitals />
           </ConsentProvider>
         </ThemeProvider>
       </body>

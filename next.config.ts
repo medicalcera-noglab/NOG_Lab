@@ -1,6 +1,7 @@
 import path from 'path'
 import type { NextConfig } from 'next'
 import { withPayload } from '@payloadcms/next/withPayload'
+import { withSentryConfig } from '@sentry/nextjs'
 
 const nextConfig: NextConfig = {
   // sharp is a native module (.node binaries) — Turbopack cannot bundle it.
@@ -12,4 +13,14 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withPayload(nextConfig)
+const configWithPayload = withPayload(nextConfig)
+
+export default withSentryConfig(configWithPayload, {
+  // Only uploads source maps when SENTRY_AUTH_TOKEN is set (CI/production)
+  silent: !process.env.CI,
+  disableLogger: true,
+  // Source map upload requires SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT
+  widenClientFileUpload: true,
+  sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
+  automaticVercelMonitors: false,
+})
