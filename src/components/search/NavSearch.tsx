@@ -1,17 +1,20 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Search, X, Loader } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { GroupedResults, SearchResult } from '@/lib/search'
 
+// ── Snippet renderer ─────────────────────────────────────────────────────────
+// ts_headline wraps matches in <mark> from our own DB — safe to render.
 function SnippetText({ html }: { html: string }) {
-  // ts_headline wraps matches in <mark> from our own DB — safe to render.
   return <span dangerouslySetInnerHTML={{ __html: html }} />
 }
 
+// ── Single result row ─────────────────────────────────────────────────────────
 function ResultItem({
   result,
   active,
@@ -24,7 +27,6 @@ function ResultItem({
   onSelect: () => void
 }) {
   const ref = useRef<HTMLAnchorElement>(null)
-
   useEffect(() => {
     if (active) ref.current?.scrollIntoView({ block: 'nearest' })
   }, [active])
@@ -37,7 +39,7 @@ function ResultItem({
         onClick={onSelect}
         className={cn(
           'block rounded-lg px-3 py-2 text-sm transition-colors',
-          active ? 'bg-accent text-white' : 'hover:bg-surface-raised text-fg',
+          active ? 'bg-accent text-white' : 'text-fg hover:bg-surface-raised',
         )}
       >
         <span className={cn('block truncate font-medium', active ? 'text-white' : 'text-fg')}>
@@ -59,12 +61,30 @@ function ResultItem({
   )
 }
 
+// ── Types ─────────────────────────────────────────────────────────────────────
 interface Props {
-  /** Pass 'w-full' to render as a full-width mobile search widget */
   className?: string
   onNavigate?: () => void
 }
 
+// Hydration-safe: returns false on server, true after hydration.
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
+}
+
+const TYPE_LABELS: Record<string, string> = {
+  publication: 'Publications',
+  person: 'People',
+  project: 'Projects',
+  blog: 'Blog',
+  news: 'News',
+}
+
+// ── NavSearch — icon trigger that opens a full-viewport modal overlay ─────────
 export function NavSearch({ className, onNavigate }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -72,11 +92,12 @@ export function NavSearch({ className, onNavigate }: Props) {
   const [results, setResults] = useState<GroupedResults | null>(null)
   const [loading, setLoading] = useState(false)
   const [activeIdx, setActiveIdx] = useState(-1)
+  // Portal can only render client-side — useSyncExternalStore gives us
+  // server=false / client=true without a setState-in-effect pattern.
+  const isClient = useIsClient()
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
 
-  // closeSearch must be declared before the outside-click effect that references it.
   const closeSearch = () => {
     setOpen(false)
     setQuery('')
@@ -84,19 +105,25 @@ export function NavSearch({ className, onNavigate }: Props) {
     setActiveIdx(-1)
   }
 
-  // Outside-click handler
+  // Focus the input every time the overlay opens
   useEffect(() => {
-    if (!open) return
-    const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        closeSearch()
-      }
+    if (open) {
+      const id = setTimeout(() => inputRef.current?.focus(), 30)
+      return () => clearTimeout(id)
     }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
   }, [open])
 
-  // Debounced fetch — all setState calls inside the timeout callback (not synchronously)
+  // Global Escape handler when overlay is open
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeSearch()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
+
+  // Debounced search fetch
   useEffect(() => {
     const delay = query.length >= 2 ? 220 : 0
     const timer = setTimeout(async () => {
@@ -107,7 +134,7 @@ export function NavSearch({ className, onNavigate }: Props) {
       }
       setLoading(true)
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=4`)
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=5`)
         if (res.ok) {
           const data = (await res.json()) as { results: GroupedResults }
           setResults(data.results)
@@ -120,12 +147,7 @@ export function NavSearch({ className, onNavigate }: Props) {
     return () => clearTimeout(timer)
   }, [query])
 
-  const openSearch = () => {
-    setOpen(true)
-    setTimeout(() => inputRef.current?.focus(), 10)
-  }
-
-  // Flatten results for arrow-key navigation
+  // Flatten for arrow-key navigation
   const flat: SearchResult[] = results
     ? [
         ...results.publications,
@@ -136,6 +158,25 @@ export function NavSearch({ className, onNavigate }: Props) {
       ]
     : []
   const totalResults = flat.length
+
+  // Build display groups with cumulative offsets
+  const groups: Array<{ label: string; items: SearchResult[]; offset: number }> = []
+  if (results) {
+    let offset = 0
+    const sections: Array<[string, SearchResult[]]> = [
+      ['publication', results.publications],
+      ['person', results.people],
+      ['project', results.projects],
+      ['blog', results.blog],
+      ['news', results.news],
+    ]
+    for (const [type, items] of sections) {
+      if (items.length > 0) {
+        groups.push({ label: TYPE_LABELS[type] ?? type, items, offset })
+        offset += items.length
+      }
+    }
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Escape') {
@@ -163,188 +204,179 @@ export function NavSearch({ className, onNavigate }: Props) {
     }
   }
 
-  const dropdownOpen = open && query.length >= 2
+  const hasQuery = query.length >= 2
 
-  // Build display groups with cumulative offsets for keyboard nav
-  const TYPE_LABELS: Record<string, string> = {
-    publication: 'Publications',
-    person: 'People',
-    project: 'Projects',
-    blog: 'Blog',
-    news: 'News',
-  }
-
-  const groups: Array<{ label: string; items: SearchResult[]; offset: number }> = []
-  if (results) {
-    let offset = 0
-    const sections: Array<[string, SearchResult[]]> = [
-      ['publication', results.publications],
-      ['person', results.people],
-      ['project', results.projects],
-      ['blog', results.blog],
-      ['news', results.news],
-    ]
-    for (const [type, items] of sections) {
-      if (items.length > 0) {
-        groups.push({ label: TYPE_LABELS[type] ?? type, items, offset })
-        offset += items.length
-      }
-    }
-  }
-
-  const isMobileWidget = className?.includes('w-full')
-
-  return (
-    <div ref={containerRef} className={cn('relative', className)}>
-      {/* Trigger button */}
-      {!open && (
-        <button
-          type="button"
-          onClick={openSearch}
-          aria-label="Open search"
-          className={cn(
-            'flex h-[44px] items-center justify-center rounded-lg',
-            'text-muted hover:text-fg hover:bg-surface-raised',
-            'transition-colors duration-150 focus-visible:outline-none',
-            'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-            isMobileWidget ? 'w-full gap-2 px-3' : 'w-[44px]',
-          )}
-        >
-          <Search size={18} aria-hidden="true" />
-          {isMobileWidget && <span className="text-sm">Search…</span>}
-        </button>
-      )}
-
-      {/* Expanded input */}
-      {open && (
-        <div className={cn('flex items-center gap-1', isMobileWidget ? 'w-full' : 'w-64')}>
+  // ── Modal portal ───────────────────────────────────────────────────────────
+  const modal =
+    open && isClient
+      ? createPortal(
           <div
-            className={cn(
-              'border-border bg-surface relative flex-1 rounded-lg border',
-              'focus-within:ring-ring focus-within:ring-2',
-            )}
+            // Outer layer: full-viewport backdrop
+            className="fixed inset-0 z-[300] flex items-start justify-center px-4 pt-[12vh] pb-8"
+            aria-label="Search overlay"
+            role="presentation"
           >
-            <Search
-              size={15}
+            {/* Dimmed backdrop — click to close */}
+            <div
               aria-hidden="true"
-              className="text-muted absolute start-3 top-1/2 -translate-y-1/2"
+              className="bg-ink/50 absolute inset-0 backdrop-blur-sm"
+              onClick={closeSearch}
             />
-            <input
-              ref={inputRef}
-              type="search"
-              role="combobox"
-              aria-label="Search site"
-              aria-expanded={dropdownOpen}
-              aria-controls="nav-search-listbox"
-              aria-haspopup="listbox"
-              aria-autocomplete="list"
-              aria-activedescendant={activeIdx >= 0 ? `nav-result-${activeIdx}` : undefined}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Search…"
-              autoComplete="off"
-              className="text-fg placeholder:text-muted w-full bg-transparent py-2 ps-8 pe-3 text-sm outline-none"
-            />
-            {loading && (
-              <Loader
-                size={14}
-                aria-hidden="true"
-                className="text-muted absolute end-3 top-1/2 -translate-y-1/2 animate-spin"
-              />
-            )}
-          </div>
 
-          <button
-            type="button"
-            onClick={closeSearch}
-            aria-label="Close search"
-            className={cn(
-              'flex h-[44px] w-[44px] flex-shrink-0 items-center justify-center rounded-lg',
-              'text-muted hover:text-fg hover:bg-surface-raised',
-              'transition-colors duration-150 focus-visible:outline-none',
-              'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-            )}
-          >
-            <X size={16} aria-hidden="true" />
-          </button>
-        </div>
-      )}
+            {/* Search card */}
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site search"
+              className={cn(
+                'relative z-10 w-full max-w-xl overflow-hidden rounded-2xl shadow-2xl',
+                'border-border bg-bg border',
+              )}
+            >
+              {/* Input row */}
+              <div className="border-border flex items-center gap-3 border-b px-4 py-3.5">
+                <Search size={18} className="text-muted flex-shrink-0" aria-hidden="true" />
+                <input
+                  ref={inputRef}
+                  type="search"
+                  role="combobox"
+                  aria-label="Search site"
+                  aria-expanded={hasQuery}
+                  aria-controls="search-overlay-listbox"
+                  aria-haspopup="listbox"
+                  aria-autocomplete="list"
+                  aria-activedescendant={activeIdx >= 0 ? `search-result-${activeIdx}` : undefined}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Search publications, people, projects…"
+                  autoComplete="off"
+                  className="text-fg placeholder:text-muted min-w-0 flex-1 bg-transparent text-base outline-none"
+                />
+                {loading && (
+                  <Loader
+                    size={16}
+                    className="text-muted flex-shrink-0 animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={closeSearch}
+                  aria-label="Close search"
+                  className={cn(
+                    'text-muted hover:text-fg hover:bg-surface-raised flex-shrink-0 rounded-md p-1.5',
+                    'transition-colors duration-150 focus-visible:outline-none',
+                    'focus-visible:ring-ring focus-visible:ring-2',
+                  )}
+                >
+                  <X size={16} aria-hidden="true" />
+                </button>
+              </div>
 
-      {/* Results dropdown */}
-      {dropdownOpen && (
-        <div
-          id="nav-search-listbox"
-          role="listbox"
-          aria-label="Search site"
-          className={cn(
-            'border-border bg-bg absolute start-0 top-full z-50 mt-1 rounded-xl border shadow-lg',
-            'max-h-[70vh] overflow-y-auto',
-            isMobileWidget ? 'w-full' : 'w-80',
-          )}
-        >
-          {/* Screen-reader live region */}
-          <p aria-live="polite" aria-atomic="true" className="sr-only">
-            {loading
-              ? 'Searching…'
-              : totalResults > 0
-                ? `${totalResults} result${totalResults === 1 ? '' : 's'} for ${query}`
-                : `No results for ${query}`}
-          </p>
+              {/* Live region for screen readers */}
+              <p aria-live="polite" aria-atomic="true" className="sr-only">
+                {loading
+                  ? 'Searching…'
+                  : hasQuery && totalResults > 0
+                    ? `${totalResults} result${totalResults === 1 ? '' : 's'} for ${query}`
+                    : hasQuery
+                      ? `No results for ${query}`
+                      : ''}
+              </p>
 
-          {totalResults > 0 ? (
-            <div className="p-2">
-              {groups.map((group) => (
-                <div key={group.label} className="mb-2 last:mb-0">
-                  <p className="text-muted mb-1 px-3 text-xs font-semibold tracking-wide uppercase">
-                    {group.label}
-                  </p>
-                  <ul>
-                    {group.items.map((item, i) => {
-                      const globalIdx = group.offset + i
-                      return (
-                        <ResultItem
-                          key={`${item.type}-${item.id}`}
-                          result={item}
-                          active={activeIdx === globalIdx}
-                          id={`nav-result-${globalIdx}`}
-                          onSelect={() => {
+              {/* Results */}
+              {hasQuery ? (
+                <div
+                  id="search-overlay-listbox"
+                  role="listbox"
+                  aria-label="Search results"
+                  className="max-h-[min(60vh,440px)] overflow-y-auto"
+                >
+                  {totalResults > 0 ? (
+                    <div className="p-2">
+                      {groups.map((group) => (
+                        <div key={group.label} className="mb-2 last:mb-0">
+                          <p className="text-muted mb-1 px-3 text-xs font-semibold tracking-wide uppercase">
+                            {group.label}
+                          </p>
+                          <ul>
+                            {group.items.map((item, i) => {
+                              const globalIdx = group.offset + i
+                              return (
+                                <ResultItem
+                                  key={`${item.type}-${item.id}`}
+                                  result={item}
+                                  active={activeIdx === globalIdx}
+                                  id={`search-result-${globalIdx}`}
+                                  onSelect={() => {
+                                    closeSearch()
+                                    onNavigate?.()
+                                  }}
+                                />
+                              )
+                            })}
+                          </ul>
+                        </div>
+                      ))}
+                      <div className="border-border mt-2 border-t pt-2">
+                        <Link
+                          href={`/search?q=${encodeURIComponent(query)}`}
+                          onClick={() => {
                             closeSearch()
                             onNavigate?.()
                           }}
-                        />
-                      )
-                    })}
-                  </ul>
-                </div>
-              ))}
-
-              <div className="border-border mt-2 border-t pt-2">
-                <Link
-                  href={`/search?q=${encodeURIComponent(query)}`}
-                  onClick={() => {
-                    closeSearch()
-                    onNavigate?.()
-                  }}
-                  className={cn(
-                    'text-accent block rounded-lg px-3 py-2 text-sm font-medium',
-                    'hover:bg-surface-raised transition-colors duration-150',
-                    'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
+                          className={cn(
+                            'text-accent block rounded-lg px-3 py-2 text-sm font-medium',
+                            'hover:bg-surface-raised transition-colors duration-150',
+                            'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
+                          )}
+                        >
+                          See all results for &ldquo;{query}&rdquo;
+                        </Link>
+                      </div>
+                    </div>
+                  ) : !loading ? (
+                    <p className="text-muted px-4 py-8 text-center text-sm">
+                      No results for &ldquo;{query}&rdquo;
+                    </p>
+                  ) : (
+                    <p className="text-muted px-4 py-8 text-center text-sm">Searching…</p>
                   )}
-                >
-                  See all results for &ldquo;{query}&rdquo;
-                </Link>
-              </div>
+                </div>
+              ) : (
+                <p className="text-muted px-4 py-5 text-center text-sm">
+                  Type to search publications, people, projects, and blog posts.
+                </p>
+              )}
             </div>
-          ) : !loading ? (
-            <p className="text-muted px-4 py-6 text-center text-sm">
-              No results for &ldquo;{query}&rdquo;
-            </p>
-          ) : (
-            <p className="text-muted px-4 py-6 text-center text-sm">Searching…</p>
-          )}
-        </div>
-      )}
-    </div>
+          </div>,
+          document.body,
+        )
+      : null
+
+  return (
+    <>
+      {/* Icon-only trigger — constant 44×44 tap target, never expands inline */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Open search"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        className={cn(
+          'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
+          'text-muted hover:text-fg hover:bg-surface-raised',
+          'transition-colors duration-150 focus-visible:outline-none',
+          'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
+          className,
+        )}
+      >
+        <Search size={18} aria-hidden="true" />
+        <span className="sr-only">Search</span>
+      </button>
+
+      {modal}
+    </>
   )
 }

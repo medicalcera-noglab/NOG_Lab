@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { NavMenu } from './NavMenu'
 import { Container } from './ui/Container'
@@ -32,21 +33,22 @@ export async function Navbar() {
       <Container>
         <nav
           aria-label="Primary navigation"
-          className="flex h-16 items-center justify-between gap-6"
+          className="flex h-16 items-center justify-between gap-4"
         >
-          {/* Logo / lab name */}
+          {/* ── FAR LEFT: logo mark + wordmark ──────────────────────────────── */}
           <Link
             href="/"
             aria-label={`${settings.labName} — home`}
             className={cn(
               'flex flex-shrink-0 items-center gap-2.5',
-              'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
-              'focus-visible:ring-offset-bg rounded focus-visible:ring-offset-2',
+              'focus-visible:ring-ring focus-visible:ring-offset-bg rounded',
+              'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
             )}
           >
             {logo ? (
+              /* CMS-uploaded logo takes priority */
               <>
-                <span className={cn('block h-8 w-8', logoDark ? 'dark:hidden' : '')}>
+                <span className={cn('relative block h-8 w-8', logoDark ? 'dark:hidden' : '')}>
                   <MediaImage
                     doc={logo}
                     sizes="32px"
@@ -55,7 +57,7 @@ export async function Navbar() {
                   />
                 </span>
                 {logoDark && (
-                  <span className="hidden h-8 w-8 dark:block">
+                  <span className="relative hidden h-8 w-8 dark:block">
                     <MediaImage
                       doc={logoDark}
                       sizes="32px"
@@ -65,39 +67,61 @@ export async function Navbar() {
                   </span>
                 )}
               </>
-            ) : null}
-            <span
-              className={cn(
-                'font-heading text-primary text-lg font-bold',
-                logo ? 'sr-only md:not-sr-only' : '',
-              )}
-            >
+            ) : (
+              /* Fallback to public SVG files — teal mark in light, white in dark */
+              <>
+                <span className="relative block h-8 w-8 dark:hidden" aria-hidden="true">
+                  <Image
+                    src="/logo.svg"
+                    alt=""
+                    fill
+                    sizes="32px"
+                    className="object-contain"
+                    priority
+                  />
+                </span>
+                <span className="relative hidden h-8 w-8 dark:block" aria-hidden="true">
+                  <Image
+                    src="/logo-white.svg"
+                    alt=""
+                    fill
+                    sizes="32px"
+                    className="object-contain"
+                    priority
+                  />
+                </span>
+              </>
+            )}
+
+            <span className="font-heading text-primary text-lg leading-none font-bold">
               {settings.labName}
             </span>
           </Link>
 
-          {/* Desktop nav links */}
-          <ul role="list" className="hidden flex-1 items-center justify-center gap-1 md:flex">
-            {headerLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  target={link.isExternal ? '_blank' : undefined}
-                  rel={link.isExternal ? 'noopener noreferrer' : undefined}
-                  className={cn(
-                    'rounded-lg px-3 py-2 text-sm font-medium',
-                    'text-muted hover:text-fg hover:bg-surface-raised',
-                    'transition-colors duration-150 focus-visible:outline-none',
-                    'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-                  )}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {/* ── MIDDLE: primary nav links (desktop only) ─────────────────────── */}
+          {headerLinks.length > 0 && (
+            <ul role="list" className="hidden flex-1 items-center justify-center gap-0.5 md:flex">
+              {headerLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    target={link.isExternal ? '_blank' : undefined}
+                    rel={link.isExternal ? 'noopener noreferrer' : undefined}
+                    className={cn(
+                      'rounded-lg px-3 py-2 text-sm font-medium',
+                      'text-muted hover:text-fg hover:bg-surface-raised',
+                      'transition-colors duration-150 focus-visible:outline-none',
+                      'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
 
-          {/* Theme toggle + mobile menu (client) */}
+          {/* ── FAR RIGHT: search + theme toggle (desktop) / hamburger (mobile) */}
           <NavMenu links={headerLinks} />
         </nav>
       </Container>

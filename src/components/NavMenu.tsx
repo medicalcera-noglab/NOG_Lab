@@ -12,8 +12,7 @@ interface NavMenuProps {
   links: NavItem[]
 }
 
-// Hydration-safe client detection — returns false on server, true on client.
-// useSyncExternalStore avoids the react-hooks/set-state-in-effect lint rule.
+// Hydration-safe client flag — false on server, true after hydration.
 function useIsClient() {
   return useSyncExternalStore(
     () => () => {},
@@ -28,10 +27,13 @@ export function NavMenu({ links }: NavMenuProps) {
   const isClient = useIsClient()
   const menuRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
-  // Focus trap + Escape handler
+
+  const isDark = isClient && theme === 'dark'
+  const toggleTheme = () => setTheme(isDark ? 'light' : 'dark')
+
+  // Focus trap + Escape inside the drawer
   useEffect(() => {
     if (!open) return
-
     const el = menuRef.current
     if (!el) return
 
@@ -40,7 +42,8 @@ export function NavMenu({ links }: NavMenuProps) {
     )
     const first = focusable[0]
     const last = focusable[focusable.length - 1]
-    first?.focus()
+    // Delay so the drawer is fully painted before stealing focus
+    const focusId = setTimeout(() => first?.focus(), 50)
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -57,24 +60,14 @@ export function NavMenu({ links }: NavMenuProps) {
         }
       }
     }
-
     document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [open])
-
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
+    return () => {
+      clearTimeout(focusId)
+      document.removeEventListener('keydown', onKey)
     }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
   }, [open])
 
-  // Prevent body scroll while menu is open
+  // Lock body scroll while drawer is open
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => {
@@ -82,50 +75,42 @@ export function NavMenu({ links }: NavMenuProps) {
     }
   }, [open])
 
-  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
-  const isDark = theme === 'dark'
+  const TOGGLE_CLASS = cn(
+    'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
+    'text-muted hover:text-fg hover:bg-surface-raised',
+    'transition-colors duration-150 focus-visible:outline-none',
+    'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
+  )
 
   return (
     <>
-      {/* ── Desktop right-side controls ──────────────────────────────── */}
-      <div className="hidden items-center gap-1 md:flex">
+      {/* ── FAR RIGHT on desktop: search icon + ONE theme toggle ─────────── */}
+      <div className="hidden items-center gap-1 md:flex" aria-label="Site utilities">
         <NavSearch />
-
-        {/* Theme toggle */}
         {isClient && (
           <button
             onClick={toggleTheme}
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            className={cn(
-              'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
-              'text-muted hover:text-fg hover:bg-surface-raised',
-              'transition-colors duration-150 focus-visible:outline-none',
-              'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-            )}
+            className={TOGGLE_CLASS}
           >
             {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
           </button>
         )}
       </div>
 
-      {/* ── Mobile hamburger ─────────────────────────────────────────── */}
+      {/* ── Mobile hamburger — only control visible on small screens ─────── */}
       <button
         ref={triggerRef}
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="mobile-menu"
         aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
-        className={cn(
-          'flex h-[44px] w-[44px] items-center justify-center rounded-lg md:hidden',
-          'text-muted hover:text-fg hover:bg-surface-raised',
-          'transition-colors duration-150 focus-visible:outline-none',
-          'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-        )}
+        className={cn(TOGGLE_CLASS, 'md:hidden')}
       >
         {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
       </button>
 
-      {/* ── Mobile menu drawer ───────────────────────────────────────── */}
+      {/* ── Mobile drawer ─────────────────────────────────────────────────── */}
       {open && (
         <div
           id="mobile-menu"
@@ -133,16 +118,26 @@ export function NavMenu({ links }: NavMenuProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Navigation menu"
-          className="bg-bg fixed inset-0 top-[64px] z-40 md:hidden"
+          // Inline style guarantees an opaque background regardless of how
+          // Tailwind resolves the semantic color variable at paint time.
+          style={{ backgroundColor: 'var(--bg)' }}
+          className={cn(
+            'fixed inset-x-0 top-[64px] bottom-0 z-[100] overflow-y-auto md:hidden',
+            // Subtle top-shadow so drawer reads as a layer above the page
+            'shadow-[0_4px_24px_rgba(0,0,0,0.12)]',
+          )}
         >
-          <nav aria-label="Mobile navigation" className="flex flex-col gap-1 p-6 pt-8">
+          {/* Nav links */}
+          <nav aria-label="Mobile navigation" className="flex flex-col gap-0.5 p-5 pt-6">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
+                target={link.isExternal ? '_blank' : undefined}
+                rel={link.isExternal ? 'noopener noreferrer' : undefined}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  'rounded-lg px-4 py-3 text-lg font-medium',
+                  'rounded-xl px-4 py-3.5 text-lg font-medium',
                   'text-fg hover:bg-surface-raised hover:text-primary',
                   'transition-colors duration-150 focus-visible:outline-none',
                   'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
@@ -151,32 +146,29 @@ export function NavMenu({ links }: NavMenuProps) {
                 {link.label}
               </Link>
             ))}
-
-            <hr className="border-border my-4" />
-
-            <div className="flex items-center gap-3 px-4">
-              <NavSearch className="w-full" onNavigate={() => setOpen(false)} />
-
-              {isClient && (
-                <button
-                  onClick={toggleTheme}
-                  aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                  className={cn(
-                    'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
-                    'text-muted hover:text-fg hover:bg-surface-raised',
-                    'transition-colors duration-150 focus-visible:outline-none',
-                    'focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2',
-                  )}
-                >
-                  {isDark ? (
-                    <Sun size={20} aria-hidden="true" />
-                  ) : (
-                    <Moon size={20} aria-hidden="true" />
-                  )}
-                </button>
-              )}
-            </div>
           </nav>
+
+          {/* Divider + utilities row (search + theme toggle) */}
+          <div
+            className="border-border flex items-center gap-2 border-t px-5 py-4"
+            style={{ borderColor: 'var(--border)' }}
+          >
+            <span className="text-muted flex-1 text-sm">Search</span>
+            <NavSearch onNavigate={() => setOpen(false)} />
+            {isClient && (
+              <button
+                onClick={toggleTheme}
+                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                className={TOGGLE_CLASS}
+              >
+                {isDark ? (
+                  <Sun size={20} aria-hidden="true" />
+                ) : (
+                  <Moon size={20} aria-hidden="true" />
+                )}
+              </button>
+            )}
+          </div>
         </div>
       )}
     </>
