@@ -212,7 +212,7 @@ export function NavSearch({ className, onNavigate }: Props) {
       ? createPortal(
           <div
             // Outer layer: full-viewport backdrop
-            className="fixed inset-0 z-[300] flex items-start justify-center px-4 pt-[12vh] pb-8"
+            className="fixed inset-0 z-[300] flex items-start justify-center px-3 pt-[5vh] pb-4 sm:px-4 sm:pt-[12vh] sm:pb-8"
             aria-label="Search overlay"
             role="presentation"
           >
@@ -229,7 +229,7 @@ export function NavSearch({ className, onNavigate }: Props) {
               aria-modal="true"
               aria-label="Site search"
               className={cn(
-                'relative z-10 w-full max-w-xl overflow-hidden rounded-2xl shadow-2xl',
+                'relative z-10 w-full max-w-xl overflow-hidden rounded-xl shadow-2xl sm:rounded-2xl',
                 'border-border bg-bg border',
               )}
             >
@@ -291,7 +291,7 @@ export function NavSearch({ className, onNavigate }: Props) {
                   id="search-overlay-listbox"
                   role="listbox"
                   aria-label="Search results"
-                  className="max-h-[min(60vh,440px)] overflow-y-auto"
+                  className="max-h-[min(55vh,440px)] overflow-y-auto"
                 >
                   {totalResults > 0 ? (
                     <div className="p-2">
