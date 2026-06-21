@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getSearchProvider, type SearchResult, type GroupedResults } from '@/lib/search'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
+import { buttonVariants } from '@/components/ui/Button'
 
 export const dynamic = 'force-dynamic'
 
@@ -73,14 +74,7 @@ function SearchForm({ defaultValue }: { defaultValue: string }) {
             'placeholder:text-muted focus:ring-ring focus:ring-2 focus:outline-none'
           }
         />
-        <button
-          type="submit"
-          className={
-            'bg-accent rounded-xl px-6 py-3 text-sm font-semibold text-white ' +
-            'transition-colors hover:bg-[var(--accent-hover)] ' +
-            'focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
-          }
-        >
+        <button type="submit" className={buttonVariants({ variant: 'primary', size: 'sm' })}>
           Search
         </button>
       </div>

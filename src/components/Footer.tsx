@@ -1,18 +1,21 @@
 import Link from 'next/link'
-import { ExternalLink, BookOpen, MapPin } from 'lucide-react'
+import Image from 'next/image'
+import { ExternalLink, BookOpen, MapPin, Download } from 'lucide-react'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { getLegalPages } from '@/lib/data/legal'
 import { lexicalToText } from '@/lib/richtext'
 import { Container } from './ui/Container'
 import { MediaImage } from './MediaImage'
 import { CookiePreferencesLink } from './CookiePreferencesLink'
+import { CellBlob } from './motifs/CellBlob'
+import { buttonVariants } from './ui/Button'
 import type { Media } from '@/../../payload-types'
 
 const LINK_CLASS =
   'text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none'
 
-const SOCIAL_LINK_CLASS =
-  'flex items-center gap-2 text-sm text-muted hover:text-fg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded'
+const SOCIAL_CLASS =
+  'inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted hover:border-accent hover:text-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 
 export async function Footer() {
   const [settings, navData, legal] = await Promise.all([
@@ -31,34 +34,70 @@ export async function Footer() {
 
   const logo = typeof settings.logo === 'object' ? (settings.logo as Media) : null
   const logoDark = typeof settings.logoDark === 'object' ? (settings.logoDark as Media) : null
+  const brochureUrl =
+    settings.brochure && typeof settings.brochure === 'object'
+      ? (settings.brochure as Media).url
+      : null
 
   const footerGroups = navData?.footerGroups ?? []
 
   return (
-    <footer className="border-border bg-surface mt-auto border-t">
-      <Container>
-        <div className="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
-          <div className="space-y-4 lg:col-span-2">
-            {logo && (
-              <div className="flex items-center gap-3">
-                <span className={logoDark ? 'block dark:hidden' : 'block'}>
-                  <MediaImage doc={logo} sizes="40px" className="h-10 w-10 object-contain" />
-                </span>
-                {logoDark && (
-                  <span className="hidden dark:block">
-                    <MediaImage doc={logoDark} sizes="40px" className="h-10 w-10 object-contain" />
+    <footer className="border-border relative mt-auto overflow-hidden border-t">
+      {/* Decorative microbiome cell motif — bottom-right corner */}
+      <CellBlob
+        className="absolute -right-40 -bottom-32 h-[28rem] w-[28rem] opacity-40"
+        color="var(--color-teal)"
+      />
+      <CellBlob
+        className="absolute top-0 -left-48 h-80 w-80 opacity-20"
+        color="var(--color-sand)"
+      />
+
+      <Container className="relative z-10">
+        {/* ── Main grid ─────────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-14 md:grid-cols-3 lg:grid-cols-5">
+          {/* Brand block — 2 cols on lg */}
+          <div className="col-span-2 space-y-5 lg:col-span-2">
+            {/* Logo + wordmark */}
+            <div className="flex items-center gap-2.5">
+              {logo ? (
+                <>
+                  <span className={logo && logoDark ? 'block dark:hidden' : 'block'}>
+                    <MediaImage doc={logo} sizes="36px" className="h-9 w-9 object-contain" />
                   </span>
-                )}
-                <p className="font-heading text-primary text-lg font-bold">{settings.labName}</p>
-              </div>
-            )}
-            {!logo && (
-              <p className="font-heading text-primary text-lg font-bold">{settings.labName}</p>
-            )}
+                  {logoDark && (
+                    <span className="hidden dark:block">
+                      <MediaImage doc={logoDark} sizes="36px" className="h-9 w-9 object-contain" />
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span className="relative block h-9 w-9 dark:hidden" aria-hidden="true">
+                    <Image src="/logo.svg" alt="" fill sizes="36px" className="object-contain" />
+                  </span>
+                  <span className="relative hidden h-9 w-9 dark:block" aria-hidden="true">
+                    <Image
+                      src="/logo-white.svg"
+                      alt=""
+                      fill
+                      sizes="36px"
+                      className="object-contain"
+                    />
+                  </span>
+                </>
+              )}
+              <span className="font-heading text-primary text-lg font-bold">
+                {settings.labName}
+              </span>
+            </div>
+
+            {/* Mission tagline */}
             {footerBodyText && (
-              <p className="text-muted max-w-sm text-sm leading-relaxed">{footerBodyText}</p>
+              <p className="text-muted max-w-xs text-sm leading-relaxed">{footerBodyText}</p>
             )}
+
+            {/* Address */}
             {settings.contactAddress && (
               <address className="text-muted flex items-start gap-2 text-sm not-italic">
                 <MapPin
@@ -69,6 +108,59 @@ export async function Footer() {
                 <span className="whitespace-pre-line">{settings.contactAddress}</span>
               </address>
             )}
+
+            {/* Socials — compact chips inside brand block */}
+            {hasSocial && (
+              <div className="flex flex-wrap gap-2" aria-label="Social media">
+                {social.twitter && (
+                  <a
+                    href={social.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Twitter / X (opens in new tab)"
+                    className={SOCIAL_CLASS}
+                  >
+                    <ExternalLink size={11} aria-hidden="true" />X / Twitter
+                  </a>
+                )}
+                {social.linkedin && (
+                  <a
+                    href={social.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn (opens in new tab)"
+                    className={SOCIAL_CLASS}
+                  >
+                    <ExternalLink size={11} aria-hidden="true" />
+                    LinkedIn
+                  </a>
+                )}
+                {social.researchgate && (
+                  <a
+                    href={social.researchgate}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="ResearchGate (opens in new tab)"
+                    className={SOCIAL_CLASS}
+                  >
+                    <BookOpen size={11} aria-hidden="true" />
+                    ResearchGate
+                  </a>
+                )}
+                {social.github && (
+                  <a
+                    href={social.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub (opens in new tab)"
+                    className={SOCIAL_CLASS}
+                  >
+                    <ExternalLink size={11} aria-hidden="true" />
+                    GitHub
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {/* CMS-driven footer nav groups */}
@@ -77,7 +169,7 @@ export async function Footer() {
               <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
                 {group.title}
               </p>
-              <ul role="list" className="space-y-2">
+              <ul role="list" className="space-y-2.5">
                 {(group.links ?? []).map((link) => (
                   <li key={link.href}>
                     <Link
@@ -93,113 +185,48 @@ export async function Footer() {
               </ul>
             </nav>
           ))}
-
-          {/* Legal — always present */}
-          <div>
-            <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">Legal</p>
-            <ul role="list" className="space-y-2">
-              <li>
-                <Link href="/privacy" className={LINK_CLASS}>
-                  {legal?.privacyPolicyTitle ?? 'Privacy Policy'}
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className={LINK_CLASS}>
-                  {legal?.termsOfUseTitle ?? 'Terms of Use'}
-                </Link>
-              </li>
-              <li>
-                <CookiePreferencesLink />
-              </li>
-            </ul>
-          </div>
-
-          {/* Social */}
-          {hasSocial && (
-            <div>
-              <p className="text-muted mb-4 text-xs font-semibold tracking-wider uppercase">
-                Connect
-              </p>
-              <ul role="list" className="space-y-3">
-                {social.twitter && (
-                  <li>
-                    <a
-                      href={social.twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Twitter / X (opens in new tab)"
-                      className={SOCIAL_LINK_CLASS}
-                    >
-                      <ExternalLink size={13} aria-hidden="true" />
-                      Twitter / X
-                    </a>
-                  </li>
-                )}
-                {social.linkedin && (
-                  <li>
-                    <a
-                      href={social.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="LinkedIn (opens in new tab)"
-                      className={SOCIAL_LINK_CLASS}
-                    >
-                      <ExternalLink size={13} aria-hidden="true" />
-                      LinkedIn
-                    </a>
-                  </li>
-                )}
-                {social.researchgate && (
-                  <li>
-                    <a
-                      href={social.researchgate}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="ResearchGate (opens in new tab)"
-                      className={SOCIAL_LINK_CLASS}
-                    >
-                      <BookOpen size={13} aria-hidden="true" />
-                      ResearchGate
-                    </a>
-                  </li>
-                )}
-                {social.github && (
-                  <li>
-                    <a
-                      href={social.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="GitHub (opens in new tab)"
-                      className={SOCIAL_LINK_CLASS}
-                    >
-                      <ExternalLink size={13} aria-hidden="true" />
-                      GitHub
-                    </a>
-                  </li>
-                )}
-              </ul>
-            </div>
-          )}
         </div>
 
-        {/* Newsletter embed */}
-        {settings.newsletterEmbedUrl && (
-          <div className="border-border border-t py-6">
-            <iframe
-              src={settings.newsletterEmbedUrl}
-              title="Newsletter subscription form"
-              className="h-24 w-full max-w-lg border-0"
-              loading="lazy"
-            />
+        {/* ── Newsletter / brochure row ─────────────────────────────────────── */}
+        {(settings.newsletterEmbedUrl || brochureUrl) && (
+          <div className="border-border flex flex-col items-start gap-6 border-t py-8 sm:flex-row sm:items-center sm:justify-between">
+            {settings.newsletterEmbedUrl && (
+              <iframe
+                src={settings.newsletterEmbedUrl}
+                title="Newsletter subscription form"
+                className="h-24 w-full max-w-lg border-0 sm:flex-1"
+                loading="lazy"
+              />
+            )}
+            {brochureUrl && (
+              <a
+                href={brochureUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+              >
+                <Download size={15} aria-hidden="true" />
+                Download Brochure
+              </a>
+            )}
           </div>
         )}
 
-        {/* Copyright */}
-        {settings.copyright && (
-          <div className="border-border border-t py-6">
-            <p className="text-muted text-center text-xs">{settings.copyright}</p>
-          </div>
-        )}
+        {/* ── Bottom bar ───────────────────────────────────────────────────── */}
+        <div className="border-border flex flex-wrap items-center justify-between gap-4 border-t py-5">
+          <p className="text-muted text-xs">
+            {settings.copyright ?? `© ${new Date().getFullYear()} ${settings.labName}`}
+          </p>
+          <nav aria-label="Legal" className="flex flex-wrap items-center gap-4">
+            <Link href="/privacy" className={LINK_CLASS}>
+              {legal?.privacyPolicyTitle ?? 'Privacy Policy'}
+            </Link>
+            <Link href="/terms" className={LINK_CLASS}>
+              {legal?.termsOfUseTitle ?? 'Terms of Use'}
+            </Link>
+            <CookiePreferencesLink />
+          </nav>
+        </div>
       </Container>
     </footer>
   )

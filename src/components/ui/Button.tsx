@@ -33,6 +33,19 @@ const sizes: Record<Size, string> = {
   lg: 'text-lg px-7 py-3',
 }
 
+// buttonVariants — use this on <Link> or <a> elements that must look like buttons.
+export function buttonVariants({
+  variant = 'primary',
+  size = 'md',
+  className,
+}: {
+  variant?: Variant
+  size?: Size
+  className?: string
+} = {}) {
+  return cn(base, variants[variant], sizes[size], className)
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', ...props }, ref) => (
     <button ref={ref} className={cn(base, variants[variant], sizes[size], className)} {...props} />

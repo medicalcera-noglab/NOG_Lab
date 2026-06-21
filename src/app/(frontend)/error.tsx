@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { PlaceholderSvg } from '@/components/placeholders/PlaceholderSvg'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/Button'
 
 interface ErrorPageProps {
   error: Error & { digest?: string }
@@ -33,15 +34,9 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
         An unexpected error occurred. Please try again — if the problem persists, contact us.
       </p>
 
-      <button
-        onClick={reset}
-        className={cn(
-          'bg-primary text-primary-fg min-h-[44px] rounded-lg px-5 py-2.5 text-sm font-semibold',
-          'focus-visible:ring-ring transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none',
-        )}
-      >
+      <Button onClick={reset} variant="primary" size="sm">
         Try again
-      </button>
+      </Button>
     </div>
   )
 }

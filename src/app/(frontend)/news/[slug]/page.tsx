@@ -9,6 +9,7 @@ import { RichText } from '@/components/RichText'
 import { MediaImage } from '@/components/MediaImage'
 import { getNewsBySlug, getAllNewsSlugs } from '@/lib/data/news'
 import { getSiteSettings } from '@/lib/data'
+import { buttonVariants } from '@/components/ui/Button'
 import type { Media } from '../../../../../payload-types'
 
 export const revalidate = 60
@@ -133,7 +134,7 @@ export default async function NewsDetailPage({ params }: Props) {
                 href={item.registerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-accent inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold text-white transition-colors hover:bg-[var(--accent-hover)] focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none"
+                className={buttonVariants({ variant: 'primary' })}
               >
                 Register Now
                 <ExternalLink size={16} />

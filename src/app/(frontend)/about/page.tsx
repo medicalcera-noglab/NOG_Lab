@@ -3,6 +3,7 @@ import { buildMetadata } from '@/lib/metadata'
 import { Download } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
+import { buttonVariants } from '@/components/ui/Button'
 import { RichText } from '@/components/RichText'
 import { MediaImage } from '@/components/MediaImage'
 import { FacilitiesGallery } from '@/components/about/FacilitiesGallery'
@@ -104,7 +105,7 @@ export default async function AboutPage() {
               href={brochureUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-accent inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold text-white transition-colors hover:bg-[var(--accent-hover)] focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none"
+              className={buttonVariants({ variant: 'primary', size: 'lg' })}
             >
               <Download size={18} />
               Download Lab Brochure
