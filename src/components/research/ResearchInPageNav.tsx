@@ -17,7 +17,10 @@ export function ResearchInPageNav({ themes, className }: ResearchInPageNavProps)
         className,
       )}
     >
-      <ul role="list" className="flex flex-wrap justify-center gap-x-1 gap-y-2">
+      <ul
+        role="list"
+        className="scrollbar-hide flex gap-x-1 gap-y-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0"
+      >
         {themes.map((theme) => (
           <li key={theme.id}>
             <a

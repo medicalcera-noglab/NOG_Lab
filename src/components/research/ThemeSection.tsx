@@ -32,7 +32,7 @@ export function ThemeSection({
       id={sectionId}
       aria-labelledby={`${sectionId}-heading`}
       className={cn(
-        'relative scroll-mt-28 overflow-hidden py-20 md:py-28',
+        'relative scroll-mt-28 overflow-hidden py-12 md:py-20 lg:py-28',
         alternate ? 'bg-surface' : 'bg-bg',
       )}
       style={{ '--tc': theme.color } as React.CSSProperties}
@@ -50,7 +50,7 @@ export function ThemeSection({
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-6xl px-6">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         {/* ── Header ── */}
         <div className="mb-10 flex items-start gap-4">
           {theme.icon && (
@@ -78,7 +78,7 @@ export function ThemeSection({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-[2fr_1fr]">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[2fr_1fr] lg:gap-16">
           {/* ── Main column ── */}
           <div>
             {/* Description */}

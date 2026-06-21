@@ -118,6 +118,14 @@ body {
   overflow-x: hidden;
 }
 
+/* Hide scrollbar while keeping scroll functionality (for horizontal chip rows) */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Safe-area insets for notched phones (iPhone X+).
    Applied to the shared Container via padding env() vars. */
 .container-safe {

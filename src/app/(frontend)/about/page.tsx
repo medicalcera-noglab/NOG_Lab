@@ -57,9 +57,9 @@ export default async function AboutPage() {
       {about?.directorMessage && (
         <Section className="bg-surface py-12">
           <Container>
-            <div className="flex flex-col items-start gap-10 md:flex-row">
+            <div className="flex flex-col items-center gap-8 md:flex-row md:items-start">
               {portrait && (
-                <div className="border-border h-48 w-48 shrink-0 overflow-hidden rounded-full border-4">
+                <div className="border-border h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 sm:h-48 sm:w-48 md:mx-0">
                   <MediaImage
                     doc={portrait}
                     sizes="192px"
