@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
 import { Menu, X, Sun, Moon } from 'lucide-react'
@@ -110,52 +111,48 @@ export function NavMenu({ links }: NavMenuProps) {
         {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
       </button>
 
-      {/* ── Mobile drawer ─────────────────────────────────────────────────── */}
-      {open && (
-        <div
-          id="mobile-menu"
-          ref={menuRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation menu"
-          // Inline style guarantees an opaque background regardless of how
-          // Tailwind resolves the semantic color variable at paint time.
-          style={{ backgroundColor: 'var(--bg)' }}
-          className={cn(
-            'fixed inset-x-0 top-[64px] bottom-0 z-[100] overflow-y-auto md:hidden',
-            // Subtle top-shadow so drawer reads as a layer above the page
-            'shadow-[0_4px_24px_rgba(0,0,0,0.12)]',
-          )}
-        >
-          {/* Nav links */}
-          <nav aria-label="Mobile navigation" className="flex flex-col gap-0.5 p-5 pt-6">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                target={link.isExternal ? '_blank' : undefined}
-                rel={link.isExternal ? 'noopener noreferrer' : undefined}
-                onClick={() => setOpen(false)}
-                className={cn(
-                  'rounded-xl px-4 py-3.5 text-lg font-medium',
-                  'text-fg hover:bg-surface-raised hover:text-primary',
-                  'transition-colors duration-150 focus-visible:outline-none',
-                  'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Divider + utilities row (search + theme toggle) */}
+      {/* ── Mobile drawer — portalled to document.body to escape the header's
+           backdrop-filter stacking context (which traps position:fixed children) */}
+      {open &&
+        isClient &&
+        createPortal(
           <div
-            className="border-border flex items-center gap-2 border-t px-5 py-4"
-            style={{ borderColor: 'var(--border)' }}
+            id="mobile-menu"
+            ref={menuRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}
+            className="fixed inset-x-0 top-16 bottom-0 z-[200] overflow-y-auto shadow-xl md:hidden"
           >
-            <span className="text-muted flex-1 text-sm">Search</span>
-            <NavSearch onNavigate={() => setOpen(false)} />
-            {isClient && (
+            {/* Nav links */}
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-0.5 p-5 pt-6">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  target={link.isExternal ? '_blank' : undefined}
+                  rel={link.isExternal ? 'noopener noreferrer' : undefined}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    'rounded-xl px-4 py-3.5 text-lg font-medium',
+                    'text-fg hover:bg-surface-raised hover:text-primary',
+                    'transition-colors duration-150 focus-visible:outline-none',
+                    'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Divider + utilities row */}
+            <div
+              className="flex items-center gap-2 border-t px-5 py-4"
+              style={{ borderColor: 'var(--border)' }}
+            >
+              <span className="text-muted flex-1 text-sm">Search</span>
+              <NavSearch onNavigate={() => setOpen(false)} />
               <button
                 onClick={toggleTheme}
                 aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -167,10 +164,10 @@ export function NavMenu({ links }: NavMenuProps) {
                   <Moon size={20} aria-hidden="true" />
                 )}
               </button>
-            )}
-          </div>
-        </div>
-      )}
+            </div>
+          </div>,
+          document.body,
+        )}
     </>
   )
 }

@@ -33,7 +33,7 @@ export async function Navbar() {
       <Container>
         <nav
           aria-label="Primary navigation"
-          className="flex h-16 items-center justify-between gap-4"
+          className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-6"
         >
           {/* ── FAR LEFT: logo mark + wordmark ──────────────────────────────── */}
           <Link
@@ -98,28 +98,26 @@ export async function Navbar() {
             </span>
           </Link>
 
-          {/* ── MIDDLE: primary nav links (desktop only) ─────────────────────── */}
-          {headerLinks.length > 0 && (
-            <ul role="list" className="hidden flex-1 items-center justify-center gap-0.5 md:flex">
-              {headerLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    target={link.isExternal ? '_blank' : undefined}
-                    rel={link.isExternal ? 'noopener noreferrer' : undefined}
-                    className={cn(
-                      'rounded-lg px-3 py-2 text-sm font-medium',
-                      'text-muted hover:text-fg hover:bg-surface-raised',
-                      'transition-colors duration-150 focus-visible:outline-none',
-                      'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          {/* ── MIDDLE: primary nav links (desktop only) — always rendered to hold col 2 */}
+          <ul role="list" className="hidden items-center justify-center gap-0.5 md:flex">
+            {headerLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  target={link.isExternal ? '_blank' : undefined}
+                  rel={link.isExternal ? 'noopener noreferrer' : undefined}
+                  className={cn(
+                    'rounded-lg px-3 py-2 text-sm font-medium',
+                    'text-muted hover:text-fg hover:bg-surface-raised',
+                    'transition-colors duration-150 focus-visible:outline-none',
+                    'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
+                  )}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
           {/* ── FAR RIGHT: search + theme toggle (desktop) / hamburger (mobile) */}
           <NavMenu links={headerLinks} />
