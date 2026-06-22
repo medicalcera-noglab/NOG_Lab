@@ -126,6 +126,13 @@ body {
   display: none;
 }
 
+/* Belt-and-suspenders: hide every Leaflet container while the mobile nav is open.
+   The nav overlay is z-[9999] which is above Leaflet's highest pane (z-1000),
+   but this CSS rule ensures no map tiles or controls bleed through on any device. */
+html[data-nav-open] .leaflet-container {
+  visibility: hidden !important;
+}
+
 /* Safe-area insets for notched phones (iPhone X+).
    Applied to the shared Container via padding env() vars. */
 .container-safe {

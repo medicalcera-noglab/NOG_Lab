@@ -104,12 +104,14 @@ export function MobileMenu({
     return () => clearTimeout(id)
   }, [])
 
-  // Scroll lock
+  // Scroll lock + signal to Leaflet maps that nav is open (so they hide via CSS)
   useEffect(() => {
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+    document.documentElement.dataset.navOpen = 'true'
     return () => {
       document.body.style.overflow = prev
+      delete document.documentElement.dataset.navOpen
     }
   }, [])
 
@@ -159,7 +161,7 @@ export function MobileMenu({
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="bg-bg fixed inset-0 z-[250] flex flex-col overflow-hidden md:hidden"
+      className="bg-bg fixed inset-0 z-[9999] flex flex-col overflow-hidden md:hidden"
     >
       {/* ── Decorative microbiome motifs ─────────────────────────────────────── */}
       <CellBlob
