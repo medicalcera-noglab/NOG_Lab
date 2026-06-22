@@ -86,21 +86,21 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const activeRoleLabel = tabs.find((t) => t.role === activeRole)?.label ?? roleLabels.all
 
   return (
-    <Section className="bg-bg py-16 md:py-24">
+    <Section className="bg-bg py-8 md:py-20">
       <Container>
         {/* Page header */}
         <FadeUp>
-          <div className="mb-10">
-            <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
+          <div className="mb-4 md:mb-8">
+            <p className="text-primary mb-1.5 text-xs font-semibold tracking-[0.15em] uppercase">
               Our team
             </p>
-            <h1 className="font-heading text-fg text-3xl font-bold sm:text-4xl">People</h1>
+            <h1 className="font-heading text-fg text-2xl font-bold sm:text-4xl">People</h1>
           </div>
         </FadeUp>
 
         {/* Role tabs */}
         <FadeUp delay={0.05}>
-          <div className="mb-10">
+          <div className="mb-5 md:mb-10">
             <RoleTabNav tabs={tabs} activeRole={activeRole} />
           </div>
         </FadeUp>

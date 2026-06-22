@@ -32,7 +32,7 @@ export function ThemeSection({
       id={sectionId}
       aria-labelledby={`${sectionId}-heading`}
       className={cn(
-        'relative scroll-mt-28 overflow-hidden py-12 md:py-20 lg:py-28',
+        'relative scroll-mt-20 overflow-hidden py-8 md:py-16 lg:py-24',
         alternate ? 'bg-surface' : 'bg-bg',
       )}
       style={{ '--tc': theme.color } as React.CSSProperties}

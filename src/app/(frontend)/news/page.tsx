@@ -49,9 +49,9 @@ export default async function NewsPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <Section className="pt-20 pb-8">
+      <Section className="pt-8 pb-6 sm:pt-12">
         <Container>
-          <h1 className="mb-6 text-3xl font-bold sm:text-4xl">News &amp; Events</h1>
+          <h1 className="mb-4 text-2xl font-bold sm:text-4xl">News &amp; Events</h1>
 
           {/* Category filter */}
           <nav aria-label="Filter by category">
@@ -80,7 +80,7 @@ export default async function NewsPage({ searchParams }: PageProps) {
         </Container>
       </Section>
 
-      <Section className="pb-20">
+      <Section className="pb-12 md:pb-20">
         <Container>
           {items.length === 0 ? (
             <EmptyState

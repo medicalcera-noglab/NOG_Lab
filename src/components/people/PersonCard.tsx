@@ -19,12 +19,12 @@ export function PersonCard({ person, roleLabel }: PersonCardProps) {
         'card-hover group border-border bg-bg flex h-full flex-col overflow-hidden rounded-xl border',
       )}
     >
-      {/* Photo — always rendered; MediaImage shows placeholder when photo is absent */}
+      {/* Photo — capped at max-h-48 on mobile to prevent full-screen PI portraits */}
       <Link
         href={`/people/${slug}`}
         tabIndex={-1}
         aria-hidden="true"
-        className="bg-surface-raised block aspect-[4/3] overflow-hidden"
+        className="bg-surface-raised block aspect-[4/3] max-h-48 overflow-hidden sm:max-h-none"
       >
         <div className="relative h-full w-full">
           <MediaImage
@@ -39,7 +39,7 @@ export function PersonCard({ person, roleLabel }: PersonCardProps) {
       </Link>
 
       {/* Content */}
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
         <p className="text-primary mb-1 text-xs font-semibold tracking-wide uppercase">
           {roleLabel}
         </p>

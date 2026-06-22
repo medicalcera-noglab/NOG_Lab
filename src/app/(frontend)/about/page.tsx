@@ -46,7 +46,7 @@ export default async function AboutPage() {
     <>
       {/* Mission */}
       {about?.mission && (
-        <Section className="pt-20 pb-12">
+        <Section className="pt-8 pb-8 sm:pt-12">
           <Container>
             <FadeUp>
               <h1 className="mb-8 text-3xl font-bold sm:text-4xl">About NOG Lab</h1>

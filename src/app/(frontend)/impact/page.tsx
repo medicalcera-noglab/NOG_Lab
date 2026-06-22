@@ -43,11 +43,11 @@ export default async function ImpactPage() {
 
   return (
     <>
-      <Section className="pt-20 pb-12">
+      <Section className="pt-8 pb-6 sm:pt-12">
         <Container>
           <FadeUp>
-            <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Our Impact</h1>
-            <p className="text-muted max-w-2xl text-lg">
+            <h1 className="mb-3 text-2xl font-bold sm:text-4xl">Our Impact</h1>
+            <p className="text-muted max-w-2xl text-base sm:text-lg">
               Measuring research outcomes through publications, student training, and community
               change.
             </p>

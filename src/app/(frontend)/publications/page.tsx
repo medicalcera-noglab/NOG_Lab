@@ -100,16 +100,20 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pubsJsonLd) }}
       />
       <main id="main-content">
-        <Container className="py-16 md:py-24">
+        <Container className="py-8 md:py-20">
           {/* ── Page header ── */}
-          <div className="mb-12">
-            <h1 className="font-heading text-fg text-4xl font-bold md:text-5xl">Publications</h1>
-            <p className="text-muted mt-3 max-w-2xl text-base">
-              {publications.length > 0
-                ? `${publications.length} publication${publications.length !== 1 ? 's' : ''}`
-                : 'No publications found'}
-              {hasFilters ? ' matching the selected filters.' : '.'}
-            </p>
+          <div className="mb-6 md:mb-10">
+            <h1 className="font-heading text-fg text-2xl font-bold sm:text-4xl md:text-5xl">
+              Publications
+            </h1>
+            {(publications.length > 0 || hasFilters) && (
+              <p className="text-muted mt-2 max-w-2xl text-sm sm:text-base">
+                {publications.length > 0
+                  ? `${publications.length} publication${publications.length !== 1 ? 's' : ''}`
+                  : 'No publications found'}
+                {hasFilters ? ' matching the selected filters.' : '.'}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">

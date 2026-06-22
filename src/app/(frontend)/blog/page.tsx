@@ -43,9 +43,9 @@ export default async function BlogPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <Section className="pt-20 pb-8">
+      <Section className="pt-8 pb-6 sm:pt-12">
         <Container>
-          <h1 className="mb-6 text-3xl font-bold sm:text-4xl">Blog</h1>
+          <h1 className="mb-4 text-2xl font-bold sm:text-4xl">Blog</h1>
 
           {allTags.length > 0 && (
             <nav aria-label="Filter by tag">
@@ -86,7 +86,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
         </Container>
       </Section>
 
-      <Section className="pt-4 pb-20 md:pt-6">
+      <Section className="pt-4 pb-12 md:pt-6 md:pb-20">
         <Container>
           {posts.length === 0 ? (
             <EmptyState

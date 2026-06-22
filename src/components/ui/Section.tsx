@@ -7,5 +7,5 @@ interface SectionProps {
 }
 
 export function Section({ as: Tag = 'section', className, children }: SectionProps) {
-  return <Tag className={cn('py-10 md:py-16 lg:py-24', className)}>{children}</Tag>
+  return <Tag className={cn('py-6 md:py-12 lg:py-20', className)}>{children}</Tag>
 }

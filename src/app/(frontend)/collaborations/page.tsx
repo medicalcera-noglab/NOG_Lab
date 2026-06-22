@@ -34,11 +34,11 @@ export default async function CollaborationsPage() {
 
   return (
     <>
-      <Section className="pt-20 pb-12">
+      <Section className="pt-8 pb-6 sm:pt-12">
         <Container>
           <FadeUp>
-            <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Collaborations</h1>
-            <p className="text-muted max-w-2xl text-lg">
+            <h1 className="mb-3 text-2xl font-bold sm:text-4xl">Collaborations</h1>
+            <p className="text-muted max-w-2xl text-base sm:text-lg">
               We work with institutions, funders, and researchers across the globe.
             </p>
           </FadeUp>

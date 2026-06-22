@@ -102,15 +102,15 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const hasFilters = Boolean(sp.theme || sp.status || sp.funder || sp.province)
 
   return (
-    <Section className="bg-bg py-16 md:py-24">
+    <Section className="bg-bg py-8 md:py-20">
       <Container>
         {/* Page header */}
         <FadeUp>
-          <div className="mb-10">
-            <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
+          <div className="mb-5 md:mb-10">
+            <p className="text-primary mb-1.5 text-xs font-semibold tracking-[0.15em] uppercase">
               Our work
             </p>
-            <h1 className="font-heading text-fg text-3xl font-bold sm:text-4xl">Projects</h1>
+            <h1 className="font-heading text-fg text-2xl font-bold sm:text-4xl">Projects</h1>
           </div>
         </FadeUp>
 

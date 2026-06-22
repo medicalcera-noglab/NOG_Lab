@@ -29,13 +29,15 @@ export default async function ResearchPage() {
   return (
     <>
       {/* Page hero */}
-      <div className="bg-bg border-border border-b py-16 md:py-20">
+      <div className="bg-bg border-border border-b py-8 md:py-16">
         <Container>
           <FadeUp>
             <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
               What we study
             </p>
-            <h1 className="font-heading text-fg text-4xl font-bold md:text-5xl">Research</h1>
+            <h1 className="font-heading text-fg text-3xl font-bold sm:text-4xl md:text-5xl">
+              Research
+            </h1>
           </FadeUp>
         </Container>
       </div>

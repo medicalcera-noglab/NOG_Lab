@@ -29,7 +29,7 @@ export default async function ContactPage() {
 
   return (
     <>
-      <Section className="pt-20 pb-12">
+      <Section className="pt-8 pb-6 sm:pt-12">
         <Container>
           <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Contact Us</h1>
           <p className="text-muted max-w-xl text-lg">
@@ -38,7 +38,7 @@ export default async function ContactPage() {
         </Container>
       </Section>
 
-      <Section className="pb-20">
+      <Section className="pb-12 md:pb-20">
         <Container>
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
             {/* Info column */}

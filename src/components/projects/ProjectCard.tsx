@@ -28,7 +28,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         href={`/projects/${slug}`}
         tabIndex={-1}
         aria-hidden="true"
-        className="bg-surface-raised block aspect-[16/9] overflow-hidden"
+        className="bg-surface-raised block aspect-[16/9] max-h-44 overflow-hidden sm:max-h-none"
       >
         <div className="relative h-full w-full">
           <MediaImage
@@ -43,7 +43,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       </Link>
 
       {/* Content */}
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
         {/* Theme + status badges */}
         <div className="mb-3 flex flex-wrap items-center gap-2">
           {theme && (

@@ -18,7 +18,7 @@ export function BlogCard({ post }: Props) {
       {/* Image area — always rendered for consistent card height */}
       <Link
         href={`/blog/${post.slug ?? post.id}`}
-        className="block aspect-video overflow-hidden"
+        className="block aspect-video max-h-44 overflow-hidden sm:max-h-none"
         tabIndex={-1}
         aria-hidden
       >
@@ -30,7 +30,7 @@ export function BlogCard({ post }: Props) {
           className="h-full w-full object-cover"
         />
       </Link>
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-2 p-4 sm:gap-3 sm:p-5">
         <div className="flex flex-wrap gap-2">
           {tags.slice(0, 3).map((tag) => (
             <span
