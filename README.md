@@ -22,8 +22,8 @@ Public marketing/science site + self-service admin CMS in a single repo, single 
 
 ## Prerequisites
 
-- **Node.js 22** (required — Node 24 breaks the Payload CLI; use `nvm use 22`)
-- npm ≥ 10
+- **Node.js 24** (LTS — matches CI and the lock file)
+- npm ≥ 11
 - PostgreSQL ≥ 14 with **PostGIS** extension installed (`CREATE EXTENSION postgis`)
 
 ---
@@ -73,10 +73,7 @@ npm run payload migrate
 
 ### Create a new migration after changing collections
 
-**Must use Node 22** (the Payload CLI breaks on Node 24):
-
 ```bash
-nvm use 22
 npm run payload migrate:create
 ```
 
@@ -130,7 +127,7 @@ The seed script is idempotent — safe to run multiple times.
 | `npm run format`       | Prettier format all files            |
 | `npm run format:check` | Prettier check (CI-safe)             |
 | `npm run seed`         | Seed demo data (idempotent)          |
-| `npm run payload`      | Payload CLI (use Node 22)            |
+| `npm run payload`      | Payload CLI                          |
 
 ---
 
