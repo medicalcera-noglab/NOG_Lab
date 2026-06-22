@@ -19,15 +19,15 @@ export function ResearchInPageNav({ themes, className }: ResearchInPageNavProps)
     >
       <ul
         role="list"
-        className="scrollbar-hide flex gap-x-1 gap-y-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0"
+        className="scrollbar-hide flex gap-x-1 gap-y-2 overflow-x-auto pe-4 pb-1 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pe-0 sm:pb-0"
       >
         {themes.map((theme) => (
-          <li key={theme.id}>
+          <li key={theme.id} className="shrink-0">
             <a
               href={`#theme-${theme.slug ?? theme.id}`}
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5',
-                'text-sm font-medium transition-colors duration-150',
+                'text-sm font-medium whitespace-nowrap transition-colors duration-150',
                 'text-muted hover:text-fg hover:bg-surface-raised',
                 'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
               )}

@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { RichText } from '@/components/RichText'
 import { MolecularDots } from '@/components/motifs/MolecularDots'
 import { PublicationListItem } from '@/components/publications/PublicationListItem'
-import { LucideIcon } from '@/lib/lucideIcon'
+import { LucideIcon, resolveLucideIcon } from '@/lib/lucideIcon'
 import { lexicalToText } from '@/lib/richtext'
 import { cn } from '@/lib/utils'
 import type { ResearchTheme, Project, Publication, Person, Media } from '../../../payload-types'
@@ -53,7 +53,7 @@ export function ThemeSection({
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         {/* ── Header ── */}
         <div className="mb-10 flex items-start gap-4">
-          {theme.icon && (
+          {theme.icon && resolveLucideIcon(theme.icon) && (
             <span
               className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
               style={{ backgroundColor: 'color-mix(in oklch, var(--tc) 15%, transparent)' }}
