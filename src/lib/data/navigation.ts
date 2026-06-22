@@ -13,5 +13,5 @@ export const getNavigation = unstable_cache(
     }
   },
   ['navigation-global'],
-  { revalidate: 300, tags: ['navigation'] },
+  { revalidate: 60, tags: ['navigation'] },
 )
