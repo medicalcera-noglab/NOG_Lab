@@ -36,7 +36,7 @@ yarn-error.log*
 .env.*.local
 
 # Payload generated types (regenerate with npm run build)
-payload-types.ts
+# payload-types.ts is committed — needed for TypeScript builds
 
 # vercel
 .vercel
