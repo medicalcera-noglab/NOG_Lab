@@ -14,7 +14,7 @@ export function BlogCard({ post }: Props) {
   const tags = post.tags?.map((t) => t.tag) ?? []
 
   return (
-    <article className="border-border bg-surface flex flex-col overflow-hidden rounded-xl border transition-shadow hover:shadow-md">
+    <article className="card-hover border-border bg-surface flex h-full flex-col overflow-hidden rounded-xl border">
       {/* Image area — always rendered for consistent card height */}
       <Link
         href={`/blog/${post.slug ?? post.id}`}

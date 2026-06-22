@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { NewsCard } from '@/components/news/NewsCard'
+import { FadeUp } from '@/components/FadeUp'
 import { getNewsList } from '@/lib/data/news'
 import type { NewsCategory } from '@/lib/data/news'
 import { EmptyState } from '@/components/placeholders'
@@ -94,9 +95,11 @@ export default async function NewsPage({ searchParams }: PageProps) {
             />
           ) : (
             <ul className="space-y-4" role="list">
-              {items.map((item) => (
+              {items.map((item, i) => (
                 <li key={item.id}>
-                  <NewsCard item={item} />
+                  <FadeUp delay={Math.min(i * 0.04, 0.2)}>
+                    <NewsCard item={item} />
+                  </FadeUp>
                 </li>
               ))}
             </ul>

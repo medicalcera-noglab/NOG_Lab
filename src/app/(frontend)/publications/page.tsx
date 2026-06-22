@@ -8,6 +8,7 @@ import { PublicationFilters } from '@/components/publications/PublicationFilters
 import { getFilteredPublications, getPublicationFilterOptions } from '@/lib/data/publications'
 import type { PublicationFilters as Filters } from '@/lib/data/publications'
 import { EmptyState } from '@/components/placeholders'
+import { FadeUp } from '@/components/FadeUp'
 import { cn } from '@/lib/utils'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -173,9 +174,11 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
                 />
               ) : (
                 <ul role="list" className="flex flex-col gap-4">
-                  {publications.map((pub) => (
+                  {publications.map((pub, i) => (
                     <li key={pub.id}>
-                      <PublicationListItem publication={pub} showCiteLinks />
+                      <FadeUp delay={Math.min(i * 0.04, 0.2)}>
+                        <PublicationListItem publication={pub} showCiteLinks />
+                      </FadeUp>
                     </li>
                   ))}
                 </ul>

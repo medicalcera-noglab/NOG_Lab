@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { BlogCard } from '@/components/blog/BlogCard'
+import { FadeUp } from '@/components/FadeUp'
 import { getBlogList } from '@/lib/data/blog'
 import { EmptyState } from '@/components/placeholders'
 
@@ -100,9 +101,11 @@ export default async function BlogPage({ searchParams }: PageProps) {
             />
           ) : (
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
-              {posts.map((post) => (
+              {posts.map((post, i) => (
                 <li key={post.id} className="h-full">
-                  <BlogCard post={post} />
+                  <FadeUp delay={Math.min(i * 0.05, 0.25)}>
+                    <BlogCard post={post} />
+                  </FadeUp>
                 </li>
               ))}
             </ul>

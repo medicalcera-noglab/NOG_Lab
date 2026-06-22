@@ -16,8 +16,7 @@ export function PersonCard({ person, roleLabel }: PersonCardProps) {
   return (
     <article
       className={cn(
-        'group border-border bg-bg flex h-full flex-col overflow-hidden rounded-xl border',
-        'transition-shadow duration-200 hover:shadow-md',
+        'card-hover group border-border bg-bg flex h-full flex-col overflow-hidden rounded-xl border',
       )}
     >
       {/* Photo — always rendered; MediaImage shows placeholder when photo is absent */}

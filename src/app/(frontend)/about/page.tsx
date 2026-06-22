@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
 import { Download } from 'lucide-react'
+import { FadeUp } from '@/components/FadeUp'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { buttonVariants } from '@/components/ui/Button'
@@ -47,8 +48,10 @@ export default async function AboutPage() {
       {about?.mission && (
         <Section className="pt-20 pb-12">
           <Container>
-            <h1 className="mb-8 text-3xl font-bold sm:text-4xl">About NOG Lab</h1>
-            <RichText data={about.mission} className="max-w-3xl text-lg" />
+            <FadeUp>
+              <h1 className="mb-8 text-3xl font-bold sm:text-4xl">About NOG Lab</h1>
+              <RichText data={about.mission} className="max-w-3xl text-lg" />
+            </FadeUp>
           </Container>
         </Section>
       )}
@@ -57,22 +60,24 @@ export default async function AboutPage() {
       {about?.directorMessage && (
         <Section className="bg-surface py-12">
           <Container>
-            <div className="flex flex-col items-center gap-8 md:flex-row md:items-start">
-              {portrait && (
-                <div className="border-border h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 sm:h-48 sm:w-48 md:mx-0">
-                  <MediaImage
-                    doc={portrait}
-                    sizes="192px"
-                    priority
-                    className="h-full w-full object-cover"
-                  />
+            <FadeUp>
+              <div className="flex flex-col items-center gap-8 md:flex-row md:items-start">
+                {portrait && (
+                  <div className="border-border h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 sm:h-48 sm:w-48 md:mx-0">
+                    <MediaImage
+                      doc={portrait}
+                      sizes="192px"
+                      priority
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <h2 className="mb-4 text-2xl font-bold">Director&apos;s Message</h2>
+                  <RichText data={about.directorMessage} className="max-w-2xl" />
                 </div>
-              )}
-              <div className="flex-1">
-                <h2 className="mb-4 text-2xl font-bold">Director&apos;s Message</h2>
-                <RichText data={about.directorMessage} className="max-w-2xl" />
               </div>
-            </div>
+            </FadeUp>
           </Container>
         </Section>
       )}
@@ -81,8 +86,10 @@ export default async function AboutPage() {
       {about?.kmuAffiliation && (
         <Section className="py-12">
           <Container>
-            <h2 className="mb-6 text-2xl font-bold">Institutional Affiliation</h2>
-            <RichText data={about.kmuAffiliation} className="max-w-3xl" />
+            <FadeUp>
+              <h2 className="mb-6 text-2xl font-bold">Institutional Affiliation</h2>
+              <RichText data={about.kmuAffiliation} className="max-w-3xl" />
+            </FadeUp>
           </Container>
         </Section>
       )}
@@ -91,8 +98,10 @@ export default async function AboutPage() {
       {about?.facilities && about.facilities.length > 0 && (
         <Section className="bg-surface py-12">
           <Container>
-            <h2 className="mb-6 text-2xl font-bold">Our Facilities</h2>
-            <FacilitiesGallery facilities={about.facilities} />
+            <FadeUp>
+              <h2 className="mb-6 text-2xl font-bold">Our Facilities</h2>
+              <FacilitiesGallery facilities={about.facilities} />
+            </FadeUp>
           </Container>
         </Section>
       )}
@@ -101,15 +110,17 @@ export default async function AboutPage() {
       {brochureUrl && (
         <Section className="py-12">
           <Container>
-            <a
-              href={brochureUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={buttonVariants({ variant: 'primary', size: 'lg' })}
-            >
-              <Download size={18} />
-              Download Lab Brochure
-            </a>
+            <FadeUp>
+              <a
+                href={brochureUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={buttonVariants({ variant: 'primary', size: 'lg' })}
+              >
+                <Download size={18} />
+                Download Lab Brochure
+              </a>
+            </FadeUp>
           </Container>
         </Section>
       )}
