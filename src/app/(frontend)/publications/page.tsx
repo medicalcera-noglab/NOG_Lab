@@ -5,6 +5,7 @@ import { getSiteSettings, getPageSeo, resolvePageSeo } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { PublicationListItem } from '@/components/publications/PublicationListItem'
 import { PublicationFilters } from '@/components/publications/PublicationFilters'
+import { FilterSheet } from '@/components/ui/FilterSheet'
 import { getFilteredPublications, getPublicationFilterOptions } from '@/lib/data/publications'
 import type { PublicationFilters as Filters } from '@/lib/data/publications'
 import { EmptyState } from '@/components/placeholders'
@@ -60,6 +61,7 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
     authorId: sp(params.author),
   }
   const hasFilters = Object.values(filters).some(Boolean)
+  const activeFilterCount = Object.values(filters).filter(Boolean).length
 
   const [publications, filterOptions] = await Promise.all([
     getFilteredPublications(filters),
@@ -116,9 +118,9 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
             )}
           </div>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
-            {/* ── Sidebar filters ── */}
-            <Suspense>
+          {/* Mobile filter trigger — hidden on lg+ where sidebar is always visible */}
+          <div className="mb-4 lg:hidden">
+            <FilterSheet activeCount={activeFilterCount}>
               <PublicationFilters
                 options={filterOptions}
                 active={{
@@ -128,6 +130,23 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
                   authorId: filters.authorId,
                 }}
               />
+            </FilterSheet>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
+            {/* ── Sidebar filters — desktop only ── */}
+            <Suspense>
+              <div className="hidden lg:block">
+                <PublicationFilters
+                  options={filterOptions}
+                  active={{
+                    year: filters.year,
+                    type: filters.type,
+                    themeSlug: filters.themeSlug,
+                    authorId: filters.authorId,
+                  }}
+                />
+              </div>
             </Suspense>
 
             {/* ── Publication list ── */}

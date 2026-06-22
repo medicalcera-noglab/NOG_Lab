@@ -15,6 +15,7 @@ import { Container } from '@/components/ui/Container'
 import { FadeUp } from '@/components/FadeUp'
 import { ProjectCard } from '@/components/projects/ProjectCard'
 import { ProjectFilters } from '@/components/projects/ProjectFilters'
+import { FilterSheet } from '@/components/ui/FilterSheet'
 import { ProjectsMap } from '@/components/projects/ProjectsMap'
 import { EmptyState } from '@/components/placeholders'
 import { cn } from '@/lib/utils'
@@ -100,6 +101,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const mapHref = makeToggleHref(active, 'view', 'map')
 
   const hasFilters = Boolean(sp.theme || sp.status || sp.funder || sp.province)
+  const activeFilterCount = [sp.theme, sp.status, sp.funder, sp.province].filter(Boolean).length
 
   return (
     <Section className="bg-bg py-8 md:py-20">
@@ -114,9 +116,21 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
           </div>
         </FadeUp>
 
-        <div className="flex flex-col gap-10 lg:flex-row lg:gap-12">
-          {/* ── Sidebar filters ── */}
-          <FadeUp delay={0.05} className="lg:w-56 lg:shrink-0">
+        {/* Mobile filter trigger — hidden on lg+ */}
+        <div className="mb-4 lg:hidden">
+          <FilterSheet activeCount={activeFilterCount}>
+            <ProjectFilters
+              themes={themes}
+              funders={filterOptions.funders}
+              provinces={filterOptions.provinces}
+              active={active}
+            />
+          </FilterSheet>
+        </div>
+
+        <div className="flex flex-col gap-6 lg:flex-row lg:gap-12">
+          {/* ── Sidebar filters — desktop only ── */}
+          <FadeUp delay={0.05} className="hidden lg:block lg:w-56 lg:shrink-0">
             <ProjectFilters
               themes={themes}
               funders={filterOptions.funders}
