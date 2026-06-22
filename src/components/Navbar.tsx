@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { NavMenu } from './NavMenu'
+import { NavLinks } from './NavLinks'
 import { Container } from './ui/Container'
 import { MediaImage } from './MediaImage'
 import { cn } from '@/lib/utils'
@@ -23,6 +24,9 @@ export async function Navbar() {
       isVisible: l.isVisible,
     }))
 
+  const social = settings.social ?? {}
+  const contactEmail = settings.contactEmail ?? null
+
   return (
     <header
       className={cn(
@@ -33,7 +37,7 @@ export async function Navbar() {
       <Container className="max-w-none">
         <nav
           aria-label="Primary navigation"
-          className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-6"
+          className="grid h-16 grid-cols-[1fr_auto] items-center gap-6 md:grid-cols-[auto_1fr_auto]"
         >
           {/* ── FAR LEFT: logo mark + wordmark ──────────────────────────────── */}
           <Link
@@ -99,28 +103,10 @@ export async function Navbar() {
           </Link>
 
           {/* ── MIDDLE: primary nav links (desktop only) — always rendered to hold col 2 */}
-          <ul role="list" className="hidden items-center justify-center gap-0.5 md:flex">
-            {headerLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  target={link.isExternal ? '_blank' : undefined}
-                  rel={link.isExternal ? 'noopener noreferrer' : undefined}
-                  className={cn(
-                    'rounded-lg px-3 py-2 text-sm font-medium',
-                    'text-muted hover:text-fg hover:bg-surface-raised',
-                    'transition-colors duration-150 focus-visible:outline-none',
-                    'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
-                  )}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <NavLinks links={headerLinks} />
 
           {/* ── FAR RIGHT: search + theme toggle (desktop) / hamburger (mobile) */}
-          <NavMenu links={headerLinks} />
+          <NavMenu links={headerLinks} social={social} contactEmail={contactEmail} />
         </nav>
       </Container>
     </header>
