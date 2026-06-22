@@ -162,9 +162,11 @@ export async function Footer() {
           {/* CMS-driven nav groups — auto-fill remaining space */}
           {footerGroups.length > 0 && (
             <div
-              className="grid flex-1 gap-x-8 gap-y-8"
+              className="grid flex-1 gap-x-6 gap-y-8 md:gap-x-8"
               style={{
-                gridTemplateColumns: `repeat(${Math.min(footerGroups.length, 4)}, minmax(0,1fr))`,
+                // auto-fit collapses empty tracks, so column count = min(groups, available space).
+                // min(140px,100%) prevents overflow on narrow containers.
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(140px, 100%), 1fr))',
               }}
             >
               {footerGroups.map((group) => (
