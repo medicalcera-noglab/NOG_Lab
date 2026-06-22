@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
+import { EASE_OUT, DUR, FADE_UP, VIEWPORT } from '@/lib/motion'
 
 interface FadeUpProps {
   children: React.ReactNode
@@ -8,19 +9,14 @@ interface FadeUpProps {
   delay?: number
 }
 
-const fadeVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0 },
-}
-
 /**
  * Scroll-triggered fade-up reveal.
- * No-ops when the user has requested reduced motion.
+ * No-ops (renders a plain div) when the user has requested reduced motion.
  */
 export function FadeUp({ children, className, delay = 0 }: FadeUpProps) {
-  const prefersReduced = useReducedMotion()
+  const reduced = useReducedMotion()
 
-  if (prefersReduced) {
+  if (reduced) {
     return <div className={className}>{children}</div>
   }
 
@@ -29,9 +25,9 @@ export function FadeUp({ children, className, delay = 0 }: FadeUpProps) {
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-60px' }}
-      variants={fadeVariants}
-      transition={{ duration: 0.5, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
+      viewport={VIEWPORT}
+      variants={FADE_UP}
+      transition={{ duration: DUR.md, delay, ease: EASE_OUT }}
     >
       {children}
     </motion.div>

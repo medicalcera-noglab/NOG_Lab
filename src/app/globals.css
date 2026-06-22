@@ -197,6 +197,134 @@ video {
   animation-play-state: paused !important;
 }
 
+/* ─────────────────────────────────────────────
+   View Transitions — browser history navigation.
+   Next.js client-side routing does not use this
+   path; it provides its own navigation pipeline.
+   ───────────────────────────────────────────── */
+@view-transition {
+  navigation: auto;
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+::view-transition-old(root) {
+  animation: 160ms ease-in vt-out both;
+}
+
+::view-transition-new(root) {
+  animation: 280ms ease-out vt-in both;
+  animation-delay: 60ms;
+}
+
+/* Collapse view transitions under reduced-motion (the * block above only covers elements). */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Hero kinetic entrance — CSS-only, LCP-safe.
+   Text is visible in the DOM from the first byte
+   (opacity never starts at 0, starts at 0.01).
+   The prefers-reduced-motion block collapses these
+   to 0.01 ms (effectively instant).
+   ───────────────────────────────────────────── */
+@keyframes hero-word {
+  from {
+    opacity: 0.01;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Each <span> in the h1 gets --word-index set inline. */
+.hero-word {
+  display: inline-block;
+  animation: hero-word 0.52s ease-out both;
+  animation-delay: calc(var(--word-index, 0) * 75ms + 40ms);
+}
+
+.hero-eyebrow {
+  animation: hero-fade-up 0.4s ease-out both;
+  /* Fires immediately — eyebrow is smallest text, appears first. */
+}
+
+.hero-tagline {
+  animation: hero-fade-up 0.52s ease-out both;
+  animation-delay: 180ms;
+}
+
+.hero-cta-row {
+  animation: hero-fade-up 0.5s ease-out both;
+  animation-delay: 360ms;
+}
+
+/* ─────────────────────────────────────────────
+   Card hover lift — add class="card-hover" to any
+   card wrapper that should rise on hover.
+   GPU-only (transform + shadow), no layout shift.
+   Disabled under reduced-motion (transition collapses).
+   ───────────────────────────────────────────── */
+.card-hover {
+  transition:
+    transform 0.22s ease-out,
+    box-shadow 0.22s ease-out;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 24px -6px color-mix(in oklch, var(--color-ink) 14%, transparent),
+    0 2px 8px -2px color-mix(in oklch, var(--color-ink) 6%, transparent);
+}
+
+/* ─────────────────────────────────────────────
+   Animated underline — for text links that should
+   grow from left on hover. Apply to the <a> tag.
+   ───────────────────────────────────────────── */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  transition: background-size 0.25s ease-out;
+  text-decoration: none;
+}
+
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1.5px;
+}
+
 /* Disable animation for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   * {
