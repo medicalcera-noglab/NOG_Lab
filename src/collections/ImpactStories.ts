@@ -22,7 +22,8 @@ export const ImpactStories: CollectionConfig = {
     maxPerDoc: 20,
   },
   access: {
-    read: () => true,
+    // Authenticated users see all; public only sees published docs.
+    read: ({ req }) => (req.user ? true : { status: { equals: 'published' } }),
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,

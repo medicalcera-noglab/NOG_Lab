@@ -2,11 +2,11 @@
  * GET /api/cron/citations
  *
  * Updates citationCount on every publication that has a DOI.
- * Protected by the CRON_SECRET env var (passed as the x-cron-secret header).
+ * Protected by the CRON_SECRET env var (passed as Authorization: Bearer).
  *
  * Run manually:
  *   curl -X GET https://yoursite.com/api/cron/citations \
- *        -H "x-cron-secret: <CRON_SECRET>"
+ *        -H "Authorization: Bearer <CRON_SECRET>"
  *
  * Production schedule is wired in Step 14 (GitHub Actions / Vercel cron).
  * The citation source is Crossref's is-referenced-by-count field.
@@ -51,9 +51,8 @@ function sleep(ms: number): Promise<void> {
 
 export async function GET(req: NextRequest) {
   // ── Secret check ────────────────────────────────────────────────────────────
-  const secret = req.headers.get('x-cron-secret')
   const expected = process.env.CRON_SECRET
-  if (!expected || !secret || secret !== expected) {
+  if (!expected || req.headers.get('authorization') !== `Bearer ${expected}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

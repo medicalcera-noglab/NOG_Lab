@@ -10,8 +10,8 @@
  * CSP third-party allowlist:
  *   script-src   — reCAPTCHA (google.com, gstatic.com); nonce for all inline scripts
  *   style-src    — 'unsafe-inline' required for Tailwind utilities & framer-motion
- *   img-src      — OSM tiles (light), CARTO tiles (dark), R2 media CDN
- *   frame-src    — Google Maps embed + reCAPTCHA iframe
+ *   img-src      — OSM tiles (light), CARTO tiles (dark), Cloudinary CDN, R2 media CDN
+ *   frame-src    — Google Maps embed + reCAPTCHA iframe + newsletter embed
  *   connect-src  — Crossref API (DOI fetch / citation cron)
  *
  * cookies() and headers() are async in Next.js 16 — always await them.
@@ -19,18 +19,29 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 // R2 public CDN hostname (no trailing slash) for img-src.
-// Falls back to wildcard r2.dev subdomain if env var not set.
 const r2PublicHost = (() => {
   const raw = process.env.R2_PUBLIC_URL ?? ''
   try {
-    return raw ? new URL(raw).origin : 'https://*.r2.dev'
+    return raw ? new URL(raw).origin : ''
   } catch {
-    return 'https://*.r2.dev'
+    return ''
+  }
+})()
+
+// Newsletter embed origin for frame-src (must be explicit to avoid wildcard).
+const newsletterEmbedOrigin = (() => {
+  const raw = process.env.NEWSLETTER_EMBED_URL ?? ''
+  try {
+    return raw ? new URL(raw).origin : ''
+  } catch {
+    return ''
   }
 })()
 
 function buildCsp(nonce: string): string {
   const isDev = process.env.NODE_ENV !== 'production'
+  const r2Part = r2PublicHost ? ` ${r2PublicHost}` : ''
+  const newsletterPart = newsletterEmbedOrigin ? ` ${newsletterEmbedOrigin}` : ''
   return [
     "default-src 'self'",
     // nonce covers Next.js hydration scripts + any inline <script>; no unsafe-inline.
@@ -38,11 +49,11 @@ function buildCsp(nonce: string): string {
     `script-src 'self' 'nonce-${nonce}' https://www.google.com https://www.gstatic.com${isDev ? " 'unsafe-eval'" : ''}`,
     // unsafe-inline required for Tailwind utility style="" and framer-motion DOM mutations
     "style-src 'self' 'unsafe-inline'",
-    // OSM tiles (light theme) + CARTO tiles (dark theme) + R2 media CDN
-    `img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com ${r2PublicHost}`,
+    // OSM tiles (light) + CARTO tiles (dark) + Cloudinary CDN + optional R2 CDN
+    `img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://res.cloudinary.com${r2Part}`,
     "font-src 'self'",
-    // Google Maps embed (on contact page) + reCAPTCHA v3 iframe
-    'frame-src https://www.google.com',
+    // Google Maps embed (contact page) + reCAPTCHA v3 iframe + optional newsletter embed
+    `frame-src https://www.google.com${newsletterPart}`,
     // Crossref DOI/citation API
     "connect-src 'self' https://api.crossref.org",
     "object-src 'none'",
