@@ -1,17 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronDown } from 'lucide-react'
-import dynamic from 'next/dynamic'
 import { Container } from '@/components/ui/Container'
 import { GrainTexture } from '@/components/motifs/GrainTexture'
+import { HeroCellFieldLazy } from './HeroCellFieldLazy'
 import { cn } from '@/lib/utils'
 import type { SiteSetting, Media } from '../../../payload-types'
-
-// Lazy-load the animated cell field — hydrates after first paint
-const HeroCellField = dynamic(() => import('./HeroCellField').then((m) => m.HeroCellField), {
-  ssr: false,
-  loading: () => null,
-})
 
 interface HeroSectionProps {
   labName: string
@@ -87,7 +81,7 @@ export function HeroSection({
       )}
 
       {/* ── Layer 4: Organic cell blobs (lazy, motion-safe) ──────────────────── */}
-      <HeroCellField />
+      <HeroCellFieldLazy />
 
       {/* ── Layer 5: Film grain / micrograph texture ─────────────────────────── */}
       <GrainTexture className="absolute inset-0" opacity={0.045} />
