@@ -34,7 +34,7 @@ export function HeroSection({
   return (
     <section
       aria-label="Lab introduction"
-      className="relative flex min-h-[100svh] flex-col overflow-hidden"
+      className="relative flex min-h-[480px] flex-col overflow-hidden md:min-h-[560px]"
     >
       {/* ── Layer 1: Static dark teal base — first paint (LCP) ───────────────── */}
       <div aria-hidden="true" className="absolute inset-0 bg-[#071918]" />
@@ -108,7 +108,7 @@ export function HeroSection({
 
       {/* ── Hero content ─────────────────────────────────────────────────────── */}
       <div className="relative z-10 flex flex-1 flex-col items-start justify-center">
-        <Container className="py-20 sm:py-28 lg:py-32">
+        <Container className="py-14 sm:py-20 lg:py-24">
           <div className="max-w-4xl">
             {/* Lab name badge — fine horizontal rule + label */}
             <div className="hero-badge mb-5 flex items-center gap-3">

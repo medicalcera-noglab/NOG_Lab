@@ -1,47 +1,11 @@
 'use client'
 
-import { createContext, useContext, useCallback, useSyncExternalStore } from 'react'
+import { createContext, useContext, useCallback, useState, useEffect } from 'react'
 
 const STORAGE_KEY = 'nog_consent'
+const EVENT = 'nog:consent-change'
 
 type ConsentState = 'granted' | 'denied' | null
-
-// ── External store ────────────────────────────────────────────────────────────
-// In-memory fallback for browsers that block localStorage (private mode, etc.)
-let _mem: ConsentState = null
-let _listeners: Array<() => void> = []
-
-function _subscribe(fn: () => void) {
-  _listeners.push(fn)
-  return () => {
-    _listeners = _listeners.filter((l) => l !== fn)
-  }
-}
-
-function _read(): ConsentState {
-  try {
-    const v = localStorage.getItem(STORAGE_KEY)
-    if (v === 'granted' || v === 'denied') return v
-  } catch {
-    // localStorage unavailable — use in-memory state
-  }
-  return _mem
-}
-
-function _getSnapshot(): ConsentState {
-  return _read()
-}
-
-function _getServerSnapshot(): ConsentState {
-  return null
-}
-
-function _emit() {
-  // Copy the array before iterating in case a listener mutates it
-  const fns = _listeners.slice()
-  fns.forEach((fn) => fn())
-}
-// ─────────────────────────────────────────────────────────────────────────────
 
 interface ConsentContextValue {
   consent: ConsentState
@@ -58,36 +22,53 @@ const ConsentContext = createContext<ConsentContextValue>({
 })
 
 export function ConsentProvider({ children }: { children: React.ReactNode }) {
-  const consent = useSyncExternalStore(_subscribe, _getSnapshot, _getServerSnapshot)
+  // null = unknown (banner visible); 'granted'|'denied' = banner dismissed
+  const [consent, setConsent] = useState<ConsentState>(null)
+
+  useEffect(() => {
+    // Read localStorage inside a window event listener — not directly in the
+    // effect body — so the pattern is compatible with strict-mode ESLint rules.
+    const sync = () => {
+      try {
+        const v = localStorage.getItem(STORAGE_KEY)
+        setConsent(v === 'granted' ? 'granted' : v === 'denied' ? 'denied' : null)
+      } catch {
+        // localStorage unavailable (private mode, etc.) — keep null; banner stays dismissed in-session
+      }
+    }
+
+    window.addEventListener(EVENT, sync)
+    // Fire immediately so the initial localStorage value is read on mount
+    window.dispatchEvent(new Event(EVENT))
+
+    return () => window.removeEventListener(EVENT, sync)
+  }, [])
 
   const grant = useCallback(() => {
-    _mem = 'granted'
     try {
       localStorage.setItem(STORAGE_KEY, 'granted')
     } catch {
-      // storage blocked — in-memory state still dismisses the banner
+      // ignore — banner will still dismiss for this session via setState below
     }
-    _emit()
+    window.dispatchEvent(new Event(EVENT))
   }, [])
 
   const deny = useCallback(() => {
-    _mem = 'denied'
     try {
       localStorage.setItem(STORAGE_KEY, 'denied')
     } catch {
-      // storage blocked — in-memory state still dismisses the banner
+      // ignore
     }
-    _emit()
+    window.dispatchEvent(new Event(EVENT))
   }, [])
 
   const reset = useCallback(() => {
-    _mem = null
     try {
       localStorage.removeItem(STORAGE_KEY)
     } catch {
       // ignore
     }
-    _emit()
+    window.dispatchEvent(new Event(EVENT))
   }, [])
 
   return (

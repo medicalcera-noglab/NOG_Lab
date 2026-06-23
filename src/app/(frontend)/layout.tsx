@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
+import Script from 'next/script'
 import { ThemeProvider } from '@/providers/ThemeProvider'
 import { ConsentProvider } from '@/providers/ConsentProvider'
 import { Navbar } from '@/components/Navbar'
@@ -43,16 +44,13 @@ export default async function FrontendLayout({ children }: { children: React.Rea
       className={`${plusJakartaSans.variable} ${inter.variable}`}
       suppressHydrationWarning
     >
-      {/* Blocking script: reads localStorage and sets data-theme BEFORE first paint.
-          Prevents the light→dark flash that occurs when next-themes hydrates client-side. */}
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}})()`,
-          }}
-        />
-      </head>
       <body className="bg-[var(--bg)] font-[family-name:var(--font-body)] text-[var(--fg)] antialiased">
+        {/* Runs before any JS or hydration — sets data-theme from localStorage so the
+            page paints in the correct theme on first load, preventing the light→dark flash. */}
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+        >{`(function(){try{var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}})();`}</Script>
         <ThemeProvider>
           <ConsentProvider>
             <a

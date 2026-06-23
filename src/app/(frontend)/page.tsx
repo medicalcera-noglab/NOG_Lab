@@ -22,7 +22,7 @@ import { TeamTeaser } from '@/components/home/TeamTeaser'
 import { LatestNews } from '@/components/home/LatestNews'
 import { PartnerStrip } from '@/components/home/PartnerStrip'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
