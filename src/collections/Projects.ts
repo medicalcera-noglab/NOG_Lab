@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { makeEnsureUniqueFeaturedHook } from '../hooks/ensureUniqueFeature'
-import { revalidateProjects } from '../hooks/revalidateCache'
+import { revalidateProjects, revalidateProjectsOnDelete } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const Projects: CollectionConfig = {
@@ -26,7 +26,7 @@ export const Projects: CollectionConfig = {
     beforeValidate: [makeSlugHook('title')],
     beforeChange: [makeEnsureUniqueFeaturedHook('projects')],
     afterChange: [revalidateProjects, makeAuditChangeHook('projects')],
-    afterDelete: [makeAuditDeleteHook('projects')],
+    afterDelete: [revalidateProjectsOnDelete, makeAuditDeleteHook('projects')],
   },
   fields: [
     {

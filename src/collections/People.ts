@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
-import { revalidatePeople } from '../hooks/revalidateCache'
+import { revalidatePeople, revalidatePeopleOnDelete } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const People: CollectionConfig = {
@@ -24,7 +24,7 @@ export const People: CollectionConfig = {
   hooks: {
     beforeValidate: [makeSlugHook('name')],
     afterChange: [revalidatePeople, makeAuditChangeHook('people')],
-    afterDelete: [makeAuditDeleteHook('people')],
+    afterDelete: [revalidatePeopleOnDelete, makeAuditDeleteHook('people')],
   },
   fields: [
     {

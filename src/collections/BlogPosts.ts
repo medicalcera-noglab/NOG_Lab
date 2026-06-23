@@ -5,7 +5,7 @@ import { computeReadingTimeHook } from '../hooks/computeReadingTime'
 import { setPublishedAtHook } from '../hooks/setPublishedAt'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { notifyEditorsHook } from '../hooks/notifyEditors'
-import { revalidateBlogPosts } from '../hooks/revalidateCache'
+import { revalidateBlogPosts, revalidateBlogPostsOnDelete } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 const preventContributorPublish = ({
@@ -57,7 +57,7 @@ export const BlogPosts: CollectionConfig = {
       preventContributorPublish as any,
     ],
     afterChange: [notifyEditorsHook, revalidateBlogPosts, makeAuditChangeHook('blog_posts')],
-    afterDelete: [makeAuditDeleteHook('blog_posts')],
+    afterDelete: [revalidateBlogPostsOnDelete, makeAuditDeleteHook('blog_posts')],
   },
   fields: [
     {

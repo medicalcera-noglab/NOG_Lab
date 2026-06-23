@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
-import { revalidateCollaborators } from '../hooks/revalidateCache'
+import { revalidateCollaborators, revalidateCollaboratorsOnDelete } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const Collaborators: CollectionConfig = {
@@ -22,7 +22,7 @@ export const Collaborators: CollectionConfig = {
   },
   hooks: {
     afterChange: [revalidateCollaborators, makeAuditChangeHook('collaborators')],
-    afterDelete: [makeAuditDeleteHook('collaborators')],
+    afterDelete: [revalidateCollaboratorsOnDelete, makeAuditDeleteHook('collaborators')],
   },
   fields: [
     {

@@ -1,7 +1,10 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
-import { revalidateResearchThemes } from '../hooks/revalidateCache'
+import {
+  revalidateResearchThemes,
+  revalidateResearchThemesOnDelete,
+} from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const ResearchThemes: CollectionConfig = {
@@ -25,7 +28,7 @@ export const ResearchThemes: CollectionConfig = {
   hooks: {
     beforeValidate: [makeSlugHook('name')],
     afterChange: [revalidateResearchThemes, makeAuditChangeHook('research_themes')],
-    afterDelete: [makeAuditDeleteHook('research_themes')],
+    afterDelete: [revalidateResearchThemesOnDelete, makeAuditDeleteHook('research_themes')],
   },
   fields: [
     {

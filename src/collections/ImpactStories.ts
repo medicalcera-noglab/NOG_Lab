@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { setPublishedAtHook } from '../hooks/setPublishedAt'
-import { revalidateImpactStories } from '../hooks/revalidateCache'
+import { revalidateImpactStories, revalidateImpactStoriesOnDelete } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const ImpactStories: CollectionConfig = {
@@ -32,7 +32,7 @@ export const ImpactStories: CollectionConfig = {
     beforeValidate: [makeSlugHook('title')],
     beforeChange: [setPublishedAtHook],
     afterChange: [revalidateImpactStories, makeAuditChangeHook('impact_stories')],
-    afterDelete: [makeAuditDeleteHook('impact_stories')],
+    afterDelete: [revalidateImpactStoriesOnDelete, makeAuditDeleteHook('impact_stories')],
   },
   fields: [
     {

@@ -4,7 +4,7 @@ import { setPublishedAtHook } from '../hooks/setPublishedAt'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { makeEnsureUniqueFeaturedHook } from '../hooks/ensureUniqueFeature'
 import { makeSlugHook } from '../hooks/makeSlug'
-import { revalidateNewsEvents } from '../hooks/revalidateCache'
+import { revalidateNewsEvents, revalidateNewsEventsOnDelete } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 const preventContributorPublish = ({
@@ -56,7 +56,7 @@ export const NewsEvents: CollectionConfig = {
       preventContributorPublish as any,
     ],
     afterChange: [revalidateNewsEvents, makeAuditChangeHook('news_events')],
-    afterDelete: [makeAuditDeleteHook('news_events')],
+    afterDelete: [revalidateNewsEventsOnDelete, makeAuditDeleteHook('news_events')],
   },
   fields: [
     {
