@@ -23,10 +23,34 @@ async function main() {
     slug: 'site_settings',
     data: {
       labName: 'NOG Lab',
-      tagline: 'Nutrition, Oral & Gut microbiome',
+      tagline: 'Nutrition, Oral & Gut Microbiome',
       contactAddress:
         'Institute of Basic Medical Sciences, Khyber Medical University, Hayat Abad Phase 5, Peshawar 25100, Pakistan',
-      contactEmail: '', // client will provide tomorrow
+      contactEmail: '', // client will provide
+      heroCtaPrimary: { label: 'Explore our research', href: '/research' },
+      heroCtaSecondary: { label: 'Meet the team', href: '/people' },
+      bigQuestions: [
+        {
+          question:
+            'How does early-life malnutrition alter the oral and gut microbiome in Pakistani children?',
+        },
+        {
+          question:
+            'Can microbiome signatures predict stunting and growth outcomes in undernourished populations?',
+        },
+        {
+          question:
+            'How does smokeless tobacco use reshape the oral microbial ecosystem and increase cancer risk?',
+        },
+        {
+          question:
+            'What dietary interventions can restore healthy microbiome diversity in at-risk children?',
+        },
+        {
+          question:
+            'How do host–microbiome interactions connect nutritional status to systemic health outcomes?',
+        },
+      ],
     },
   })
   log('SiteSettings updated')

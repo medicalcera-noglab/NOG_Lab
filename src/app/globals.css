@@ -204,6 +204,29 @@ video {
   animation-play-state: paused !important;
 }
 
+/* Scroll cue — gentle bounce draws the eye downward */
+@keyframes hero-scroll-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.25;
+  }
+  55% {
+    transform: translateY(7px);
+    opacity: 0.5;
+  }
+}
+
+.hero-scroll-cue {
+  animation: hero-scroll-bounce 2.6s ease-in-out infinite;
+}
+
+/* Lab badge — fades in before the eyebrow */
+.hero-badge {
+  animation: hero-fade-up 0.35s ease-out both;
+  animation-delay: 20ms;
+}
+
 /* ─────────────────────────────────────────────
    View Transitions — browser history navigation.
    Next.js client-side routing does not use this
@@ -276,23 +299,23 @@ video {
 /* Each <span> in the h1 gets --word-index set inline. */
 .hero-word {
   display: inline-block;
-  animation: hero-word 0.52s ease-out both;
-  animation-delay: calc(var(--word-index, 0) * 75ms + 40ms);
+  animation: hero-word 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--word-index, 0) * 65ms + 80ms);
 }
 
 .hero-eyebrow {
-  animation: hero-fade-up 0.4s ease-out both;
-  /* Fires immediately — eyebrow is smallest text, appears first. */
+  animation: hero-fade-up 0.38s ease-out both;
+  animation-delay: 45ms;
 }
 
 .hero-tagline {
-  animation: hero-fade-up 0.52s ease-out both;
+  animation: hero-fade-up 0.48s ease-out both;
   animation-delay: 180ms;
 }
 
 .hero-cta-row {
-  animation: hero-fade-up 0.5s ease-out both;
-  animation-delay: 360ms;
+  animation: hero-fade-up 0.48s ease-out both;
+  animation-delay: 400ms;
 }
 
 /* ─────────────────────────────────────────────
