@@ -21,6 +21,8 @@ import * as migration_20260621_000003_locked_docs_applicant_files from './202606
 import * as migration_20260621_000004_versioned_published_locale from './20260621_000004_versioned_published_locale'
 import * as migration_20260621_000005_navigation_varchar_id from './20260621_000005_navigation_varchar_id'
 import * as migration_20260621_100000_drop_localization from './20260621_100000_drop_localization'
+import * as migration_20260622_000001_nav_join_us from './20260622_000001_nav_join_us'
+import * as migration_20260623_170421 from './20260623_170421'
 
 export const migrations = [
   {
@@ -137,5 +139,15 @@ export const migrations = [
     up: migration_20260621_100000_drop_localization.up,
     down: migration_20260621_100000_drop_localization.down,
     name: '20260621_100000_drop_localization',
+  },
+  {
+    up: migration_20260622_000001_nav_join_us.up,
+    down: migration_20260622_000001_nav_join_us.down,
+    name: '20260622_000001_nav_join_us',
+  },
+  {
+    up: migration_20260623_170421.up,
+    down: migration_20260623_170421.down,
+    name: '20260623_170421',
   },
 ]

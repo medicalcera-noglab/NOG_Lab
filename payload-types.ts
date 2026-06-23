@@ -748,6 +748,10 @@ export interface Inquiry {
   name: string;
   email: string;
   message: string;
+  /**
+   * Position applied for (join inquiries only)
+   */
+  positionTitle?: string | null;
   cv?: (number | null) | ApplicantFile;
   /**
    * Statement of Purpose (join inquiries only)
@@ -1243,6 +1247,7 @@ export interface InquiriesSelect<T extends boolean = true> {
   name?: T;
   email?: T;
   message?: T;
+  positionTitle?: T;
   cv?: T;
   sop?: T;
   isRead?: T;

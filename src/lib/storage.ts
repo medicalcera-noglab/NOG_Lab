@@ -15,6 +15,7 @@ import type {
   HandleUpload,
   HandleDelete,
   GenerateURL,
+  StaticHandler,
   Adapter,
 } from '@payloadcms/plugin-cloud-storage/types'
 
@@ -99,10 +100,77 @@ function buildCloudinaryPlugin(): Plugin {
   })
 }
 
-// ── Vercel Blob config ───────────────────────────────────────────────────────
+// ── Vercel Blob (private) config ─────────────────────────────────────────────
 
 function hasVercelBlob(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN)
+}
+
+/**
+ * Custom adapter for applicant_files that stores blobs as `access: 'private'`.
+ * The plugin's default staticHandler does a raw fetch() to the blob URL, which
+ * fails for private blobs.  This adapter instead calls head() to get a signed
+ * downloadUrl and redirects the authenticated user to it.
+ */
+function buildPrivateBlobPlugin(token: string): Plugin {
+  const storeId = token.match(/^vercel_blob_rw_([a-z\d]+)_[a-z\d]+$/i)?.[1]?.toLowerCase()
+  if (!storeId)
+    throw new Error('Invalid BLOB_READ_WRITE_TOKEN format — cannot build private blob adapter')
+
+  const privateBase = `https://${storeId}.private.blob.vercel-storage.com`
+  const blobPath = (filename: string) => `applicant-files/${filename}`
+  const blobUrl = (filename: string) => `${privateBase}/${blobPath(filename)}`
+
+  const handleUpload: HandleUpload = async ({ data, file }) => {
+    const { put } = await import('@vercel/blob')
+    await put(blobPath(file.filename), file.buffer, {
+      access: 'private',
+      contentType: file.mimeType,
+      token,
+    })
+    return data
+  }
+
+  const handleDelete: HandleDelete = async ({ filename }) => {
+    const { del } = await import('@vercel/blob')
+    await del(blobUrl(filename), { token }).catch(() => {})
+  }
+
+  const generateURL: GenerateURL = ({ filename }) =>
+    `/api/applicant-files/${encodeURIComponent(filename)}`
+
+  const staticHandler: StaticHandler = async (req, { params: { filename } }) => {
+    // Only authenticated admins and editors can download applicant files.
+    if (!req.user) return new Response('Unauthorized', { status: 401 })
+    const role = (req.user as { role?: string }).role
+    if (role !== 'super_admin' && role !== 'editor') {
+      return new Response('Forbidden', { status: 403 })
+    }
+    const { head } = await import('@vercel/blob')
+    try {
+      const { downloadUrl } = await head(blobUrl(filename), { token })
+      return Response.redirect(downloadUrl)
+    } catch {
+      return new Response('Not Found', { status: 404 })
+    }
+  }
+
+  const adapter: Adapter = () => ({
+    name: 'vercel-blob-private',
+    handleUpload,
+    handleDelete,
+    generateURL,
+    staticHandler,
+  })
+
+  return cloudStoragePlugin({
+    collections: {
+      applicant_files: {
+        adapter,
+        disableLocalStorage: true,
+      },
+    },
+  })
 }
 
 // ── R2 config (legacy / optional) ───────────────────────────────────────────
@@ -164,17 +232,21 @@ export function buildStoragePlugin(): Plugin[] {
     plugins.push(buildCloudinaryPlugin())
   }
 
-  // Vercel Blob for applicant files (private docs)
+  // Vercel Blob for applicant files (private docs — custom adapter)
   if (hasVercelBlob()) {
-    plugins.push(
-      vercelBlobStorage({
-        token: process.env.BLOB_READ_WRITE_TOKEN!,
-        collections: {
-          // only handle applicant_files here if Cloudinary handles media
-          ...(hasCloudinary() ? { applicant_files: true } : { media: true, applicant_files: true }),
-        },
-      }),
-    )
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN!
+    plugins.push(buildPrivateBlobPlugin(blobToken))
+
+    // If Cloudinary is NOT configured, also handle public media through the
+    // standard plugin (public blobs are fine for non-sensitive images).
+    if (!hasCloudinary()) {
+      plugins.push(
+        vercelBlobStorage({
+          token: blobToken,
+          collections: { media: true },
+        }),
+      )
+    }
   }
 
   if (plugins.length === 0 && process.env.NODE_ENV !== 'test' && !_warnedOnce) {
