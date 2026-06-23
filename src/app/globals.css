@@ -227,45 +227,7 @@ video {
   animation-delay: 20ms;
 }
 
-/* ─────────────────────────────────────────────
-   View Transitions — browser history navigation.
-   Next.js client-side routing does not use this
-   path; it provides its own navigation pipeline.
-   ───────────────────────────────────────────── */
-@view-transition {
-  navigation: auto;
-}
-
-@keyframes vt-out {
-  to {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-}
-
-@keyframes vt-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-}
-
-::view-transition-old(root) {
-  animation: 160ms ease-in vt-out both;
-}
-
-::view-transition-new(root) {
-  animation: 280ms ease-out vt-in both;
-  animation-delay: 60ms;
-}
-
-/* Collapse view transitions under reduced-motion (the * block above only covers elements). */
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
-}
+/* View Transitions disabled — page navigation snaps fresh like a full reload. */
 
 /* ─────────────────────────────────────────────
    Hero kinetic entrance — CSS-only, LCP-safe.
