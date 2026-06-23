@@ -1,8 +1,16 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access'
 import { makeSlugHook } from '../hooks/makeSlug'
 import { revalidatePeople, revalidatePeopleOnDelete } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
+
+// Auto-promote to alumni when leftDate is set.
+const autoAlumniHook: CollectionBeforeChangeHook = ({ data }) => {
+  if (data.leftDate && data.role !== 'alumni') {
+    return { ...data, role: 'alumni' }
+  }
+  return data
+}
 
 export const People: CollectionConfig = {
   slug: 'people',
@@ -23,6 +31,7 @@ export const People: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [makeSlugHook('name')],
+    beforeChange: [autoAlumniHook],
     afterChange: [revalidatePeople, makeAuditChangeHook('people')],
     afterDelete: [revalidatePeopleOnDelete, makeAuditDeleteHook('people')],
   },
@@ -64,6 +73,13 @@ export const People: CollectionConfig = {
     {
       name: 'email',
       type: 'email',
+      // Only authenticated admins/editors see personal email via the API.
+      access: {
+        read: ({ req }) => {
+          const role = (req.user as { role?: string } | null)?.role
+          return role === 'super_admin' || role === 'editor'
+        },
+      },
     },
     {
       name: 'orcid',
