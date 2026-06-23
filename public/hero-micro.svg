@@ -1,0 +1,125 @@
+<svg viewBox="0 0 1440 860" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Radial gradient for 3D sphere illusion on cocci -->
+    <radialGradient id="g-teal" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#2ab5b5" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#052e2e" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="g-teal2" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#1A9090" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#031a1a" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="g-coral" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#e8806a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#3a1008" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="g-sand" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#c8a878" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#2a1c0a" stop-opacity="1"/>
+    </radialGradient>
+    <filter id="blur-soft">
+      <feGaussianBlur stdDeviation="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- Dark field background -->
+  <rect width="1440" height="860" fill="#020d0c"/>
+
+  <!-- ── Cluster 1: Upper-left cocci colony ─────────────────────────────── -->
+  <circle cx="148" cy="108" r="18" fill="url(#g-teal)" opacity="0.72"/>
+  <circle cx="183" cy="94"  r="14" fill="url(#g-teal2)" opacity="0.65"/>
+  <circle cx="205" cy="118" r="16" fill="url(#g-teal)" opacity="0.68"/>
+  <circle cx="174" cy="138" r="13" fill="url(#g-teal2)" opacity="0.60"/>
+  <circle cx="212" cy="144" r="11" fill="url(#g-teal)" opacity="0.55"/>
+  <circle cx="234" cy="118" r="12" fill="url(#g-teal2)" opacity="0.58"/>
+  <circle cx="192" cy="158" r="9"  fill="url(#g-teal)" opacity="0.50"/>
+
+  <!-- ── Bacilli (rod-shaped) scattered group 1 ─────────────────────────── -->
+  <ellipse cx="345" cy="75" rx="7" ry="26" fill="#0d6060" opacity="0.70" transform="rotate(38 345 75)"/>
+  <ellipse cx="378" cy="92" rx="6" ry="22" fill="#1A9090" opacity="0.62" transform="rotate(22 378 92)"/>
+  <ellipse cx="408" cy="62" rx="8" ry="28" fill="#0E6E6E" opacity="0.65" transform="rotate(55 408 62)"/>
+
+  <!-- ── Cluster 2: Upper-center lone cocci ─────────────────────────────── -->
+  <circle cx="590" cy="54"  r="10" fill="url(#g-teal)" opacity="0.55"/>
+  <circle cx="618" cy="42"  r="8"  fill="url(#g-teal2)" opacity="0.48"/>
+  <circle cx="638" cy="62"  r="12" fill="url(#g-teal)" opacity="0.60"/>
+
+  <!-- ── Bacilli group 2: center-left diagonal ─────────────────────────── -->
+  <ellipse cx="460" cy="220" rx="6" ry="24" fill="#0E6E6E" opacity="0.65" transform="rotate(-28 460 220)"/>
+  <ellipse cx="488" cy="248" rx="7" ry="20" fill="#1A9090" opacity="0.58" transform="rotate(15 488 248)"/>
+  <ellipse cx="510" cy="200" rx="5" ry="22" fill="#0d6060" opacity="0.55" transform="rotate(-60 510 200)"/>
+
+  <!-- ── Cluster 3: Right-side large colony ────────────────────────────── -->
+  <circle cx="1050" cy="168" r="22" fill="url(#g-teal)" opacity="0.75"/>
+  <circle cx="1085" cy="148" r="17" fill="url(#g-teal2)" opacity="0.68"/>
+  <circle cx="1110" cy="178" r="19" fill="url(#g-teal)" opacity="0.72"/>
+  <circle cx="1082" cy="202" r="14" fill="url(#g-teal2)" opacity="0.62"/>
+  <circle cx="1118" cy="206" r="16" fill="url(#g-teal)" opacity="0.65"/>
+  <circle cx="1140" cy="174" r="12" fill="url(#g-teal2)" opacity="0.55"/>
+  <circle cx="1058" cy="198" r="10" fill="url(#g-teal)" opacity="0.50"/>
+  <circle cx="1148" cy="148" r="9"  fill="url(#g-coral)" opacity="0.45"/>
+
+  <!-- ── Bacilli group 3: upper-right ──────────────────────────────────── -->
+  <ellipse cx="1280" cy="80" rx="6" ry="24" fill="#1A9090" opacity="0.62" transform="rotate(40 1280 80)"/>
+  <ellipse cx="1310" cy="100" rx="7" ry="20" fill="#0E6E6E" opacity="0.58" transform="rotate(-20 1310 100)"/>
+  <ellipse cx="1340" cy="68" rx="5" ry="26" fill="#1A9090" opacity="0.55" transform="rotate(65 1340 68)"/>
+
+  <!-- ── Scattered singles mid-canvas ──────────────────────────────────── -->
+  <circle cx="680" cy="310" r="14" fill="url(#g-teal2)" opacity="0.60"/>
+  <circle cx="720" cy="295" r="10" fill="url(#g-teal)" opacity="0.52"/>
+  <circle cx="705" cy="332" r="11" fill="url(#g-teal2)" opacity="0.48"/>
+
+  <circle cx="820" cy="420" r="16" fill="url(#g-teal)" opacity="0.65"/>
+  <circle cx="855" cy="402" r="12" fill="url(#g-teal2)" opacity="0.58"/>
+  <circle cx="845" cy="440" r="10" fill="url(#g-teal)" opacity="0.50"/>
+
+  <!-- ── Coral accent (rare — oxidation artifact in micrograph) ─────────── -->
+  <circle cx="560" cy="480" r="13" fill="url(#g-coral)" opacity="0.42"/>
+  <circle cx="590" cy="465" r="9"  fill="url(#g-coral)" opacity="0.35"/>
+  <ellipse cx="612" cy="490" rx="5" ry="16" fill="#b05040" opacity="0.40" transform="rotate(30 612 490)"/>
+
+  <!-- ── Cluster 4: Lower-left cocci colony ────────────────────────────── -->
+  <circle cx="112" cy="598" r="20" fill="url(#g-teal)" opacity="0.70"/>
+  <circle cx="148" cy="580" r="15" fill="url(#g-teal2)" opacity="0.63"/>
+  <circle cx="168" cy="606" r="18" fill="url(#g-teal)" opacity="0.68"/>
+  <circle cx="142" cy="628" r="13" fill="url(#g-teal2)" opacity="0.58"/>
+  <circle cx="176" cy="630" r="14" fill="url(#g-teal)" opacity="0.62"/>
+  <circle cx="118" cy="624" r="10" fill="url(#g-sand)" opacity="0.38"/>
+
+  <!-- ── Bacilli group 4: lower-left scattered ─────────────────────────── -->
+  <ellipse cx="290" cy="650" rx="6" ry="22" fill="#0E6E6E" opacity="0.60" transform="rotate(48 290 650)"/>
+  <ellipse cx="320" cy="672" rx="7" ry="20" fill="#1A9090" opacity="0.55" transform="rotate(-18 320 672)"/>
+  <ellipse cx="350" cy="640" rx="5" ry="24" fill="#0E6E6E" opacity="0.52" transform="rotate(70 350 640)"/>
+
+  <!-- ── Cluster 5: Lower-right large colony ───────────────────────────── -->
+  <circle cx="1040" cy="620" r="19" fill="url(#g-teal)" opacity="0.72"/>
+  <circle cx="1074" cy="600" r="15" fill="url(#g-teal2)" opacity="0.65"/>
+  <circle cx="1096" cy="628" r="17" fill="url(#g-teal)" opacity="0.68"/>
+  <circle cx="1070" cy="650" r="13" fill="url(#g-teal2)" opacity="0.60"/>
+  <circle cx="1104" cy="652" r="14" fill="url(#g-teal)" opacity="0.62"/>
+  <circle cx="1124" cy="624" r="11" fill="url(#g-teal2)" opacity="0.55"/>
+  <circle cx="1050" cy="648" r="9"  fill="url(#g-teal)" opacity="0.48"/>
+
+  <!-- ── Bacilli group 5: lower-right ──────────────────────────────────── -->
+  <ellipse cx="1230" cy="700" rx="7" ry="24" fill="#1A9090" opacity="0.62" transform="rotate(35 1230 700)"/>
+  <ellipse cx="1260" cy="720" rx="6" ry="20" fill="#0E6E6E" opacity="0.58" transform="rotate(-25 1260 720)"/>
+  <ellipse cx="1290" cy="695" rx="8" ry="22" fill="#1A9090" opacity="0.55" transform="rotate(58 1290 695)"/>
+  <ellipse cx="1380" cy="760" rx="6" ry="18" fill="#0E6E6E" opacity="0.50" transform="rotate(-42 1380 760)"/>
+
+  <!-- ── Extra scatter: lone bacteria ─────────────────────────────────── -->
+  <circle cx="750" cy="150" r="9"  fill="url(#g-teal2)" opacity="0.50"/>
+  <circle cx="900" cy="280" r="11" fill="url(#g-teal)" opacity="0.52"/>
+  <circle cx="200" cy="340" r="8"  fill="url(#g-teal2)" opacity="0.45"/>
+  <circle cx="1350" cy="400" r="12" fill="url(#g-teal)" opacity="0.55"/>
+  <circle cx="480" cy="760" r="10" fill="url(#g-teal2)" opacity="0.48"/>
+  <circle cx="650" cy="800" r="8"  fill="url(#g-teal)" opacity="0.42"/>
+  <circle cx="950" cy="780" r="13" fill="url(#g-teal2)" opacity="0.50"/>
+  <circle cx="1180" cy="540" r="10" fill="url(#g-teal)" opacity="0.48"/>
+  <circle cx="380" cy="420" r="9"  fill="url(#g-sand)" opacity="0.32"/>
+
+  <!-- ── Fine membrane rings (cell walls) on largest cocci ──────────────── -->
+  <circle cx="148" cy="108" r="18" fill="none" stroke="#2ab5b5" stroke-width="1" opacity="0.40"/>
+  <circle cx="1050" cy="168" r="22" fill="none" stroke="#1A9090" stroke-width="1.2" opacity="0.35"/>
+  <circle cx="112" cy="598" r="20" fill="none" stroke="#2ab5b5" stroke-width="1" opacity="0.38"/>
+  <circle cx="1040" cy="620" r="19" fill="none" stroke="#1A9090" stroke-width="1" opacity="0.35"/>
+</svg>

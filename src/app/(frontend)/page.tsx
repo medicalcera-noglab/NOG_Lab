@@ -9,12 +9,16 @@ import {
   getStudySiteCount,
   getPageSeo,
   resolvePageSeo,
+  getAllPeople,
+  getAbout,
 } from '@/lib/data'
 import { HeroSection } from '@/components/home/HeroSection'
 import { BigQuestionsStrip } from '@/components/home/BigQuestionsStrip'
+import { AboutTeaser } from '@/components/home/AboutTeaser'
 import { CountersSection } from '@/components/home/CountersSection'
 import { FeaturedProject } from '@/components/home/FeaturedProject'
 import { PakistanMapTeaser } from '@/components/home/PakistanMapTeaser'
+import { TeamTeaser } from '@/components/home/TeamTeaser'
 import { LatestNews } from '@/components/home/LatestNews'
 import { PartnerStrip } from '@/components/home/PartnerStrip'
 
@@ -33,7 +37,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
 
 export default async function HomePage() {
   // All data fetched in parallel — each is individually cached by unstable_cache
-  const [settings, counts, featuredProject, latestNews, collaborators, siteCount] =
+  const [settings, counts, featuredProject, latestNews, collaborators, siteCount, about, people] =
     await Promise.all([
       getSiteSettings(),
       getCounts(),
@@ -41,6 +45,8 @@ export default async function HomePage() {
       getLatestNews(),
       getCollaborators(),
       getStudySiteCount(),
+      getAbout(),
+      getAllPeople(),
     ])
 
   const orgJsonLd = {
@@ -80,11 +86,15 @@ export default async function HomePage() {
         <BigQuestionsStrip questions={settings.bigQuestions} />
       ) : null}
 
+      <AboutTeaser about={about} />
+
       <CountersSection counts={counts} />
 
       <FeaturedProject project={featuredProject} />
 
       <PakistanMapTeaser siteCount={siteCount} />
+
+      <TeamTeaser people={people} />
 
       <LatestNews items={latestNews} />
 

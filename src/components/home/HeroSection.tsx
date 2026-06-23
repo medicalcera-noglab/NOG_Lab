@@ -52,7 +52,22 @@ export function HeroSection({
         }}
       />
 
-      {/* ── Layer 3: Hero image with cinematic duotone treatment ──────────────── */}
+      {/* ── Layer 3: Microscopy texture — colorized bacteria colony SVG ────────── */}
+      {/* Always shown at low opacity; provides scientific depth when no CMS image is set */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          backgroundImage: 'url(/hero-micro.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.3,
+          filter: 'brightness(0.7)',
+          mixBlendMode: 'screen',
+        }}
+      />
+
+      {/* ── Layer 4: Hero image with cinematic duotone treatment ──────────────── */}
       {style === 'image' && imageDoc?.url && (
         <div aria-hidden="true" className="absolute inset-0">
           {/* Grayscale + low brightness = subtle texture in the dark bg */}
@@ -80,13 +95,13 @@ export function HeroSection({
         </div>
       )}
 
-      {/* ── Layer 4: Organic cell blobs (lazy, motion-safe) ──────────────────── */}
+      {/* ── Layer 5: Organic cell blobs (lazy, motion-safe) ──────────────────── */}
       <HeroCellFieldLazy />
 
-      {/* ── Layer 5: Film grain / micrograph texture ─────────────────────────── */}
+      {/* ── Layer 6: Film grain / micrograph texture ─────────────────────────── */}
       <GrainTexture className="absolute inset-0" opacity={0.045} />
 
-      {/* ── Layer 6: Bottom vignette for scroll legibility ───────────────────── */}
+      {/* ── Layer 7: Bottom vignette for scroll legibility ───────────────────── */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#071918]/80 to-transparent"
