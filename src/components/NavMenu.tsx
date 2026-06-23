@@ -88,15 +88,14 @@ export function NavMenu({ links, social, contactEmail }: NavMenuProps) {
       {/* ── Desktop utilities: search + theme toggle ─────────────────────────── */}
       <div className="hidden items-center gap-1 md:flex" aria-label="Site utilities">
         <NavSearch />
-        {isClient && (
-          <button
-            onClick={toggleTheme}
-            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            className={UTIL_BTN}
-          >
-            {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
-          </button>
-        )}
+        <button
+          onClick={toggleTheme}
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          className={UTIL_BTN}
+          suppressHydrationWarning
+        >
+          {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+        </button>
       </div>
 
       {/* ── Mobile trigger — hamburger morphs to X ───────────────────────────── */}
