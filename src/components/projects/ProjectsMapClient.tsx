@@ -303,6 +303,18 @@ export function ProjectsMapClient({ sites, mini = false }: Props) {
         tabIndex={0}
       />
 
+      {/* No-sites banner — shown when the map loads but no markers exist */}
+      {sites.length === 0 && !tilesFailed && (
+        <div className="pointer-events-none absolute top-3 left-1/2 z-[500] -translate-x-1/2">
+          <div className="bg-bg/90 border-border rounded-lg border px-4 py-2 text-center shadow backdrop-blur-sm">
+            <p className="text-fg text-xs font-semibold">Pakistan field sites</p>
+            <p className="text-muted mt-0.5 text-xs">
+              Study site pins will appear once projects are added.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Tile failure banner */}
       {tilesFailed && (
         <div
