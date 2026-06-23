@@ -76,7 +76,8 @@ function makeToggleHref(
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
   const sp = await searchParams
-  const view = sp.view === 'map' ? 'map' : 'list'
+  // Only allow map view when study sites actually exist; fall back to list
+  const viewParam = sp.view === 'map' ? 'map' : 'list'
 
   const [themes, filterOptions, projects] = await Promise.all([
     getAllResearchThemes(),
@@ -88,6 +89,9 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
       province: sp.province,
     }),
   ])
+
+  const hasSites = filterOptions.provinces.length > 0
+  const view = hasSites ? viewParam : 'list'
 
   const active = {
     theme: sp.theme,
@@ -150,43 +154,45 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
                     : `${projects.length} project${projects.length !== 1 ? 's' : ''}`}
                 </p>
 
-                {/* List ⇄ Map toggle */}
-                <div
-                  role="group"
-                  aria-label="Switch between list and map view"
-                  className="border-border flex overflow-hidden rounded-lg border"
-                >
-                  <Link
-                    href={listHref}
-                    aria-current={view === 'list' ? 'page' : undefined}
-                    aria-label="List view"
-                    className={cn(
-                      'inline-flex h-9 w-9 items-center justify-center',
-                      'transition-colors duration-150',
-                      'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
-                      view === 'list'
-                        ? 'bg-primary text-white'
-                        : 'text-muted hover:bg-surface-raised',
-                    )}
+                {/* List ⇄ Map toggle — only shown when study sites exist */}
+                {hasSites && (
+                  <div
+                    role="group"
+                    aria-label="Switch between list and map view"
+                    className="border-border flex overflow-hidden rounded-lg border"
                   >
-                    <List size={16} aria-hidden="true" />
-                  </Link>
-                  <Link
-                    href={mapHref}
-                    aria-current={view === 'map' ? 'page' : undefined}
-                    aria-label="Map view"
-                    className={cn(
-                      'inline-flex h-9 w-9 items-center justify-center',
-                      'border-border border-l transition-colors duration-150',
-                      'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
-                      view === 'map'
-                        ? 'bg-primary text-white'
-                        : 'text-muted hover:bg-surface-raised',
-                    )}
-                  >
-                    <Map size={16} aria-hidden="true" />
-                  </Link>
-                </div>
+                    <Link
+                      href={listHref}
+                      aria-current={view === 'list' ? 'page' : undefined}
+                      aria-label="List view"
+                      className={cn(
+                        'inline-flex h-9 w-9 items-center justify-center',
+                        'transition-colors duration-150',
+                        'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
+                        view === 'list'
+                          ? 'bg-primary text-white'
+                          : 'text-muted hover:bg-surface-raised',
+                      )}
+                    >
+                      <List size={16} aria-hidden="true" />
+                    </Link>
+                    <Link
+                      href={mapHref}
+                      aria-current={view === 'map' ? 'page' : undefined}
+                      aria-label="Map view"
+                      className={cn(
+                        'inline-flex h-9 w-9 items-center justify-center',
+                        'border-border border-l transition-colors duration-150',
+                        'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
+                        view === 'map'
+                          ? 'bg-primary text-white'
+                          : 'text-muted hover:bg-surface-raised',
+                      )}
+                    >
+                      <Map size={16} aria-hidden="true" />
+                    </Link>
+                  </div>
+                )}
               </div>
             </FadeUp>
 

@@ -45,7 +45,7 @@ export default async function ResearchPage() {
             </h1>
           </FadeUp>
           {about?.mission && (
-            <FadeUp delay={100}>
+            <FadeUp delay={0.1}>
               <RichText
                 data={about.mission}
                 className="text-muted max-w-3xl text-base leading-relaxed sm:text-lg"

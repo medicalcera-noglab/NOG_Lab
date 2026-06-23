@@ -34,16 +34,21 @@ export default async function CollaborationsPage() {
 
   return (
     <>
-      <Section className="pt-8 pb-6 sm:pt-12">
+      <div className="bg-bg border-border border-b py-8 md:py-14">
         <Container>
           <FadeUp>
-            <h1 className="mb-3 text-2xl font-bold sm:text-4xl">Collaborations</h1>
+            <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
+              Global network
+            </p>
+            <h1 className="font-heading text-fg mb-3 text-2xl font-bold sm:text-4xl">
+              Collaborations
+            </h1>
             <p className="text-muted max-w-2xl text-base sm:text-lg">
               We work with institutions, funders, and researchers across the globe.
             </p>
           </FadeUp>
         </Container>
-      </Section>
+      </div>
 
       {/* Logo Wall */}
       {withLogo.length > 0 && (
@@ -92,7 +97,7 @@ export default async function CollaborationsPage() {
       )}
 
       {/* Cards */}
-      <Section className="py-12">
+      <div className="py-10 md:py-14">
         <Container>
           <FadeUp>
             <h2 className="mb-8 text-2xl font-bold">All Collaborators</h2>
@@ -145,7 +150,7 @@ export default async function CollaborationsPage() {
             </ul>
           )}
         </Container>
-      </Section>
+      </div>
     </>
   )
 }
