@@ -4,9 +4,9 @@ import { useEffect, useRef } from 'react'
 import type { Map as LeafletMap } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-// KMU Peshawar — Khyber Medical University
-const KMU_LAT = 34.0137
-const KMU_LNG = 71.49
+// Institute of Basic Medical Sciences, KMU — Hayat Abad Phase 5, Peshawar
+const KMU_LAT = 33.9936
+const KMU_LNG = 71.4279
 
 const TILES = {
   light: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -54,7 +54,10 @@ export function ContactMapClient() {
         iconAnchor: [12, 32],
       })
 
-      L.marker([KMU_LAT, KMU_LNG], { icon, title: 'Khyber Medical University' }).addTo(map)
+      L.marker([KMU_LAT, KMU_LNG], {
+        icon,
+        title: 'Institute of Basic Medical Sciences, KMU',
+      }).addTo(map)
 
       mapRef.current = map
     }
@@ -72,7 +75,7 @@ export function ContactMapClient() {
       ref={containerRef}
       className="border-border aspect-[4/3] w-full overflow-hidden rounded-xl border sm:aspect-video"
       role="img"
-      aria-label="Map showing Khyber Medical University, Peshawar"
+      aria-label="Map showing Institute of Basic Medical Sciences, Khyber Medical University, Hayat Abad Phase 5, Peshawar"
     />
   )
 }

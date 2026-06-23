@@ -16,6 +16,7 @@
     "seed:clear-demo": "tsx --require ./scripts/load-env.cjs scripts/clear-demo.ts",
     "seed:demo-media": "tsx --require ./scripts/load-env.cjs scripts/seed-demo-media.ts",
     "seed:clear-demo-media": "tsx --require ./scripts/load-env.cjs scripts/clear-demo-media.ts",
+    "seed:nog": "tsx --require ./scripts/load-env.cjs scripts/seed-nog-content.ts",
     "payload": "payload",
     "test": "vitest run",
     "test:watch": "vitest",

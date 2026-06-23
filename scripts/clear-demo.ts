@@ -9,9 +9,10 @@ import { getPayload } from 'payload'
 import configPromise from '../payload.config'
 
 const COLLECTIONS = [
-  'research_themes',
-  'projects',
+  // study_sites must come before projects (NOT NULL FK on project_id)
   'study_sites',
+  'projects',
+  'research_themes',
   'people',
   'collaborators',
   'blog_posts',

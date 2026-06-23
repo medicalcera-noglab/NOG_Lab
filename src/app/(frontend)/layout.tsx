@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: '%s | NOG Lab',
   },
   description:
-    'Nutrition, Oral and Gut Microbiome Lab at Khyber Medical University — clinical precision meets living systems.',
+    'The NOG Lab at Khyber Medical University investigates how nutrition and microbial communities influence human health, with emphasis on the oral and gut microbiomes and malnutrition.',
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
