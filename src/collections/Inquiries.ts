@@ -49,6 +49,14 @@ export const Inquiries: CollectionConfig = {
       required: true,
     },
     {
+      name: 'positionTitle',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        description: 'Position applied for (join inquiries only)',
+      },
+    },
+    {
       name: 'cv',
       type: 'upload',
       // Private collection — served via signed URLs, not public CDN.

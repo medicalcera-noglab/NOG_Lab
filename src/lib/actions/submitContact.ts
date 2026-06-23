@@ -11,7 +11,7 @@ const schema = z.object({
   name: z.string().min(1).max(200),
   email: z.string().email(),
   message: z.string().min(10).max(5000),
-  recaptchaToken: z.string().min(1),
+  recaptchaToken: z.string(),
   honeypot: z.string().max(0, 'Bot detected'),
 })
 
@@ -36,7 +36,7 @@ export async function submitContact(
     name: formData.get('name'),
     email: formData.get('email'),
     message: formData.get('message'),
-    recaptchaToken: formData.get('recaptchaToken'),
+    recaptchaToken: formData.get('recaptchaToken') ?? '',
     honeypot: formData.get('website') ?? '',
   }
 
@@ -53,28 +53,32 @@ export async function submitContact(
 
   try {
     const payload = await getPayload({ config })
+
+    // Store raw values in DB — never HTML-encoded.
     await payload.create({
       collection: 'inquiries',
       data: {
         formType: 'contact',
-        name: sanitize(name),
+        name,
         email,
-        message: sanitize(message),
+        message,
       },
       overrideAccess: true,
     })
 
-    const contactEmail = process.env.EMAIL_FROM
-    if (contactEmail) {
+    // EMAIL_NOTIFY = lab inbox for admin notifications (separate from EMAIL_FROM sender).
+    // Falls back to EMAIL_FROM if EMAIL_NOTIFY is not configured.
+    const notifyAddress = process.env.EMAIL_NOTIFY ?? process.env.EMAIL_FROM
+    if (notifyAddress) {
       await payload.sendEmail({
-        to: contactEmail,
+        to: notifyAddress,
         subject: `[NOG Lab] New contact from ${name}`,
-        html: `<p><b>${sanitize(name)}</b> (${email}) sent a message:</p><blockquote>${sanitize(message).replace(/\n/g, '<br>')}</blockquote>`,
+        html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) sent a message:</p><blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
       })
       await payload.sendEmail({
         to: email,
         subject: 'We received your message — NOG Lab',
-        html: `<p>Dear ${sanitize(name)},</p><p>Thank you for reaching out. We'll get back to you within 3-5 business days.</p><p>— NOG Lab</p>`,
+        html: `<p>Dear ${htmlEscape(name)},</p><p>Thank you for reaching out. We'll get back to you within 3-5 business days.</p><p>— NOG Lab</p>`,
       })
     }
   } catch (err) {
@@ -85,7 +89,7 @@ export async function submitContact(
   return { success: true }
 }
 
-function sanitize(str: string): string {
+function htmlEscape(str: string): string {
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

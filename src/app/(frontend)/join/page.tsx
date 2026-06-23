@@ -96,7 +96,7 @@ export default async function JoinPage() {
       <Section className="bg-surface py-12">
         <Container className="max-w-2xl">
           <h2 className="mb-6 text-2xl font-bold">Apply Now</h2>
-          <JoinForm positions={positions} />
+          <JoinForm positions={positions} recaptchaSiteKey={settings.recaptchaSiteKey} />
         </Container>
       </Section>
     </>

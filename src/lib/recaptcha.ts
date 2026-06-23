@@ -3,11 +3,10 @@ const SCORE_THRESHOLD = 0.5
 
 export async function verifyRecaptcha(token: string): Promise<boolean> {
   const secret = process.env.RECAPTCHA_SECRET
-  if (!secret) {
-    // Allow through in dev when secret not set
-    if (process.env.NODE_ENV !== 'production') return true
-    return false
-  }
+  // reCAPTCHA is opt-in: if RECAPTCHA_SECRET is not configured, allow all submissions.
+  // To enable: set RECAPTCHA_SECRET (server) + NEXT_PUBLIC_RECAPTCHA_SITE_KEY (client).
+  if (!secret) return true
+  if (!token) return false
 
   try {
     const res = await fetch(VERIFY_URL, {

@@ -70,7 +70,7 @@ export default async function ContactPage() {
             {/* Form column */}
             <div>
               <h2 className="mb-6 text-xl font-semibold">Send a Message</h2>
-              <ContactForm />
+              <ContactForm recaptchaSiteKey={settings.recaptchaSiteKey} />
             </div>
           </div>
         </Container>

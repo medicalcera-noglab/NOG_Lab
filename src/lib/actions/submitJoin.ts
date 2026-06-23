@@ -20,7 +20,7 @@ const schema = z.object({
   email: z.string().email(),
   message: z.string().min(10).max(5000),
   positionTitle: z.string().max(300).optional(),
-  recaptchaToken: z.string().min(1),
+  recaptchaToken: z.string(),
   honeypot: z.string().max(0, 'Bot detected'),
 })
 
@@ -43,7 +43,7 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
     email: formData.get('email'),
     message: formData.get('message'),
     positionTitle: formData.get('positionTitle') ?? undefined,
-    recaptchaToken: formData.get('recaptchaToken'),
+    recaptchaToken: formData.get('recaptchaToken') ?? '',
     honeypot: formData.get('website') ?? '',
   }
 
@@ -97,32 +97,33 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
       sopId = created.id
     }
 
-    const msgText = positionTitle ? `Position: ${positionTitle}\n\n${message}` : message
-
+    // Store raw values in DB — positionTitle as its own field, not embedded in message.
     await payload.create({
       collection: 'inquiries',
       data: {
         formType: 'join',
-        name: sanitize(name),
+        name,
         email,
-        message: sanitize(msgText),
+        message,
+        ...(positionTitle ? { positionTitle } : {}),
         ...(cvId ? { cv: cvId } : {}),
         ...(sopId ? { sop: sopId } : {}),
       },
       overrideAccess: true,
     })
 
-    const contactEmail = process.env.EMAIL_FROM
-    if (contactEmail) {
+    // EMAIL_NOTIFY = lab inbox for admin notifications (separate from EMAIL_FROM sender).
+    const notifyAddress = process.env.EMAIL_NOTIFY ?? process.env.EMAIL_FROM
+    if (notifyAddress) {
       await payload.sendEmail({
-        to: contactEmail,
+        to: notifyAddress,
         subject: `[NOG Lab] New application from ${name}`,
-        html: `<p><b>${sanitize(name)}</b> (${email}) applied${positionTitle ? ` for <em>${sanitize(positionTitle)}</em>` : ''}.</p><blockquote>${sanitize(message).replace(/\n/g, '<br>')}</blockquote>`,
+        html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) applied${positionTitle ? ` for <em>${htmlEscape(positionTitle)}</em>` : ''}.</p><blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
       })
       await payload.sendEmail({
         to: email,
         subject: 'Application received — NOG Lab',
-        html: `<p>Dear ${sanitize(name)},</p><p>Thank you for your interest in joining NOG Lab. We will review your application and be in touch.</p><p>— NOG Lab</p>`,
+        html: `<p>Dear ${htmlEscape(name)},</p><p>Thank you for your interest in joining NOG Lab. We will review your application and be in touch.</p><p>— NOG Lab</p>`,
       })
     }
   } catch (err) {
@@ -133,7 +134,7 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
   return { success: true }
 }
 
-function sanitize(str: string): string {
+function htmlEscape(str: string): string {
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
