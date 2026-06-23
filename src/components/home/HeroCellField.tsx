@@ -1,8 +1,6 @@
 'use client'
 
-import { useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
-import { Pause, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // Solid organic blob shapes — look like cell bodies under a microscope
@@ -151,56 +149,28 @@ function RingSvg({
 
 export function HeroCellField() {
   const prefersReduced = useReducedMotion()
-  const [paused, setPaused] = useState(false)
-
-  if (prefersReduced) {
-    return (
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        {BLOBS.map((b, i) => (
-          <BlobSvg key={i} className={b.cls} delay="0s" dur={b.dur} path={b.path} />
-        ))}
-        {RINGS.map((r, i) => (
-          <RingSvg key={i} className={r.cls} delay="0s" dur={r.dur} r={r.r} />
-        ))}
-        <DotGrid />
-      </div>
-    )
-  }
 
   return (
-    <>
-      <div
-        aria-hidden="true"
-        className={cn(
-          'pointer-events-none absolute inset-0 overflow-hidden',
-          paused && 'hero-paused',
-        )}
-      >
-        {BLOBS.map((b, i) => (
-          <BlobSvg key={i} className={b.cls} delay={b.delay} dur={b.dur} path={b.path} />
-        ))}
-        {RINGS.map((r, i) => (
-          <RingSvg key={i} className={r.cls} delay={r.delay} dur={r.dur} r={r.r} />
-        ))}
-        <DotGrid />
-      </div>
-
-      {/* Pause / resume control */}
-      <button
-        onClick={() => setPaused((p) => !p)}
-        aria-label={paused ? 'Resume hero animation' : 'Pause hero animation'}
-        aria-pressed={paused}
-        className={cn(
-          'absolute right-5 bottom-14 z-20',
-          'flex h-8 w-8 items-center justify-center rounded-full',
-          'bg-white/10 text-white/40 backdrop-blur-sm',
-          'hover:bg-white/15 hover:text-white/70',
-          'transition-colors duration-150',
-          'focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071918] focus-visible:outline-none',
-        )}
-      >
-        {paused ? <Play size={12} aria-hidden="true" /> : <Pause size={12} aria-hidden="true" />}
-      </button>
-    </>
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      {BLOBS.map((b, i) => (
+        <BlobSvg
+          key={i}
+          className={b.cls}
+          delay={prefersReduced ? '0s' : b.delay}
+          dur={b.dur}
+          path={b.path}
+        />
+      ))}
+      {RINGS.map((r, i) => (
+        <RingSvg
+          key={i}
+          className={r.cls}
+          delay={prefersReduced ? '0s' : r.delay}
+          dur={r.dur}
+          r={r.r}
+        />
+      ))}
+      <DotGrid />
+    </div>
   )
 }

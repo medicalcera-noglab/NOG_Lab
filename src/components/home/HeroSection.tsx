@@ -61,9 +61,8 @@ export function HeroSection({
           backgroundImage: 'url(/hero-micro.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.3,
-          filter: 'brightness(0.7)',
-          mixBlendMode: 'screen',
+          opacity: 0.14,
+          filter: 'brightness(0.5)',
         }}
       />
 
