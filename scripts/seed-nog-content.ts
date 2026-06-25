@@ -117,11 +117,34 @@ async function main() {
   }
   // Fetch existing About to merge (avoids clobbering existing array fields)
   const existingAbout = await payload.findGlobal({ slug: 'about' })
+  const collaborationsDescriptionDoc = {
+    root: {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              text: 'Our research programme is strengthened through collaborations with leading national and international researchers and institutions. Our collaborative network supports knowledge exchange, interdisciplinary research, capacity building, and translation of scientific discoveries into meaningful health impacts. Through our global collaborations, we aim to advance microbiome research, develop innovative approaches, build research capacity, and generate evidence that contributes to improving health outcomes across diverse populations.',
+              version: 1,
+            },
+          ],
+          version: 1,
+        },
+      ],
+      direction: 'ltr' as const,
+      format: '' as const,
+      indent: 0,
+      version: 1,
+    },
+  }
   await payload.updateGlobal({
     slug: 'about',
     data: {
       ...existingAbout,
       mission: researchOverviewDoc,
+      kmuAffiliation: collaborationsDescriptionDoc,
       // Clear out any empty facilities that cause validation errors
       facilities: [],
     },
@@ -217,6 +240,21 @@ async function main() {
   // ── 5. People ───────────────────────────────────────────────────────────────
   log('Creating People...')
 
+  const makeBio = (...paragraphs: string[]) => ({
+    root: {
+      type: 'root',
+      children: paragraphs.map((text) => ({
+        type: 'paragraph',
+        children: [{ type: 'text', text, version: 1 }],
+        version: 1,
+      })),
+      direction: 'ltr' as const,
+      format: '' as const,
+      indent: 0,
+      version: 1,
+    },
+  })
+
   const peopleData = [
     {
       name: 'Muhammad Shahzad',
@@ -225,7 +263,10 @@ async function main() {
       email: 'shahzad.ibms@kmu.edu.pk',
       orcid: 'https://orcid.org/0000-0001-6565-1777',
       googleScholar: 'https://scholar.google.com/citations?hl=en&user=reiWXMMAAAAJ',
-      bio: 'Dr. Muhammad Shahzad is Professor at the Institute of Basic Medical Sciences (IBMS), Khyber Medical University, and Founder and Lab Lead of the Nutrition, Oral and Gut Microbiome (NOG) Lab. He holds a PhD from the University of Glasgow and completed a postdoctoral fellowship at the University of Reading, UK. His research focuses on understanding the role of the oral and gut microbiomes in human health and disease, with particular interest in nutrition–microbiome interactions, malnutrition, and vulnerable populations.',
+      bio: makeBio(
+        'Dr Muhammad Shahzad is Professor at the Institute of Basic Medical Sciences (IBMS), Khyber Medical University, and Founder and Lab Lead of the Nutrition, Oral and Gut Microbiome (NOG) Lab. He received his PhD from the University of Glasgow and completed postdoctoral training at the University of Reading, UK.',
+        'His research explores the role of oral and gut microbiomes in human health and disease, with a particular focus on nutrition–microbiome interactions, malnutrition, and vulnerable populations. Through the NOG Lab, his work aims to advance understanding of how nutrition and microbial communities influence health outcomes and inform targeted interventions.',
+      ),
       interests: [
         'Oral microbiome and oral-systemic health',
         'Gut microbiome development in early life',
@@ -239,33 +280,52 @@ async function main() {
       slug: 'maria-ishaq-khattak',
       role: 'staff' as const,
       email: 'maria.iph@kmu.edu.pk',
-      orcid: '',
-      googleScholar: '',
-      bio: 'Associate Professor, Dental Public Health, Khyber Medical University.',
+      orcid: 'https://orcid.org/0000-0003-4502-6805',
+      googleScholar: 'https://scholar.google.com/citations?user=BgiNhSsAAAAJ&hl=en',
+      bio: makeBio(
+        'Dr Maria Ishaq Khattak is an Associate Professor and Head of Dental Public Health at Khyber Medical University, Peshawar. Her research focuses on improving health outcomes through evidence-based, context-specific approaches in Pakistan and other low- and middle-income countries. She has contributed to national and international collaborations, peer-reviewed publications, academic teaching, and capacity-building initiatives.',
+      ),
       interests: [],
       displayOrder: 2,
+    },
+    {
+      name: 'Dr Wafa Naeem',
+      slug: 'wafa-naeem',
+      role: 'staff' as const,
+      email: 'wafanaeem.mbg@kmu.edu.pk',
+      orcid: 'https://orcid.org/0000-0002-4217-5568',
+      googleScholar: 'https://scholar.google.com/citations?user=ujEmHasAAAAJ&hl=en',
+      bio: makeBio(
+        'Dr Wafa Naeem is a Lecturer in Molecular Biology and Genetics at Khyber Medical University, Pakistan. Her work aims to improve understanding of oral cancer and support personalized diagnostics and therapies. She is also involved in international collaborative cancer research, including ICRG46, in cancer genomics and translational oncology.',
+      ),
+      interests: [],
+      displayOrder: 3,
     },
     {
       name: 'Dr Bibi Hajira',
       slug: 'bibi-hajira',
       role: 'postdoc' as const,
-      email: '',
-      orcid: '',
-      googleScholar: '',
-      bio: '',
+      email: 'hajiraghani.ibms@kmu.edu.pk',
+      orcid: 'https://orcid.org/0000-0002-9489-9437',
+      googleScholar: 'https://scholar.google.com/citations?user=d0pdZa4AAAAJ&hl=en',
+      bio: makeBio(
+        'Dr Hajira obtained her PhD in Human Nutrition from The University of Agriculture, Peshawar. Her research interests focus on dietary intervention studies related to satiety, weight management, and biomarkers of cardiometabolic health. She is also interested in the development and validation of dietary intake assessment tools and questionnaires tailored to the Pakistani population.',
+      ),
       interests: [],
-      displayOrder: 3,
+      displayOrder: 4,
     },
     {
       name: 'Ahsan Saidal',
       slug: 'ahsan-saidal',
       role: 'phd' as const,
-      email: '',
-      orcid: '',
-      googleScholar: '',
-      bio: '',
+      email: 'ahsan.ipms@kmu.edu.pk',
+      orcid: 'https://orcid.org/0009-0003-3083-3599',
+      googleScholar: 'https://scholar.google.com/citations?hl=en&user=Q1V_kOsAAAAJ',
+      bio: makeBio(
+        "Ahsan Saidal's research interests focus on maternal and child health, with a particular emphasis on public health nutrition, community-based nutrition surveys, and strategies to improve nutritional outcomes among mothers, infants, and children.",
+      ),
       interests: [],
-      displayOrder: 4,
+      displayOrder: 5,
     },
   ]
 
@@ -277,45 +337,28 @@ async function main() {
       where: { slug: { equals: p.slug } },
       limit: 1,
     })
-    if (existing.docs.length > 0) {
-      log(`  person already exists: ${p.name}`)
-      personIds[p.slug] = existing.docs[0].id as number
-      continue
-    }
     const data: Record<string, unknown> = {
       name: p.name,
       slug: p.slug,
       role: p.role,
       is_active: true,
       displayOrder: p.displayOrder,
+      bio: p.bio,
+      email: p.email || null,
+      orcid: p.orcid || null,
+      googleScholar: p.googleScholar || null,
+      interests: p.interests.length > 0 ? p.interests.map((i) => ({ interest: i })) : [],
     }
-    if (p.email) data.email = p.email
-    if (p.orcid) data.orcid = p.orcid
-    if (p.googleScholar) data.googleScholar = p.googleScholar
-    if (p.bio) {
-      data.bio = {
-        root: {
-          type: 'root',
-          children: [
-            {
-              type: 'paragraph',
-              children: [{ type: 'text', text: p.bio, version: 1 }],
-              version: 1,
-            },
-          ],
-          direction: 'ltr' as const,
-          format: '' as const,
-          indent: 0,
-          version: 1,
-        },
-      }
+    if (existing.docs.length > 0) {
+      const id = existing.docs[0].id as number
+      await payload.update({ collection: 'people', id, data } as any)
+      personIds[p.slug] = id
+      log(`  updated person: ${p.name}`)
+    } else {
+      const created = await payload.create({ collection: 'people', data } as any)
+      personIds[p.slug] = created.id as number
+      log(`  created person: ${p.name}`)
     }
-    if (p.interests.length > 0) {
-      data.interests = p.interests.map((i) => ({ interest: i }))
-    }
-    const created = await payload.create({ collection: 'people', data } as any)
-    personIds[p.slug] = created.id as number
-    log(`  created person: ${p.name}`)
   }
 
   // ── 6. Collaborators ────────────────────────────────────────────────────────

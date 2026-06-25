@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
-import { getSiteSettings, getPageSeo, resolvePageSeo } from '@/lib/data'
+import { getSiteSettings, getPageSeo, resolvePageSeo, getAbout } from '@/lib/data'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
 import { MediaImage } from '@/components/MediaImage'
 import { FadeUp } from '@/components/FadeUp'
+import { RichText } from '@/components/RichText'
 import { getAllCollaborators } from '@/lib/data/collaborators'
 import { EmptyState } from '@/components/placeholders'
 import type { Media } from '../../../../payload-types'
@@ -28,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 300
 
 export default async function CollaborationsPage() {
-  const collaborators = await getAllCollaborators()
+  const [collaborators, about] = await Promise.all([getAllCollaborators(), getAbout()])
 
   const withLogo = collaborators.filter((c) => c.logo && typeof c.logo === 'object')
 
@@ -43,9 +44,16 @@ export default async function CollaborationsPage() {
             <h1 className="font-heading text-fg mb-3 text-2xl font-bold sm:text-4xl">
               Collaborations
             </h1>
-            <p className="text-muted max-w-2xl text-base sm:text-lg">
-              We work with institutions, funders, and researchers across the globe.
-            </p>
+            {about?.kmuAffiliation ? (
+              <RichText
+                data={about.kmuAffiliation}
+                className="text-muted max-w-2xl text-base sm:text-lg"
+              />
+            ) : (
+              <p className="text-muted max-w-2xl text-base sm:text-lg">
+                We work with institutions, funders, and researchers across the globe.
+              </p>
+            )}
           </FadeUp>
         </Container>
       </div>
