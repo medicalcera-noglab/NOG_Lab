@@ -1,13 +1,27 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, isOwnMediaOrAdmin } from '../access'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { makeValidateMimeBytes, PUBLIC_MEDIA_MIMES } from '../hooks/validateMimeBytes'
 
 const validateMime = makeValidateMimeBytes(PUBLIC_MEDIA_MIMES)
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+
+// Rewrite Payload's default /api/media/file/[fn] URLs to /media/[fn] so files
+// are served by Next.js static file serving from public/media/ on all hosts.
+function rewriteMediaUrl(url: string | null | undefined): string | null | undefined {
+  if (!url) return url
+  if (url.startsWith('/api/media/file/')) {
+    return url.replace('/api/media/file/', '/media/')
+  }
+  return url
+}
 
 export const Media: CollectionConfig = {
   slug: 'media',
   upload: {
+    staticDir: path.resolve(dirname, '../../public/media'),
     mimeTypes: [...PUBLIC_MEDIA_MIMES],
     adminThumbnail: 'thumbnail',
     // Sharp generates WebP derivatives at upload time.
@@ -49,6 +63,18 @@ export const Media: CollectionConfig = {
   hooks: {
     beforeOperation: [validateMime],
     beforeChange: [setCreatedByHook],
+    afterRead: [
+      ({ doc }) => {
+        doc.url = rewriteMediaUrl(doc.url)
+        if (doc.sizes && typeof doc.sizes === 'object') {
+          for (const key of Object.keys(doc.sizes)) {
+            const s = doc.sizes[key as keyof typeof doc.sizes] as { url?: string } | undefined
+            if (s) s.url = rewriteMediaUrl(s.url) ?? s.url
+          }
+        }
+        return doc
+      },
+    ],
   },
   fields: [
     {
