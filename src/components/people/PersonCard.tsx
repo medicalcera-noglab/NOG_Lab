@@ -24,7 +24,7 @@ export function PersonCard({ person, roleLabel }: PersonCardProps) {
         href={`/people/${slug}`}
         tabIndex={-1}
         aria-hidden="true"
-        className="bg-surface-raised block aspect-[4/3] max-h-48 overflow-hidden sm:max-h-none"
+        className="bg-surface-raised block aspect-[3/4] overflow-hidden"
       >
         <div className="relative h-full w-full">
           <MediaImage
@@ -33,7 +33,7 @@ export function PersonCard({ person, roleLabel }: PersonCardProps) {
             seed={person.id}
             placeholderLabel={`Illustration placeholder for ${person.name}`}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
           />
         </div>
       </Link>
