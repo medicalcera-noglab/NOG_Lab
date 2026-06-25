@@ -18,6 +18,7 @@ import { ProjectFilters } from '@/components/projects/ProjectFilters'
 import { FilterSheet } from '@/components/ui/FilterSheet'
 import { ProjectsMap } from '@/components/projects/ProjectsMap'
 import { EmptyState } from '@/components/placeholders'
+import { PageBanner } from '@/components/ui/PageBanner'
 import { cn } from '@/lib/utils'
 
 /**
@@ -107,135 +108,128 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const activeFilterCount = [sp.theme, sp.status, sp.funder, sp.province].filter(Boolean).length
 
   return (
-    <Section className="bg-bg py-8 md:py-20">
-      <Container>
-        {/* Page header */}
-        <FadeUp>
-          <div className="mb-5 md:mb-10">
-            <p className="text-primary mb-1.5 text-xs font-semibold tracking-[0.15em] uppercase">
-              Our work
-            </p>
-            <h1 className="font-heading text-fg text-2xl font-bold sm:text-4xl">Projects</h1>
+    <>
+      <PageBanner eyebrow="Our work" title="Research Projects" tint="#0E6E6E" />
+      <Section className="bg-bg py-8 md:py-20">
+        <Container>
+          {/* Mobile filter trigger — hidden on lg+ */}
+          <div className="mb-4 lg:hidden">
+            <FilterSheet activeCount={activeFilterCount}>
+              <ProjectFilters
+                themes={themes}
+                funders={filterOptions.funders}
+                provinces={filterOptions.provinces}
+                active={active}
+              />
+            </FilterSheet>
           </div>
-        </FadeUp>
 
-        {/* Mobile filter trigger — hidden on lg+ */}
-        <div className="mb-4 lg:hidden">
-          <FilterSheet activeCount={activeFilterCount}>
-            <ProjectFilters
-              themes={themes}
-              funders={filterOptions.funders}
-              provinces={filterOptions.provinces}
-              active={active}
-            />
-          </FilterSheet>
-        </div>
-
-        <div className="flex flex-col gap-6 lg:flex-row lg:gap-12">
-          {/* ── Sidebar filters — desktop only ── */}
-          <FadeUp delay={0.05} className="hidden lg:block lg:w-56 lg:shrink-0">
-            <ProjectFilters
-              themes={themes}
-              funders={filterOptions.funders}
-              provinces={filterOptions.provinces}
-              active={active}
-            />
-          </FadeUp>
-
-          {/* ── Main content ── */}
-          <div className="min-w-0 flex-1">
-            {/* View toggle + result count */}
-            <FadeUp delay={0.08}>
-              <div className="mb-6 flex items-center justify-between gap-4">
-                <p className="text-muted text-sm">
-                  {projects.length === 0
-                    ? 'No projects found'
-                    : `${projects.length} project${projects.length !== 1 ? 's' : ''}`}
-                </p>
-
-                {/* List ⇄ Map toggle */}
-                <div
-                  role="group"
-                  aria-label="Switch between list and map view"
-                  className="border-border flex overflow-hidden rounded-lg border"
-                >
-                  <Link
-                    href={listHref}
-                    aria-current={view === 'list' ? 'page' : undefined}
-                    aria-label="List view"
-                    className={cn(
-                      'inline-flex h-9 w-9 items-center justify-center',
-                      'transition-colors duration-150',
-                      'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
-                      view === 'list'
-                        ? 'bg-primary text-white'
-                        : 'text-muted hover:bg-surface-raised',
-                    )}
-                  >
-                    <List size={16} aria-hidden="true" />
-                  </Link>
-                  <Link
-                    href={mapHref}
-                    aria-current={view === 'map' ? 'page' : undefined}
-                    aria-label="Map view"
-                    className={cn(
-                      'inline-flex h-9 w-9 items-center justify-center',
-                      'border-border border-l transition-colors duration-150',
-                      'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
-                      view === 'map'
-                        ? 'bg-primary text-white'
-                        : 'text-muted hover:bg-surface-raised',
-                    )}
-                  >
-                    <Map size={16} aria-hidden="true" />
-                  </Link>
-                </div>
-              </div>
+          <div className="flex flex-col gap-6 lg:flex-row lg:gap-12">
+            {/* ── Sidebar filters — desktop only ── */}
+            <FadeUp delay={0.05} className="hidden lg:block lg:w-56 lg:shrink-0">
+              <ProjectFilters
+                themes={themes}
+                funders={filterOptions.funders}
+                provinces={filterOptions.provinces}
+                active={active}
+              />
             </FadeUp>
 
-            {/* Content area: list or map */}
-            {view === 'map' ? (
-              <FadeUp delay={0.1}>
-                <ProjectsMap
-                  searchParams={{
-                    theme: sp.theme,
-                    status: sp.status,
-                    funder: sp.funder,
-                    province: sp.province,
-                  }}
-                />
+            {/* ── Main content ── */}
+            <div className="min-w-0 flex-1">
+              {/* View toggle + result count */}
+              <FadeUp delay={0.08}>
+                <div className="mb-6 flex items-center justify-between gap-4">
+                  <p className="text-muted text-sm">
+                    {projects.length === 0
+                      ? 'No projects found'
+                      : `${projects.length} project${projects.length !== 1 ? 's' : ''}`}
+                  </p>
+
+                  {/* List ⇄ Map toggle */}
+                  <div
+                    role="group"
+                    aria-label="Switch between list and map view"
+                    className="border-border flex overflow-hidden rounded-lg border"
+                  >
+                    <Link
+                      href={listHref}
+                      aria-current={view === 'list' ? 'page' : undefined}
+                      aria-label="List view"
+                      className={cn(
+                        'inline-flex h-9 w-9 items-center justify-center',
+                        'transition-colors duration-150',
+                        'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
+                        view === 'list'
+                          ? 'bg-primary text-white'
+                          : 'text-muted hover:bg-surface-raised',
+                      )}
+                    >
+                      <List size={16} aria-hidden="true" />
+                    </Link>
+                    <Link
+                      href={mapHref}
+                      aria-current={view === 'map' ? 'page' : undefined}
+                      aria-label="Map view"
+                      className={cn(
+                        'inline-flex h-9 w-9 items-center justify-center',
+                        'border-border border-l transition-colors duration-150',
+                        'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
+                        view === 'map'
+                          ? 'bg-primary text-white'
+                          : 'text-muted hover:bg-surface-raised',
+                      )}
+                    >
+                      <Map size={16} aria-hidden="true" />
+                    </Link>
+                  </div>
+                </div>
               </FadeUp>
-            ) : projects.length === 0 ? (
-              <FadeUp delay={0.1}>
-                <EmptyState
-                  variant={3}
-                  heading={
-                    projects.length === 0 && !hasFilters
-                      ? 'Projects coming soon'
-                      : 'No projects match these filters'
-                  }
-                  body={
-                    !hasFilters
-                      ? 'Research projects will appear here once they are published.'
-                      : 'Try adjusting or clearing the active filters to see more projects.'
-                  }
-                  action={
-                    hasFilters ? { label: 'Clear all filters', href: '/projects' } : undefined
-                  }
-                />
-              </FadeUp>
-            ) : (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {projects.map((project, i) => (
-                  <FadeUp key={project.id} delay={i * 0.04} className="h-full">
-                    <ProjectCard project={project} />
-                  </FadeUp>
-                ))}
-              </div>
-            )}
+
+              {/* Content area: list or map */}
+              {view === 'map' ? (
+                <FadeUp delay={0.1}>
+                  <ProjectsMap
+                    searchParams={{
+                      theme: sp.theme,
+                      status: sp.status,
+                      funder: sp.funder,
+                      province: sp.province,
+                    }}
+                  />
+                </FadeUp>
+              ) : projects.length === 0 ? (
+                <FadeUp delay={0.1}>
+                  <EmptyState
+                    variant={3}
+                    heading={
+                      projects.length === 0 && !hasFilters
+                        ? 'Projects coming soon'
+                        : 'No projects match these filters'
+                    }
+                    body={
+                      !hasFilters
+                        ? 'Research projects will appear here once they are published.'
+                        : 'Try adjusting or clearing the active filters to see more projects.'
+                    }
+                    action={
+                      hasFilters ? { label: 'Clear all filters', href: '/projects' } : undefined
+                    }
+                  />
+                </FadeUp>
+              ) : (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                  {projects.map((project, i) => (
+                    <FadeUp key={project.id} delay={i * 0.04} className="h-full">
+                      <ProjectCard project={project} />
+                    </FadeUp>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </Container>
-    </Section>
+        </Container>
+      </Section>
+    </>
   )
 }

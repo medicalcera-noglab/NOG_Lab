@@ -3,6 +3,7 @@ import { buildMetadata } from '@/lib/metadata'
 import { getSiteSettings, getResearchPageData, getPageSeo, resolvePageSeo } from '@/lib/data'
 import { getAbout } from '@/lib/data/about'
 import { Container } from '@/components/ui/Container'
+import { PageBanner } from '@/components/ui/PageBanner'
 import { FadeUp } from '@/components/FadeUp'
 import { RichText } from '@/components/RichText'
 import { ResearchInPageNav } from '@/components/research/ResearchInPageNav'
@@ -33,27 +34,16 @@ export default async function ResearchPage() {
 
   return (
     <>
-      {/* Page hero + Research Overview */}
-      <div className="bg-bg border-border border-b py-8 md:py-16">
-        <Container>
-          <FadeUp>
-            <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
-              What we study
-            </p>
-            <h1 className="font-heading text-fg mb-6 text-3xl font-bold sm:text-4xl md:text-5xl">
-              Research
-            </h1>
-          </FadeUp>
-          {about?.mission && (
-            <FadeUp delay={0.1}>
-              <RichText
-                data={about.mission}
-                className="text-muted max-w-3xl text-base leading-relaxed sm:text-lg"
-              />
-            </FadeUp>
-          )}
-        </Container>
-      </div>
+      <PageBanner
+        eyebrow="What we study"
+        title="Research"
+        description={
+          about?.mission ? (
+            <RichText data={about.mission} className="text-base leading-relaxed sm:text-lg" />
+          ) : undefined
+        }
+        tint="#0E6E6E"
+      />
 
       {/* Sticky in-page nav */}
       {themes.length > 0 && <ResearchInPageNav themes={themes as ResearchTheme[]} />}

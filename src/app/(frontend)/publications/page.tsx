@@ -10,6 +10,7 @@ import { getFilteredPublications, getPublicationFilterOptions } from '@/lib/data
 import type { PublicationFilters as Filters } from '@/lib/data/publications'
 import { EmptyState } from '@/components/placeholders'
 import { FadeUp } from '@/components/FadeUp'
+import { PageBanner } from '@/components/ui/PageBanner'
 import { cn } from '@/lib/utils'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -101,15 +102,18 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pubsJsonLd) }}
       />
+      <PageBanner
+        eyebrow="Our work"
+        title="Publications"
+        description="Peer-reviewed articles, preprints, and book chapters from the NOG Lab."
+        tint="#E2725B"
+      />
       <main id="main-content">
         <Container className="py-8 md:py-20">
           {/* ── Page header ── */}
           <div className="mb-6 md:mb-10">
-            <h1 className="font-heading text-fg text-2xl font-bold sm:text-4xl md:text-5xl">
-              Publications
-            </h1>
             {(publications.length > 0 || hasFilters) && (
-              <p className="text-muted mt-2 max-w-2xl text-sm sm:text-base">
+              <p className="text-muted max-w-2xl text-sm sm:text-base">
                 {publications.length > 0
                   ? `${publications.length} publication${publications.length !== 1 ? 's' : ''}`
                   : 'No publications found'}

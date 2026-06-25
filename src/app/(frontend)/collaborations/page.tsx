@@ -6,6 +6,7 @@ import { Section } from '@/components/ui/Section'
 import { MediaImage } from '@/components/MediaImage'
 import { FadeUp } from '@/components/FadeUp'
 import { RichText } from '@/components/RichText'
+import { PageBanner } from '@/components/ui/PageBanner'
 import { getAllCollaborators } from '@/lib/data/collaborators'
 import { EmptyState } from '@/components/placeholders'
 import type { Media } from '../../../../payload-types'
@@ -35,28 +36,18 @@ export default async function CollaborationsPage() {
 
   return (
     <>
-      <div className="bg-bg border-border border-b py-8 md:py-14">
-        <Container>
-          <FadeUp>
-            <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
-              Global network
-            </p>
-            <h1 className="font-heading text-fg mb-3 text-2xl font-bold sm:text-4xl">
-              Collaborations
-            </h1>
-            {about?.kmuAffiliation ? (
-              <RichText
-                data={about.kmuAffiliation}
-                className="text-muted max-w-2xl text-base sm:text-lg"
-              />
-            ) : (
-              <p className="text-muted max-w-2xl text-base sm:text-lg">
-                We work with institutions, funders, and researchers across the globe.
-              </p>
-            )}
-          </FadeUp>
-        </Container>
-      </div>
+      <PageBanner
+        eyebrow="Global network"
+        title="Collaborations"
+        description={
+          about?.kmuAffiliation ? (
+            <RichText data={about.kmuAffiliation} />
+          ) : (
+            'We work with institutions, funders, and researchers across the globe.'
+          )
+        }
+        tint="#E8C9A0"
+      />
 
       {/* Logo Wall */}
       {withLogo.length > 0 && (

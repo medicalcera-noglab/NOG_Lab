@@ -3,6 +3,7 @@ import { buildMetadata } from '@/lib/metadata'
 import { getSiteSettings, getAllPeople, isAlumni } from '@/lib/data'
 import { Section } from '@/components/ui/Section'
 import { Container } from '@/components/ui/Container'
+import { PageBanner } from '@/components/ui/PageBanner'
 import { FadeUp } from '@/components/FadeUp'
 import { PersonCard } from '@/components/people/PersonCard'
 import { RoleTabNav, type RoleTab } from '@/components/people/RoleTabNav'
@@ -86,66 +87,66 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const activeRoleLabel = tabs.find((t) => t.role === activeRole)?.label ?? roleLabels.all
 
   return (
-    <Section className="bg-bg py-8 md:py-20">
-      <Container>
-        {/* Page header */}
-        <FadeUp>
-          <div className="mb-4 md:mb-8">
-            <p className="text-primary mb-1.5 text-xs font-semibold tracking-[0.15em] uppercase">
-              Our team
-            </p>
-            <h1 className="font-heading text-fg text-2xl font-bold sm:text-4xl">People</h1>
-          </div>
-        </FadeUp>
-
-        {/* Role tabs */}
-        <FadeUp delay={0.05}>
-          <div className="mb-5 md:mb-10">
-            <RoleTabNav tabs={tabs} activeRole={activeRole} />
-          </div>
-        </FadeUp>
-
-        {/* Grid or empty state */}
-        {displayPeople.length === 0 ? (
-          <FadeUp delay={0.1}>
-            <EmptyState
-              variant={0}
-              heading={
-                allPeople.length === 0
-                  ? 'Team profiles coming soon'
-                  : 'No team members in this category'
-              }
-              body={
-                allPeople.length === 0
-                  ? 'Researcher profiles will appear here once they are added to the site.'
-                  : `No ${activeRoleLabel.toLowerCase()} are currently listed. Try another filter.`
-              }
-              action={
-                allPeople.length > 0 && activeRole !== 'all'
-                  ? { label: 'Show all members', href: '/people' }
-                  : undefined
-              }
-            />
+    <>
+      <PageBanner eyebrow="Our team" title="People" tint="#1A9090" />
+      <Section className="bg-bg py-8 md:py-20">
+        <Container>
+          {/* Page header */}
+          <FadeUp>
+            <div className="mb-4 md:mb-8">
+              <h2 className="font-heading text-fg text-2xl font-bold sm:text-4xl">Meet the team</h2>
+            </div>
           </FadeUp>
-        ) : (
-          <div
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            aria-label={`${activeRoleLabel} — ${displayPeople.length} ${displayPeople.length === 1 ? 'person' : 'people'}`}
-          >
-            {displayPeople.map((person, i) => {
-              const personRoleLabel = isAlumni(person)
-                ? roleLabels.alumni
-                : (roleLabels[person.role] ?? person.role)
 
-              return (
-                <FadeUp key={person.id} delay={i * 0.04} className="h-full">
-                  <PersonCard person={person} roleLabel={personRoleLabel} />
-                </FadeUp>
-              )
-            })}
-          </div>
-        )}
-      </Container>
-    </Section>
+          {/* Role tabs */}
+          <FadeUp delay={0.05}>
+            <div className="mb-5 md:mb-10">
+              <RoleTabNav tabs={tabs} activeRole={activeRole} />
+            </div>
+          </FadeUp>
+
+          {/* Grid or empty state */}
+          {displayPeople.length === 0 ? (
+            <FadeUp delay={0.1}>
+              <EmptyState
+                variant={0}
+                heading={
+                  allPeople.length === 0
+                    ? 'Team profiles coming soon'
+                    : 'No team members in this category'
+                }
+                body={
+                  allPeople.length === 0
+                    ? 'Researcher profiles will appear here once they are added to the site.'
+                    : `No ${activeRoleLabel.toLowerCase()} are currently listed. Try another filter.`
+                }
+                action={
+                  allPeople.length > 0 && activeRole !== 'all'
+                    ? { label: 'Show all members', href: '/people' }
+                    : undefined
+                }
+              />
+            </FadeUp>
+          ) : (
+            <div
+              className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              aria-label={`${activeRoleLabel} — ${displayPeople.length} ${displayPeople.length === 1 ? 'person' : 'people'}`}
+            >
+              {displayPeople.map((person, i) => {
+                const personRoleLabel = isAlumni(person)
+                  ? roleLabels.alumni
+                  : (roleLabels[person.role] ?? person.role)
+
+                return (
+                  <FadeUp key={person.id} delay={i * 0.04} className="h-full">
+                    <PersonCard person={person} roleLabel={personRoleLabel} />
+                  </FadeUp>
+                )
+              })}
+            </div>
+          )}
+        </Container>
+      </Section>
+    </>
   )
 }
