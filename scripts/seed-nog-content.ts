@@ -261,7 +261,7 @@ async function main() {
       slug: 'muhammad-shahzad',
       role: 'pi' as const,
       email: 'shahzad.ibms@kmu.edu.pk',
-      orcid: 'https://orcid.org/0000-0001-6565-1777',
+      orcid: '0000-0001-6565-1777',
       googleScholar: 'https://scholar.google.com/citations?hl=en&user=reiWXMMAAAAJ',
       bio: makeBio(
         'Dr Muhammad Shahzad is Professor at the Institute of Basic Medical Sciences (IBMS), Khyber Medical University, and Founder and Lab Lead of the Nutrition, Oral and Gut Microbiome (NOG) Lab. He received his PhD from the University of Glasgow and completed postdoctoral training at the University of Reading, UK.',
@@ -280,7 +280,7 @@ async function main() {
       slug: 'maria-ishaq-khattak',
       role: 'staff' as const,
       email: 'maria.iph@kmu.edu.pk',
-      orcid: 'https://orcid.org/0000-0003-4502-6805',
+      orcid: '0000-0003-4502-6805',
       googleScholar: 'https://scholar.google.com/citations?user=BgiNhSsAAAAJ&hl=en',
       bio: makeBio(
         'Dr Maria Ishaq Khattak is an Associate Professor and Head of Dental Public Health at Khyber Medical University, Peshawar. Her research focuses on improving health outcomes through evidence-based, context-specific approaches in Pakistan and other low- and middle-income countries. She has contributed to national and international collaborations, peer-reviewed publications, academic teaching, and capacity-building initiatives.',
@@ -293,7 +293,7 @@ async function main() {
       slug: 'wafa-naeem',
       role: 'staff' as const,
       email: 'wafanaeem.mbg@kmu.edu.pk',
-      orcid: 'https://orcid.org/0000-0002-4217-5568',
+      orcid: '0000-0002-4217-5568',
       googleScholar: 'https://scholar.google.com/citations?user=ujEmHasAAAAJ&hl=en',
       bio: makeBio(
         'Dr Wafa Naeem is a Lecturer in Molecular Biology and Genetics at Khyber Medical University, Pakistan. Her work aims to improve understanding of oral cancer and support personalized diagnostics and therapies. She is also involved in international collaborative cancer research, including ICRG46, in cancer genomics and translational oncology.',
@@ -306,7 +306,7 @@ async function main() {
       slug: 'bibi-hajira',
       role: 'postdoc' as const,
       email: 'hajiraghani.ibms@kmu.edu.pk',
-      orcid: 'https://orcid.org/0000-0002-9489-9437',
+      orcid: '0000-0002-9489-9437',
       googleScholar: 'https://scholar.google.com/citations?user=d0pdZa4AAAAJ&hl=en',
       bio: makeBio(
         'Dr Hajira obtained her PhD in Human Nutrition from The University of Agriculture, Peshawar. Her research interests focus on dietary intervention studies related to satiety, weight management, and biomarkers of cardiometabolic health. She is also interested in the development and validation of dietary intake assessment tools and questionnaires tailored to the Pakistani population.',
@@ -319,7 +319,7 @@ async function main() {
       slug: 'ahsan-saidal',
       role: 'phd' as const,
       email: 'ahsan.ipms@kmu.edu.pk',
-      orcid: 'https://orcid.org/0009-0003-3083-3599',
+      orcid: '0009-0003-3083-3599',
       googleScholar: 'https://scholar.google.com/citations?hl=en&user=Q1V_kOsAAAAJ',
       bio: makeBio(
         "Ahsan Saidal's research interests focus on maternal and child health, with a particular emphasis on public health nutrition, community-based nutrition surveys, and strategies to improve nutritional outcomes among mothers, infants, and children.",
