@@ -21,7 +21,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "prepare": "husky",
-    "seed:users": "tsx --require ./scripts/load-env.cjs scripts/seed-users.ts"
+    "seed:users": "tsx --require ./scripts/load-env.cjs scripts/seed-users.ts",
+    "seed:news-blog": "tsx --require ./scripts/load-env.cjs scripts/seed-news-blog.ts",
+    "citations:update": "tsx --require ./scripts/load-env.cjs scripts/update-citations.ts"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs,cjs}": [
