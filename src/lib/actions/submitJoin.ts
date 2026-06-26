@@ -97,7 +97,6 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
       sopId = created.id
     }
 
-    // Store raw values in DB — positionTitle as its own field, not embedded in message.
     await payload.create({
       collection: 'inquiries',
       data: {
@@ -112,22 +111,24 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
       overrideAccess: true,
     })
 
-    // EMAIL_NOTIFY = lab inbox for admin notifications (separate from EMAIL_FROM sender).
+    // Emails are non-critical — failures are logged but never shown to the user
     const notifyAddress = process.env.EMAIL_NOTIFY ?? process.env.EMAIL_FROM
     if (notifyAddress) {
-      await payload.sendEmail({
-        to: notifyAddress,
-        subject: `[NOG Lab] New application from ${name}`,
-        html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) applied${positionTitle ? ` for <em>${htmlEscape(positionTitle)}</em>` : ''}.</p><blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
-      })
-      await payload.sendEmail({
-        to: email,
-        subject: 'Application received — NOG Lab',
-        html: `<p>Dear ${htmlEscape(name)},</p><p>Thank you for your interest in joining NOG Lab. We will review your application and be in touch.</p><p>— NOG Lab</p>`,
-      })
+      Promise.all([
+        payload.sendEmail({
+          to: notifyAddress,
+          subject: `[NOG Lab] New application from ${name}`,
+          html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) applied${positionTitle ? ` for <em>${htmlEscape(positionTitle)}</em>` : ''}.</p><blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
+        }),
+        payload.sendEmail({
+          to: email,
+          subject: 'Application received — NOG Lab',
+          html: `<p>Dear ${htmlEscape(name)},</p><p>Thank you for your interest in joining NOG Lab. We will review your application and be in touch.</p><p>— NOG Lab</p>`,
+        }),
+      ]).catch((err) => console.error('[submitJoin] email error (non-fatal):', err))
     }
   } catch (err) {
-    console.error('[submitJoin]', err)
+    console.error('[submitJoin] db error:', err)
     return { success: false, error: 'Server error. Please try again.' }
   }
 

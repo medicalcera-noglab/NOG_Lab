@@ -51,38 +51,34 @@ export async function submitContact(
   const valid = await verifyRecaptcha(recaptchaToken)
   if (!valid) return { success: false, error: 'Security check failed. Please try again.' }
 
+  // Step 1: save to DB — this must succeed for the form to succeed
   try {
     const payload = await getPayload({ config })
 
-    // Store raw values in DB — never HTML-encoded.
     await payload.create({
       collection: 'inquiries',
-      data: {
-        formType: 'contact',
-        name,
-        email,
-        message,
-      },
+      data: { formType: 'contact', name, email, message },
       overrideAccess: true,
     })
 
-    // EMAIL_NOTIFY = lab inbox for admin notifications (separate from EMAIL_FROM sender).
-    // Falls back to EMAIL_FROM if EMAIL_NOTIFY is not configured.
+    // Step 2: send emails — failures are logged but never shown to the user
     const notifyAddress = process.env.EMAIL_NOTIFY ?? process.env.EMAIL_FROM
     if (notifyAddress) {
-      await payload.sendEmail({
-        to: notifyAddress,
-        subject: `[NOG Lab] New contact from ${name}`,
-        html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) sent a message:</p><blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
-      })
-      await payload.sendEmail({
-        to: email,
-        subject: 'We received your message — NOG Lab',
-        html: `<p>Dear ${htmlEscape(name)},</p><p>Thank you for reaching out. We'll get back to you within 3-5 business days.</p><p>— NOG Lab</p>`,
-      })
+      Promise.all([
+        payload.sendEmail({
+          to: notifyAddress,
+          subject: `[NOG Lab] New contact from ${name}`,
+          html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) sent a message:</p><blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
+        }),
+        payload.sendEmail({
+          to: email,
+          subject: 'We received your message — NOG Lab',
+          html: `<p>Dear ${htmlEscape(name)},</p><p>Thank you for reaching out. We'll get back to you within 3–5 business days.</p><p>— NOG Lab</p>`,
+        }),
+      ]).catch((err) => console.error('[submitContact] email error (non-fatal):', err))
     }
   } catch (err) {
-    console.error('[submitContact]', err)
+    console.error('[submitContact] db error:', err)
     return { success: false, error: 'Server error. Please try again.' }
   }
 
