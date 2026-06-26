@@ -33,7 +33,7 @@ export const getCounts = unstable_cache(
     }
   },
   ['home-counts'],
-  { revalidate: 300, tags: ['publications', 'projects', 'people', 'collaborators'] },
+  { revalidate: 30, tags: ['publications', 'projects', 'people', 'collaborators'] },
 )
 
 export const getFeaturedProject = unstable_cache(
