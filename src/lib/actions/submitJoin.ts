@@ -72,14 +72,19 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
         return { success: false, error: `CV must be under ${MAX_FILE_MB} MB.` }
       if (!ALLOWED_MIME.includes(cvFile.type))
         return { success: false, error: 'CV must be PDF or Word doc.' }
-      const buf = Buffer.from(await cvFile.arrayBuffer())
-      const created = await payload.create({
-        collection: 'applicant_files',
-        data: { submittedBy: email },
-        file: { data: buf, mimetype: cvFile.type, name: cvFile.name, size: cvFile.size },
-        overrideAccess: true,
-      })
-      cvId = created.id
+      try {
+        const buf = Buffer.from(await cvFile.arrayBuffer())
+        const created = await payload.create({
+          collection: 'applicant_files',
+          data: { submittedBy: email },
+          file: { data: buf, mimetype: cvFile.type, name: cvFile.name, size: cvFile.size },
+          overrideAccess: true,
+        })
+        cvId = created.id
+      } catch (fileErr) {
+        // Storage not configured — log and continue without the file
+        console.error('[submitJoin] CV upload failed (storage not configured?):', fileErr)
+      }
     }
 
     if (sopFile instanceof File && sopFile.size > 0) {
@@ -87,14 +92,18 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
         return { success: false, error: `SOP must be under ${MAX_FILE_MB} MB.` }
       if (!ALLOWED_MIME.includes(sopFile.type))
         return { success: false, error: 'SOP must be PDF or Word doc.' }
-      const buf = Buffer.from(await sopFile.arrayBuffer())
-      const created = await payload.create({
-        collection: 'applicant_files',
-        data: { submittedBy: email },
-        file: { data: buf, mimetype: sopFile.type, name: sopFile.name, size: sopFile.size },
-        overrideAccess: true,
-      })
-      sopId = created.id
+      try {
+        const buf = Buffer.from(await sopFile.arrayBuffer())
+        const created = await payload.create({
+          collection: 'applicant_files',
+          data: { submittedBy: email },
+          file: { data: buf, mimetype: sopFile.type, name: sopFile.name, size: sopFile.size },
+          overrideAccess: true,
+        })
+        sopId = created.id
+      } catch (fileErr) {
+        console.error('[submitJoin] SOP upload failed (storage not configured?):', fileErr)
+      }
     }
 
     await payload.create({
