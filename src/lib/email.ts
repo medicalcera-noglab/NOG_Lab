@@ -8,20 +8,22 @@ import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
  */
 export function buildEmailAdapter() {
   const key = process.env.RESEND_API_KEY
-  const from = process.env.EMAIL_FROM ?? 'NOG Lab <noreply@noglab.org>'
+  // EMAIL_FROM may be "email@example.com" or "Name <email@example.com>".
+  // Resend's adapter expects defaultFromAddress to be the bare email only —
+  // passing the full "Name <email>" format causes it to double-wrap the name.
+  const raw = process.env.EMAIL_FROM ?? 'noreply@noglab.org'
+  const fromEmail = raw.match(/<(.+)>/)?.[1] ?? raw
 
   if (key && key.length > 0) {
     return resendAdapter({
-      defaultFromAddress: from,
+      defaultFromAddress: fromEmail,
       defaultFromName: 'NOG Lab',
       apiKey: key,
     })
   }
 
-  // Dev fallback — Nodemailer with ethereal transport. Preview URL printed to console.
   return nodemailerAdapter({
-    defaultFromAddress: from,
+    defaultFromAddress: fromEmail,
     defaultFromName: 'NOG Lab',
-    // Transport-less: nodemailer-adapter creates an ethereal test account automatically.
   })
 }
