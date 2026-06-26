@@ -6,7 +6,10 @@ export const Inquiries: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Forms',
-    defaultColumns: ['name', 'email', 'formType', 'isRead', 'createdAt'],
+    description:
+      'All contact messages and Join the Lab applications. Click any row to read the full message.',
+    defaultColumns: ['formType', 'name', 'email', 'message', 'isRead', 'createdAt'],
+    listSearchableFields: ['name', 'email', 'message'],
     components: {
       afterList: ['@/components/admin/InquiriesCsvButton#InquiriesCsvButton'],
     },
@@ -71,8 +74,12 @@ export const Inquiries: CollectionConfig = {
     {
       name: 'isRead',
       type: 'checkbox',
+      label: 'Marked as Read',
       defaultValue: false,
-      admin: { position: 'sidebar' },
+      admin: {
+        position: 'sidebar',
+        description: 'Tick this once you have read and actioned this message.',
+      },
     },
     {
       name: 'repliedAt',
