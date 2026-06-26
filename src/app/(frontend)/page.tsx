@@ -12,12 +12,16 @@ import {
   getAllPeople,
   getAbout,
   getAllResearchThemes,
+  getHomeProjects,
+  getLatestPublications,
 } from '@/lib/data'
 import { HeroSection } from '@/components/home/HeroSection'
 import { BigQuestionsStrip } from '@/components/home/BigQuestionsStrip'
 import { AboutTeaser } from '@/components/home/AboutTeaser'
 import { CountersSection } from '@/components/home/CountersSection'
 import { FeaturedProject } from '@/components/home/FeaturedProject'
+import { ProjectsGrid } from '@/components/home/ProjectsGrid'
+import { PublicationsTeaser } from '@/components/home/PublicationsTeaser'
 import { PakistanMapTeaser } from '@/components/home/PakistanMapTeaser'
 import { TeamTeaser } from '@/components/home/TeamTeaser'
 import { LatestNews } from '@/components/home/LatestNews'
@@ -48,6 +52,8 @@ export default async function HomePage() {
     about,
     people,
     themes,
+    homeProjects,
+    latestPublications,
   ] = await Promise.all([
     getSiteSettings(),
     getCounts(),
@@ -58,6 +64,8 @@ export default async function HomePage() {
     getAbout(),
     getAllPeople(),
     getAllResearchThemes(),
+    getHomeProjects(),
+    getLatestPublications(),
   ])
 
   const orgJsonLd = {
@@ -103,7 +111,11 @@ export default async function HomePage() {
 
       <FeaturedProject project={featuredProject} />
 
+      <ProjectsGrid projects={homeProjects} />
+
       <PakistanMapTeaser siteCount={siteCount} />
+
+      <PublicationsTeaser publications={latestPublications} />
 
       <TeamTeaser people={people} />
 

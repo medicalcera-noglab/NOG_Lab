@@ -5,6 +5,8 @@ export {
   getLatestNews,
   getCollaborators,
   getStudySiteCount,
+  getHomeProjects,
+  getLatestPublications,
   type HomeCounts,
 } from './home'
 export {

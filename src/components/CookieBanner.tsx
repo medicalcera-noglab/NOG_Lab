@@ -13,28 +13,36 @@ export function CookieBanner() {
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-        onClick={deny}
-      />
+      {/* Backdrop — no click-to-dismiss to avoid accidental taps on mobile */}
+      <div aria-hidden="true" className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" />
 
-      {/* Modal */}
+      {/* Modal — slides up from bottom on mobile, floating card on sm+ */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Cookie consent"
         className={cn(
-          'fixed inset-x-4 bottom-6 z-50 mx-auto max-w-lg rounded-2xl',
-          'bg-surface border-border border shadow-2xl',
-          'p-6 sm:p-7',
+          // Mobile: full-width sheet anchored to bottom edge
+          'fixed inset-x-0 bottom-0 z-50',
+          // sm+: floating card with rounded corners on all sides
+          'sm:inset-x-4 sm:bottom-6 sm:mx-auto sm:max-w-lg sm:rounded-2xl',
+          'rounded-t-2xl',
+          'bg-surface border-border border-t shadow-2xl sm:border',
+          // Padding — extra bottom padding for notched phones
+          'px-5 pt-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:p-7',
+          // Cap height so it never overflows on short screens
+          'max-h-[85svh] overflow-y-auto',
           'motion-safe:animate-[slideUp_260ms_cubic-bezier(0.22,1,0.36,1)]',
         )}
       >
+        {/* Drag handle — visual hint for mobile sheet */}
+        <div className="mb-4 flex justify-center sm:hidden" aria-hidden="true">
+          <div className="bg-border h-1 w-10 rounded-full" />
+        </div>
+
         {/* Icon + heading */}
         <div className="mb-3 flex items-start gap-3">
-          <span className="text-2xl" aria-hidden="true">
+          <span role="img" aria-label="Cookie" className="mt-0.5 shrink-0 text-2xl">
             🍪
           </span>
           <div>
