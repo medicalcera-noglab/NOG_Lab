@@ -39,13 +39,7 @@ export default async function CollaborationsPage() {
       <PageBanner
         eyebrow="Global network"
         title="Collaborations"
-        description={
-          about?.kmuAffiliation ? (
-            <RichText data={about.kmuAffiliation} />
-          ) : (
-            'We work with institutions, funders, and researchers across the globe.'
-          )
-        }
+        description="Our research programme is strengthened through collaborations with leading national and international researchers and institutions."
         tint="#E8C9A0"
       />
 
@@ -54,7 +48,7 @@ export default async function CollaborationsPage() {
         <Section className="bg-surface py-12">
           <Container>
             <FadeUp>
-              <h2 className="text-muted mb-8 text-sm text-xl font-semibold tracking-wider uppercase">
+              <h2 className="text-muted mb-8 text-xl font-semibold tracking-wider uppercase">
                 Our Partners
               </h2>
             </FadeUp>

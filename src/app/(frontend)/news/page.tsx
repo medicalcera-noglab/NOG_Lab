@@ -9,6 +9,7 @@ import { FadeUp } from '@/components/FadeUp'
 import { getNewsList } from '@/lib/data/news'
 import type { NewsCategory } from '@/lib/data/news'
 import { EmptyState } from '@/components/placeholders'
+import { PageBanner } from '@/components/ui/PageBanner'
 
 export async function generateMetadata(): Promise<Metadata> {
   const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
@@ -49,10 +50,9 @@ export default async function NewsPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <Section className="pt-8 pb-6 sm:pt-12">
+      <PageBanner eyebrow="Latest updates" title="News &amp; Events" tint="#E2725B" />
+      <Section className="pt-8 pb-6">
         <Container>
-          <h1 className="mb-4 text-2xl font-bold sm:text-4xl">News &amp; Events</h1>
-
           {/* Category filter */}
           <nav aria-label="Filter by category">
             <ul className="flex flex-wrap gap-2" role="list">
@@ -65,7 +65,7 @@ export default async function NewsPage({ searchParams }: PageProps) {
                       className={[
                         'rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none',
                         active
-                          ? 'bg-accent text-white'
+                          ? 'bg-primary text-white'
                           : 'bg-surface border-border hover:border-accent border',
                       ].join(' ')}
                       aria-current={active ? 'page' : undefined}

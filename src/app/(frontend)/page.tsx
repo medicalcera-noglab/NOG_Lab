@@ -11,6 +11,7 @@ import {
   resolvePageSeo,
   getAllPeople,
   getAbout,
+  getAllResearchThemes,
 } from '@/lib/data'
 import { HeroSection } from '@/components/home/HeroSection'
 import { BigQuestionsStrip } from '@/components/home/BigQuestionsStrip'
@@ -22,7 +23,7 @@ import { TeamTeaser } from '@/components/home/TeamTeaser'
 import { LatestNews } from '@/components/home/LatestNews'
 import { PartnerStrip } from '@/components/home/PartnerStrip'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
@@ -37,17 +38,27 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
 
 export default async function HomePage() {
   // All data fetched in parallel — each is individually cached by unstable_cache
-  const [settings, counts, featuredProject, latestNews, collaborators, siteCount, about, people] =
-    await Promise.all([
-      getSiteSettings(),
-      getCounts(),
-      getFeaturedProject(),
-      getLatestNews(),
-      getCollaborators(),
-      getStudySiteCount(),
-      getAbout(),
-      getAllPeople(),
-    ])
+  const [
+    settings,
+    counts,
+    featuredProject,
+    latestNews,
+    collaborators,
+    siteCount,
+    about,
+    people,
+    themes,
+  ] = await Promise.all([
+    getSiteSettings(),
+    getCounts(),
+    getFeaturedProject(),
+    getLatestNews(),
+    getCollaborators(),
+    getStudySiteCount(),
+    getAbout(),
+    getAllPeople(),
+    getAllResearchThemes(),
+  ])
 
   const orgJsonLd = {
     '@context': 'https://schema.org',
@@ -86,7 +97,7 @@ export default async function HomePage() {
         <BigQuestionsStrip questions={settings.bigQuestions} />
       ) : null}
 
-      <AboutTeaser about={about} />
+      <AboutTeaser about={about} themes={themes} />
 
       <CountersSection counts={counts} />
 

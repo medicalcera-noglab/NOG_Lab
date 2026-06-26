@@ -8,6 +8,7 @@ import { getAbout } from '@/lib/data/about'
 import { getOpenPositions } from '@/lib/data/positions'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getPageSeo, resolvePageSeo } from '@/lib/data'
+import { PageBanner } from '@/components/ui/PageBanner'
 
 export async function generateMetadata(): Promise<Metadata> {
   const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
@@ -37,14 +38,12 @@ export default async function JoinPage() {
 
   return (
     <>
-      <Section className="pt-20 pb-12">
-        <Container>
-          <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Join the Lab</h1>
-          <p className="text-muted max-w-2xl text-lg">
-            We welcome motivated researchers and students. See below for current openings.
-          </p>
-        </Container>
-      </Section>
+      <PageBanner
+        eyebrow="Work with us"
+        title="Join the Lab"
+        description="We welcome motivated researchers and students. See below for current openings."
+        tint="#E2725B"
+      />
 
       {/* Open Positions */}
       <Section className="bg-surface py-12">

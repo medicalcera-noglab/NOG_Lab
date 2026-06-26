@@ -64,10 +64,12 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
   const hasFilters = Object.values(filters).some(Boolean)
   const activeFilterCount = Object.values(filters).filter(Boolean).length
 
-  const [publications, filterOptions] = await Promise.all([
+  const [publications, filterOptions, pageSeo] = await Promise.all([
     getFilteredPublications(filters),
     getPublicationFilterOptions(),
+    getPageSeo(),
   ])
+  const seo = resolvePageSeo(pageSeo, 'publications')
 
   const pubsJsonLd = {
     '@context': 'https://schema.org',
@@ -105,7 +107,10 @@ export default async function PublicationsPage({ searchParams }: PageProps) {
       <PageBanner
         eyebrow="Our work"
         title="Publications"
-        description="Peer-reviewed articles, preprints, and book chapters from the NOG Lab."
+        description={
+          seo.description ??
+          'Peer-reviewed articles, preprints, and book chapters from the NOG Lab.'
+        }
         tint="#E2725B"
       />
       <main id="main-content">

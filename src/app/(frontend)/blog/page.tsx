@@ -8,6 +8,7 @@ import { BlogCard } from '@/components/blog/BlogCard'
 import { FadeUp } from '@/components/FadeUp'
 import { getBlogList } from '@/lib/data/blog'
 import { EmptyState } from '@/components/placeholders'
+import { PageBanner } from '@/components/ui/PageBanner'
 
 export async function generateMetadata(): Promise<Metadata> {
   const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
@@ -43,10 +44,9 @@ export default async function BlogPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <Section className="pt-8 pb-6 sm:pt-12">
+      <PageBanner eyebrow="Lab insights" title="Blog" tint="#0E6E6E" />
+      <Section className="pt-8 pb-6">
         <Container>
-          <h1 className="mb-4 text-2xl font-bold sm:text-4xl">Blog</h1>
-
           {allTags.length > 0 && (
             <nav aria-label="Filter by tag">
               <ul className="flex flex-wrap gap-2" role="list">
@@ -56,7 +56,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
                     className={[
                       'rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none',
                       !tag
-                        ? 'bg-accent text-white'
+                        ? 'bg-primary text-white'
                         : 'bg-surface border-border hover:border-accent border',
                     ].join(' ')}
                     aria-current={!tag ? 'page' : undefined}
@@ -71,7 +71,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
                       className={[
                         'rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none',
                         tag === t
-                          ? 'bg-accent text-white'
+                          ? 'bg-primary text-white'
                           : 'bg-surface border-border hover:border-accent border',
                       ].join(' ')}
                       aria-current={tag === t ? 'page' : undefined}

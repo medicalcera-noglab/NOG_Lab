@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getSearchProvider, type SearchResult, type GroupedResults } from '@/lib/search'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
+import { PageBanner } from '@/components/ui/PageBanner'
 import { buttonVariants } from '@/components/ui/Button'
 
 export const dynamic = 'force-dynamic'
@@ -103,53 +104,56 @@ export default async function SearchPage({ searchParams }: Props) {
   const hasAny = grouped && grouped.total > 0
 
   return (
-    <Section>
-      <Container className="max-w-3xl">
-        <h1 className="font-heading text-fg mb-2 text-3xl font-bold">
-          {query ? `Search: "${query}"` : 'Search'}
-        </h1>
-        {hasAny && (
-          <p className="text-muted mb-8 text-sm">
-            {grouped!.total} result{grouped!.total === 1 ? '' : 's'} found
-          </p>
-        )}
+    <>
+      <PageBanner eyebrow="Find anything" title="Search" tint="#0E6E6E" />
+      <Section>
+        <Container className="max-w-3xl">
+          <h2 className="font-heading text-fg mb-2 text-xl font-bold">
+            {query ? `Results for "${query}"` : 'Start typing to search…'}
+          </h2>
+          {hasAny && (
+            <p className="text-muted mb-8 text-sm">
+              {grouped!.total} result{grouped!.total === 1 ? '' : 's'} found
+            </p>
+          )}
 
-        <SearchForm defaultValue={query} />
+          <SearchForm defaultValue={query} />
 
-        {!query && <p className="text-muted py-16 text-center">Type something to search…</p>}
+          {!query && <p className="text-muted py-16 text-center">Type something to search…</p>}
 
-        {query && grouped && !hasAny && (
-          <div className="py-16 text-center">
-            <p className="text-fg font-medium">No results for &ldquo;{query}&rdquo;</p>
-            <p className="text-muted mt-1 text-sm">Try different keywords.</p>
-          </div>
-        )}
+          {query && grouped && !hasAny && (
+            <div className="py-16 text-center">
+              <p className="text-fg font-medium">No results for &ldquo;{query}&rdquo;</p>
+              <p className="text-muted mt-1 text-sm">Try different keywords.</p>
+            </div>
+          )}
 
-        {hasAny && (
-          <div className="space-y-12">
-            {GROUP_CONFIG.map(({ key, label }) => {
-              const items = grouped![key]
-              if (items.length === 0) return null
-              return (
-                <section key={key} aria-labelledby={`section-${key}`}>
-                  <h2
-                    id={`section-${key}`}
-                    className="font-heading text-fg border-border mb-4 border-b pb-2 text-xl font-bold"
-                  >
-                    {label}
-                    <span className="text-muted ms-2 text-sm font-normal">({items.length})</span>
-                  </h2>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {items.map((result) => (
-                      <ResultCard key={`${result.type}-${result.id}`} result={result} />
-                    ))}
-                  </div>
-                </section>
-              )
-            })}
-          </div>
-        )}
-      </Container>
-    </Section>
+          {hasAny && (
+            <div className="space-y-12">
+              {GROUP_CONFIG.map(({ key, label }) => {
+                const items = grouped![key]
+                if (items.length === 0) return null
+                return (
+                  <section key={key} aria-labelledby={`section-${key}`}>
+                    <h2
+                      id={`section-${key}`}
+                      className="font-heading text-fg border-border mb-4 border-b pb-2 text-xl font-bold"
+                    >
+                      {label}
+                      <span className="text-muted ms-2 text-sm font-normal">({items.length})</span>
+                    </h2>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {items.map((result) => (
+                        <ResultCard key={`${result.type}-${result.id}`} result={result} />
+                      ))}
+                    </div>
+                  </section>
+                )
+              })}
+            </div>
+          )}
+        </Container>
+      </Section>
+    </>
   )
 }

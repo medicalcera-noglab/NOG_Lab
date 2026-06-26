@@ -7,6 +7,7 @@ import { ContactForm } from '@/components/forms/ContactForm'
 import { ContactMap } from '@/components/contact/ContactMap'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getPageSeo, resolvePageSeo } from '@/lib/data'
+import { PageBanner } from '@/components/ui/PageBanner'
 
 export async function generateMetadata(): Promise<Metadata> {
   const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
@@ -29,14 +30,12 @@ export default async function ContactPage() {
 
   return (
     <>
-      <Section className="pt-8 pb-6 sm:pt-12">
-        <Container>
-          <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Contact Us</h1>
-          <p className="text-muted max-w-xl text-lg">
-            We&apos;d love to hear from you. Fill out the form or reach us directly.
-          </p>
-        </Container>
-      </Section>
+      <PageBanner
+        eyebrow="Get in touch"
+        title="Contact Us"
+        description="We'd love to hear from you. Fill out the form or reach us directly."
+        tint="#0E6E6E"
+      />
 
       <Section className="pb-12 md:pb-20">
         <Container>

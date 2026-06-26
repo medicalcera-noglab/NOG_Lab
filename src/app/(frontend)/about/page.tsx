@@ -4,6 +4,7 @@ import { Download } from 'lucide-react'
 import { FadeUp } from '@/components/FadeUp'
 import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
+import { PageBanner } from '@/components/ui/PageBanner'
 import { buttonVariants } from '@/components/ui/Button'
 import { RichText } from '@/components/RichText'
 import { MediaImage } from '@/components/MediaImage'
@@ -44,12 +45,13 @@ export default async function AboutPage() {
 
   return (
     <>
+      <PageBanner eyebrow="Who we are" title="About NOG Lab" tint="#0E6E6E" />
+
       {/* Mission */}
       {about?.mission && (
-        <Section className="pt-8 pb-8 sm:pt-12">
+        <Section className="py-12 md:py-16">
           <Container>
             <FadeUp>
-              <h1 className="mb-8 text-3xl font-bold sm:text-4xl">About NOG Lab</h1>
               <RichText data={about.mission} className="max-w-3xl text-lg" />
             </FadeUp>
           </Container>
@@ -61,14 +63,15 @@ export default async function AboutPage() {
         <Section className="bg-surface py-12">
           <Container>
             <FadeUp>
-              <div className="flex flex-col items-center gap-8 md:flex-row md:items-start">
+              <div className="flex flex-col items-start gap-8 md:flex-row">
                 {portrait && (
-                  <div className="border-border h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 sm:h-48 sm:w-48 md:mx-0">
+                  <div className="border-border relative h-44 w-32 shrink-0 overflow-hidden rounded-2xl border shadow-sm sm:h-56 sm:w-40">
                     <MediaImage
                       doc={portrait}
-                      sizes="192px"
+                      fill
+                      sizes="160px"
                       priority
-                      className="h-full w-full object-cover"
+                      className="object-cover object-top"
                     />
                   </div>
                 )}

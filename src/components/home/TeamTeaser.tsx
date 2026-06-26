@@ -113,7 +113,12 @@ export function TeamTeaser({ people }: TeamTeaserProps) {
                         <div className="border-border h-20 w-20 overflow-hidden rounded-full border-2">
                           {photo ? (
                             <div className="relative h-full w-full">
-                              <MediaImage doc={photo} fill sizes="80px" className="object-cover" />
+                              <MediaImage
+                                doc={photo}
+                                fill
+                                sizes="80px"
+                                className="object-cover object-top"
+                              />
                             </div>
                           ) : (
                             <Initials name={person.name} />

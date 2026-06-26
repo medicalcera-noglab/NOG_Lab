@@ -7,6 +7,7 @@ import { RichText } from '@/components/RichText'
 import { MediaImage } from '@/components/MediaImage'
 import { FadeUp } from '@/components/FadeUp'
 import { getImpactStories, getMediaCoverage, getImpactKPIs } from '@/lib/data/impact'
+import { PageBanner } from '@/components/ui/PageBanner'
 import type { Media } from '../../../../payload-types'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -43,17 +44,12 @@ export default async function ImpactPage() {
 
   return (
     <>
-      <Section className="pt-8 pb-6 sm:pt-12">
-        <Container>
-          <FadeUp>
-            <h1 className="mb-3 text-2xl font-bold sm:text-4xl">Our Impact</h1>
-            <p className="text-muted max-w-2xl text-base sm:text-lg">
-              Measuring research outcomes through publications, student training, and community
-              change.
-            </p>
-          </FadeUp>
-        </Container>
-      </Section>
+      <PageBanner
+        eyebrow="Making a difference"
+        title="Our Impact"
+        description="Measuring research outcomes through publications, student training, and community change."
+        tint="#0E6E6E"
+      />
 
       {/* KPI Dashboard */}
       <Section className="bg-surface py-12">

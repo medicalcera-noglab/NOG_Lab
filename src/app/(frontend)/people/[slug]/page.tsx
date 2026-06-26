@@ -121,12 +121,18 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
               <div className="mx-auto md:mx-0">
                 <div
                   className={cn(
-                    'relative h-36 w-36 overflow-hidden rounded-2xl sm:h-48 sm:w-48',
+                    'relative h-44 w-32 overflow-hidden rounded-2xl sm:h-60 sm:w-44',
                     'border-border bg-surface-raised border shadow-sm',
                   )}
                 >
                   {photo ? (
-                    <MediaImage doc={photo} fill sizes="192px" priority className="object-cover" />
+                    <MediaImage
+                      doc={photo}
+                      fill
+                      sizes="192px"
+                      priority
+                      className="object-cover object-top"
+                    />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
                       <span

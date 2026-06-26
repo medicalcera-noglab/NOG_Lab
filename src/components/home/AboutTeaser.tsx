@@ -1,37 +1,49 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, Microscope, FlaskConical, Dna } from 'lucide-react'
+import { ArrowRight, Microscope, FlaskConical, Dna, Activity, TestTube, Atom } from 'lucide-react'
 import { FadeUp } from '@/components/FadeUp'
 import { Section } from '@/components/ui/Section'
 import { Container } from '@/components/ui/Container'
 import { MediaImage } from '@/components/MediaImage'
 import { lexicalToText } from '@/lib/richtext'
 import { cn } from '@/lib/utils'
-import type { About, Media } from '../../../payload-types'
+import type { About, Media, ResearchTheme } from '../../../payload-types'
 
-const PILLARS = [
+// Lucide icon map — matches the icon field values stored in ResearchThemes
+const ICON_MAP: Record<string, React.ElementType> = {
+  microscope: Microscope,
+  'flask-conical': FlaskConical,
+  dna: Dna,
+  activity: Activity,
+  'test-tube': TestTube,
+  atom: Atom,
+}
+
+// Fallback pillars used only when no ResearchThemes exist in the CMS
+const FALLBACK_PILLARS = [
   {
     icon: Microscope,
-    title: 'Oral Microbiome',
+    name: 'Oral Microbiome',
     body: 'Linking oral bacterial dysbiosis to systemic metabolic and cardiovascular risk.',
   },
   {
     icon: FlaskConical,
-    title: 'Gut Health',
+    name: 'Gut Health',
     body: 'Population-scale profiling of gut flora across diverse Pakistani communities.',
   },
   {
     icon: Dna,
-    title: 'Nutrition Science',
+    name: 'Nutrition Science',
     body: 'Dietary pattern interventions and their downstream effect on host microbiota.',
   },
-] as const
+]
 
 interface AboutTeaserProps {
   about: About | null
+  themes: ResearchTheme[]
 }
 
-export function AboutTeaser({ about }: AboutTeaserProps) {
+export function AboutTeaser({ about, themes }: AboutTeaserProps) {
   const portrait =
     about?.directorPortrait && typeof about.directorPortrait === 'object'
       ? (about.directorPortrait as Media)
@@ -41,15 +53,27 @@ export function AboutTeaser({ about }: AboutTeaserProps) {
     ? lexicalToText(about.mission as Parameters<typeof lexicalToText>[0], ' ').slice(0, 280)
     : null
 
+  // Use live themes (up to 3); fall back to hardcoded pillars only if CMS has none
+  const pillars =
+    themes.length > 0
+      ? themes.slice(0, 3).map((t) => ({
+          icon: ICON_MAP[t.icon ?? ''] ?? Microscope,
+          name: t.name,
+          body: lexicalToText(t.description as Parameters<typeof lexicalToText>[0], ' ').slice(
+            0,
+            120,
+          ),
+          color: t.color,
+        }))
+      : FALLBACK_PILLARS.map((p) => ({ ...p, color: 'var(--color-teal)' }))
+
   return (
     <Section className="bg-surface relative overflow-hidden py-16 md:py-24">
       {/* Subtle teal corner accent */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute top-0 right-0 h-64 w-64 opacity-[0.06]"
-        style={{
-          background: 'radial-gradient(circle, var(--color-teal) 0%, transparent 70%)',
-        }}
+        style={{ background: 'radial-gradient(circle, var(--color-teal) 0%, transparent 70%)' }}
       />
 
       <Container className="relative z-10">
@@ -62,7 +86,6 @@ export function AboutTeaser({ about }: AboutTeaserProps) {
               </p>
               <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">About the Lab</h2>
             </div>
-
             <div className="flex md:justify-end">
               <Link
                 href="/about"
@@ -79,24 +102,22 @@ export function AboutTeaser({ about }: AboutTeaserProps) {
           </div>
         </FadeUp>
 
-        {/* Two-column: portrait + mission text OR pillar cards */}
+        {/* Two-column: portrait + mission text */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
-          {/* Left: director portrait + name, or fallback graphic */}
+          {/* Left: portrait or SEM fallback */}
           <FadeUp delay={0.05}>
             {portrait ? (
-              <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl">
+              <div className="relative aspect-[3/4] w-full max-w-sm overflow-hidden rounded-2xl">
                 <MediaImage
                   doc={portrait}
                   fill
                   sizes="(max-width: 768px) 100vw, 360px"
-                  className="object-cover"
+                  className="object-cover object-top"
                 />
-                {/* Gradient overlay at bottom */}
                 <div className="from-surface/80 absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t to-transparent" />
               </div>
             ) : (
-              /* No portrait set — show SEM lab background image */
-              <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl">
+              <div className="relative aspect-[3/4] w-full max-w-sm overflow-hidden rounded-2xl">
                 <Image
                   src="/media/site-hero-bg.jpg"
                   alt=""
@@ -128,16 +149,19 @@ export function AboutTeaser({ about }: AboutTeaserProps) {
                 </p>
               )}
 
-              {/* Research pillars */}
+              {/* Research pillars — driven by ResearchThemes from CMS */}
               <ul className="grid gap-5" role="list">
-                {PILLARS.map(({ icon: Icon, title, body }) => (
-                  <li key={title} className="flex items-start gap-4">
-                    <div className="bg-primary/10 mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
-                      <Icon size={18} className="text-primary" aria-hidden="true" />
+                {pillars.map(({ icon: Icon, name, body, color }) => (
+                  <li key={name} className="flex items-start gap-4">
+                    <div
+                      className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                      style={{ backgroundColor: `color-mix(in oklch, ${color} 15%, transparent)` }}
+                    >
+                      <Icon size={18} style={{ color }} aria-hidden="true" />
                     </div>
                     <div>
-                      <p className="text-fg font-semibold">{title}</p>
-                      <p className="text-muted mt-0.5 text-sm leading-relaxed">{body}</p>
+                      <p className="text-fg font-semibold">{name}</p>
+                      {body && <p className="text-muted mt-0.5 text-sm leading-relaxed">{body}</p>}
                     </div>
                   </li>
                 ))}

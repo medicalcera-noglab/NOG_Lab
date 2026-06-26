@@ -3,6 +3,7 @@ import { buildMetadata } from '@/lib/metadata'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getLegalPages } from '@/lib/data/legal'
 import { Container } from '@/components/ui/Container'
+import { PageBanner } from '@/components/ui/PageBanner'
 import { RichText } from '@/components/RichText'
 
 export const revalidate = 3600
@@ -20,9 +21,9 @@ export default async function PrivacyPage() {
 
   return (
     <main id="main-content">
-      <Container className="py-16 md:py-24">
+      <PageBanner eyebrow="Legal" title={title} tint="#1A1A1A" />
+      <Container className="py-12 md:py-20">
         <div className="mx-auto max-w-3xl">
-          <h1 className="font-heading text-fg mb-10 text-3xl font-bold sm:text-4xl">{title}</h1>
           {legal?.privacyPolicy ? (
             <RichText data={legal.privacyPolicy} className="max-w-none" />
           ) : (
