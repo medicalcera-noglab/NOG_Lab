@@ -30,7 +30,7 @@ export async function Navbar() {
   return (
     <header
       className={cn(
-        'border-border sticky top-0 z-30 border-b',
+        'border-border sticky top-0 z-[45] border-b',
         'bg-bg/90 supports-backdrop-blur:bg-bg/80 backdrop-blur-md',
       )}
     >
