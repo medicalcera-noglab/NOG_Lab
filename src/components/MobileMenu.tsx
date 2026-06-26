@@ -4,10 +4,8 @@ import { useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { X, Sun, Moon, ExternalLink, BookOpen, Mail } from 'lucide-react'
+import { X, Sun, Moon, ExternalLink, BookOpen, Mail, ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { CellBlob } from './motifs/CellBlob'
-import { MolecularDots } from './motifs/MolecularDots'
 import { NavSearch } from './search/NavSearch'
 import type { NavItem } from '@/lib/nav'
 
@@ -25,19 +23,13 @@ export interface MobileMenuProps {
   contactEmail?: string | null
 }
 
-// Cubic bezier typed as a tuple so framer-motion's BezierDefinition constraint is met
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
+const EASE: [number, number, number, number] = [0.32, 0.72, 0, 1]
+const EASE_OUT: [number, number, number, number] = [0.4, 0, 0.2, 1]
 
 const SOCIAL_CHIP = cn(
   'inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5',
   'text-xs text-muted hover:border-accent hover:text-accent',
   'transition-colors duration-150',
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-)
-
-const UTIL_BTN = cn(
-  'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
-  'text-muted hover:text-fg hover:bg-surface-raised transition-colors duration-150',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 )
 
@@ -55,56 +47,56 @@ export function MobileMenu({
   const menuRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
-  // ── Variants ────────────────────────────────────────────────────────────────
-  // All timing collapses to 0 when prefers-reduced-motion is active.
-
-  const overlayVariants = {
+  const backdropVariants = {
     hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: reduced ? 0 : 0.2 } },
+    exit: { opacity: 0, transition: { duration: reduced ? 0 : 0.18 } },
+  }
+
+  const panelVariants = {
+    hidden: { x: '100%' },
     visible: {
-      opacity: 1,
-      transition: { duration: reduced ? 0 : 0.22, ease: EASE },
+      x: 0,
+      transition: reduced ? { duration: 0 } : { duration: 0.38, ease: EASE },
     },
     exit: {
-      opacity: 0,
-      transition: { duration: reduced ? 0 : 0.18 },
+      x: '100%',
+      transition: reduced ? { duration: 0 } : { duration: 0.28, ease: EASE_OUT },
     },
   }
 
-  // Stagger container: only carries transition metadata — no visual change on the ul.
   const navContainerVariants = {
     hidden: {},
-    visible: {
-      transition: reduced ? {} : { staggerChildren: 0.055, delayChildren: 0.08 },
-    },
+    visible: { transition: reduced ? {} : { staggerChildren: 0.045, delayChildren: 0.12 } },
     exit: {},
   }
 
-  // Each nav link item.
   const itemVariants = {
-    hidden: reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 },
+    hidden: reduced ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: reduced ? { duration: 0 } : { duration: 0.36, ease: EASE },
+      x: 0,
+      transition: reduced ? { duration: 0 } : { duration: 0.3, ease: EASE },
     },
     exit: { opacity: 0, transition: { duration: 0 } },
   }
 
-  // ── Lifecycle ────────────────────────────────────────────────────────────────
-
-  // Close on route change (link tap already calls onClose, but covers programmatic nav)
   useEffect(() => {
     if (pathname !== prevPathname.current) onClose()
     prevPathname.current = pathname
   }, [pathname, onClose])
 
-  // Focus close button on mount
+  // Focus close button — only on desktop (pointer devices) to avoid visible
+  // focus ring on first paint on mobile touchscreens
   useEffect(() => {
-    const id = setTimeout(() => closeButtonRef.current?.focus(), 60)
+    const id = setTimeout(() => {
+      if (window.matchMedia('(pointer: fine)').matches) {
+        closeButtonRef.current?.focus()
+      }
+    }, 60)
     return () => clearTimeout(id)
   }, [])
 
-  // Scroll lock + signal to Leaflet maps that nav is open (so they hide via CSS)
   useEffect(() => {
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -115,18 +107,15 @@ export function MobileMenu({
     }
   }, [])
 
-  // Focus trap + Escape
   useEffect(() => {
     const el = menuRef.current
     if (!el) return
-
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose()
         return
       }
       if (e.key !== 'Tab') return
-
       const focusable = Array.from(
         el.querySelectorAll<HTMLElement>(
           'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
@@ -134,7 +123,6 @@ export function MobileMenu({
       )
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
-
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault()
         last?.focus()
@@ -143,7 +131,6 @@ export function MobileMenu({
         first?.focus()
       }
     }
-
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [onClose])
@@ -151,195 +138,208 @@ export function MobileMenu({
   const hasSocial = social?.twitter || social?.linkedin || social?.researchgate || social?.github
 
   return (
-    <motion.div
-      ref={menuRef}
-      id="mobile-nav-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Navigation menu"
-      variants={overlayVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      className="bg-bg fixed inset-0 z-[9999] flex flex-col overflow-hidden md:hidden"
-    >
-      {/* ── Decorative microbiome motifs ─────────────────────────────────────── */}
-      <CellBlob
-        className="pointer-events-none absolute -right-24 -bottom-20 h-80 w-80 opacity-[0.07]"
-        color="var(--color-teal)"
+    <>
+      {/* ── Backdrop ──────────────────────────────────────────────────────────── */}
+      <motion.div
+        aria-hidden="true"
+        variants={backdropVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        onClick={onClose}
+        className="fixed inset-0 z-[9998] bg-black/50 md:hidden"
       />
-      <CellBlob
-        className="pointer-events-none absolute -top-20 -left-20 h-64 w-64 opacity-[0.04]"
-        color="var(--color-sand)"
-      />
-      <MolecularDots className="pointer-events-none absolute inset-0 opacity-[0.035]" />
 
-      {/* ── Header row ──────────────────────────────────────────────────────── */}
-      <div className="border-border flex h-16 shrink-0 items-center justify-between border-b px-4 sm:px-6">
-        <span
-          className="font-heading text-muted/50 text-[11px] font-semibold tracking-[0.2em] uppercase"
-          aria-hidden="true"
-        >
-          Navigation
-        </span>
-        <button
-          ref={closeButtonRef}
-          onClick={onClose}
-          aria-label="Close navigation menu"
-          className={UTIL_BTN}
-        >
-          <X size={20} aria-hidden="true" />
-        </button>
-      </div>
+      {/* ── Slide panel ───────────────────────────────────────────────────────── */}
+      <motion.div
+        ref={menuRef}
+        id="mobile-nav-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+        variants={panelVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className="bg-bg fixed top-0 right-0 bottom-0 z-[9999] flex w-[85vw] max-w-[340px] flex-col shadow-2xl md:hidden"
+      >
+        {/* Subtle top accent bar */}
+        <div className="bg-primary h-[3px] w-full shrink-0" />
 
-      {/* ── Nav links — independent scroll so secondary zone stays anchored ─── */}
-      <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto px-5 pt-2 pb-2 sm:px-8">
-        <motion.ul
-          role="list"
-          variants={navContainerVariants}
-          // Variant strings propagated from the parent motion.div above
-          className="flex flex-col"
-        >
-          {links.map((link, i) => {
-            const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)
-
-            return (
-              <motion.li key={link.href} variants={itemVariants}>
-                <Link
-                  href={link.href}
-                  target={link.isExternal ? '_blank' : undefined}
-                  rel={link.isExternal ? 'noopener noreferrer' : undefined}
-                  aria-current={isActive ? 'page' : undefined}
-                  onClick={onClose}
-                  className={cn(
-                    'flex min-h-[52px] items-center gap-4 rounded-lg py-2.5',
-                    'border-border/40 border-b last:border-0',
-                    'transition-colors duration-150',
-                    'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
-                    isActive ? 'text-primary' : 'text-fg hover:text-primary',
-                  )}
-                >
-                  {/* Index number — decorative, hidden from SR */}
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      'w-5 shrink-0 font-mono text-[10px] leading-none tabular-nums',
-                      isActive ? 'text-primary/60' : 'text-muted/40',
-                    )}
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-
-                  {/* Label */}
-                  <span className="font-heading flex-1 text-[2rem] leading-none font-bold sm:text-4xl">
-                    {link.label}
-                  </span>
-
-                  {/* Active indicator dot */}
-                  {isActive && (
-                    <span aria-hidden="true" className="bg-primary h-2 w-2 shrink-0 rounded-full" />
-                  )}
-                </Link>
-              </motion.li>
-            )
-          })}
-        </motion.ul>
-      </nav>
-
-      {/* ── Secondary zone — pinned at bottom, within thumb reach ────────────── */}
-      <div className="border-border shrink-0 border-t px-5 pt-4 pb-8 sm:px-8">
-        {/* Row 1: search + theme toggle */}
-        <div className="flex items-center gap-2">
-          <NavSearch onNavigate={onClose} />
+        {/* ── Header ──────────────────────────────────────────────────────────── */}
+        <div className="flex h-14 shrink-0 items-center justify-between px-5">
+          <span className="font-heading text-primary text-sm font-bold tracking-wide">NOG Lab</span>
           <button
-            onClick={onToggleTheme}
-            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            className={UTIL_BTN}
+            ref={closeButtonRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Close navigation menu"
+            className={cn(
+              'flex h-9 w-9 items-center justify-center rounded-lg',
+              'text-muted hover:text-fg hover:bg-surface-raised',
+              'transition-colors duration-150',
+              'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
+            )}
           >
-            {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+            <X size={18} aria-hidden="true" />
           </button>
-          <span className="text-muted ml-1 text-sm" aria-hidden="true">
-            Search &amp; theme
-          </span>
         </div>
 
-        {/* Row 2: primary CTA — coral */}
-        <Link
-          href="/join"
-          onClick={onClose}
-          className={cn(
-            'mt-3 flex min-h-[44px] items-center justify-center rounded-xl px-5 py-2.5',
-            'bg-accent text-sm font-semibold text-white',
-            'hover:bg-accent-hover transition-colors duration-150',
-            'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
-          )}
-        >
-          Join the Lab →
-        </Link>
+        {/* ── Divider ─────────────────────────────────────────────────────────── */}
+        <div className="bg-border mx-5 h-px shrink-0" />
 
-        {/* Row 3: social chips + contact email */}
-        {(hasSocial || contactEmail) && (
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            {social?.twitter && (
-              <a
-                href={social.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Twitter / X (opens in new tab)"
-                className={SOCIAL_CHIP}
-              >
-                <ExternalLink size={10} aria-hidden="true" />X
-              </a>
-            )}
-            {social?.linkedin && (
-              <a
-                href={social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn (opens in new tab)"
-                className={SOCIAL_CHIP}
-              >
-                <ExternalLink size={10} aria-hidden="true" />
-                LinkedIn
-              </a>
-            )}
-            {social?.researchgate && (
-              <a
-                href={social.researchgate}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="ResearchGate (opens in new tab)"
-                className={SOCIAL_CHIP}
-              >
-                <BookOpen size={10} aria-hidden="true" />
-                RG
-              </a>
-            )}
-            {social?.github && (
-              <a
-                href={social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub (opens in new tab)"
-                className={SOCIAL_CHIP}
-              >
-                <ExternalLink size={10} aria-hidden="true" />
-                GitHub
-              </a>
-            )}
-            {contactEmail && (
-              <a
-                href={`mailto:${contactEmail}`}
-                aria-label={`Email ${contactEmail}`}
-                className={SOCIAL_CHIP}
-              >
-                <Mail size={10} aria-hidden="true" />
-                {contactEmail}
-              </a>
-            )}
+        {/* ── Nav links ───────────────────────────────────────────────────────── */}
+        <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto px-3 py-3">
+          <motion.ul role="list" variants={navContainerVariants} className="flex flex-col gap-0.5">
+            {links.map((link) => {
+              const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)
+
+              return (
+                <motion.li key={link.href} variants={itemVariants}>
+                  <Link
+                    href={link.href}
+                    target={link.isExternal ? '_blank' : undefined}
+                    rel={link.isExternal ? 'noopener noreferrer' : undefined}
+                    aria-current={isActive ? 'page' : undefined}
+                    onClick={onClose}
+                    className={cn(
+                      'group flex min-h-[48px] items-center gap-3 rounded-lg px-3',
+                      'transition-colors duration-150',
+                      'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
+                      isActive
+                        ? 'bg-primary/8 text-primary'
+                        : 'text-fg/80 hover:bg-surface-raised hover:text-fg',
+                    )}
+                  >
+                    {/* Active indicator */}
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        'h-4 w-[2px] shrink-0 rounded-full transition-all duration-150',
+                        isActive ? 'bg-primary' : 'group-hover:bg-border bg-transparent',
+                      )}
+                    />
+
+                    <span className="font-heading flex-1 text-[1.0625rem] leading-none font-semibold">
+                      {link.label}
+                    </span>
+
+                    {link.isExternal && (
+                      <ArrowUpRight
+                        size={14}
+                        aria-hidden="true"
+                        className="text-muted shrink-0 opacity-60"
+                      />
+                    )}
+                  </Link>
+                </motion.li>
+              )
+            })}
+          </motion.ul>
+        </nav>
+
+        {/* ── Footer zone ─────────────────────────────────────────────────────── */}
+        <div className="border-border shrink-0 border-t px-4 pt-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+          {/* Search + theme row */}
+          <div className="mb-3 flex items-center gap-2">
+            <NavSearch onNavigate={onClose} />
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-lg',
+                'text-muted hover:text-fg hover:bg-surface-raised',
+                'transition-colors duration-150',
+                'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
+              )}
+            >
+              {isDark ? (
+                <Sun size={16} aria-hidden="true" />
+              ) : (
+                <Moon size={16} aria-hidden="true" />
+              )}
+            </button>
           </div>
-        )}
-      </div>
-    </motion.div>
+
+          {/* Join CTA */}
+          <Link
+            href="/join"
+            onClick={onClose}
+            className={cn(
+              'flex min-h-[44px] items-center justify-center rounded-xl px-5',
+              'bg-accent text-sm font-semibold text-white',
+              'hover:bg-accent-hover transition-colors duration-150',
+              'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
+            )}
+          >
+            Join the Lab →
+          </Link>
+
+          {/* Social chips */}
+          {(hasSocial || contactEmail) && (
+            <div className="mt-3 flex flex-wrap items-center gap-1.5">
+              {social?.twitter && (
+                <a
+                  href={social.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Twitter / X (opens in new tab)"
+                  className={SOCIAL_CHIP}
+                >
+                  <ExternalLink size={10} aria-hidden="true" />X
+                </a>
+              )}
+              {social?.linkedin && (
+                <a
+                  href={social.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn (opens in new tab)"
+                  className={SOCIAL_CHIP}
+                >
+                  <ExternalLink size={10} aria-hidden="true" />
+                  LinkedIn
+                </a>
+              )}
+              {social?.researchgate && (
+                <a
+                  href={social.researchgate}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="ResearchGate (opens in new tab)"
+                  className={SOCIAL_CHIP}
+                >
+                  <BookOpen size={10} aria-hidden="true" />
+                  RG
+                </a>
+              )}
+              {social?.github && (
+                <a
+                  href={social.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub (opens in new tab)"
+                  className={SOCIAL_CHIP}
+                >
+                  <ExternalLink size={10} aria-hidden="true" />
+                  GitHub
+                </a>
+              )}
+              {contactEmail && (
+                <a
+                  href={`mailto:${contactEmail}`}
+                  aria-label={`Email ${contactEmail}`}
+                  className={SOCIAL_CHIP}
+                >
+                  <Mail size={10} aria-hidden="true" />
+                  {contactEmail}
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </>
   )
 }
