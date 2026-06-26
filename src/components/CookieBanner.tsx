@@ -13,8 +13,12 @@ export function CookieBanner() {
 
   return (
     <>
-      {/* Backdrop — no click-to-dismiss to avoid accidental taps on mobile */}
-      <div aria-hidden="true" className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" />
+      {/* Backdrop — pointer-events-none so iOS Safari backdrop-filter doesn't
+          kill touch events on the z-50 modal buttons above it */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+      />
 
       {/* Modal — slides up from bottom on mobile, floating card on sm+ */}
       <div

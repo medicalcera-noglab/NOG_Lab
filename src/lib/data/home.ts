@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache'
+import { unstable_cache, unstable_noStore as noStore } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { Project, NewsEvent, Collaborator, Publication } from '../../../payload-types'
@@ -10,31 +10,24 @@ export interface HomeCounts {
   collaborators: number
 }
 
-export const getCounts = unstable_cache(
-  async (): Promise<HomeCounts> => {
-    const payload = await getPayload({ config })
-    const [publications, projects, teamMembers, collaborators] = await Promise.all([
-      payload.count({ collection: 'publications', overrideAccess: true }),
-      payload.count({ collection: 'projects', overrideAccess: true }),
-      payload.count({
-        collection: 'people',
-        where: {
-          and: [{ role: { not_equals: 'pi' } }, { is_active: { equals: true } }],
-        },
-        overrideAccess: true,
-      }),
-      payload.count({ collection: 'collaborators', overrideAccess: true }),
-    ])
-    return {
-      publications: publications.totalDocs,
-      projects: projects.totalDocs,
-      teamMembers: teamMembers.totalDocs,
-      collaborators: collaborators.totalDocs,
-    }
-  },
-  ['home-counts'],
-  { revalidate: 30, tags: ['publications', 'projects', 'people', 'collaborators'] },
-)
+// noStore() — always fetches fresh counts so Vercel's Data Cache never serves
+// a stale zero value from before the database was seeded.
+export async function getCounts(): Promise<HomeCounts> {
+  noStore()
+  const payload = await getPayload({ config })
+  const [publications, projects, teamMembers, collaborators] = await Promise.all([
+    payload.count({ collection: 'publications', overrideAccess: true }),
+    payload.count({ collection: 'projects', overrideAccess: true }),
+    payload.count({ collection: 'people', overrideAccess: true }),
+    payload.count({ collection: 'collaborators', overrideAccess: true }),
+  ])
+  return {
+    publications: publications.totalDocs,
+    projects: projects.totalDocs,
+    teamMembers: teamMembers.totalDocs,
+    collaborators: collaborators.totalDocs,
+  }
+}
 
 export const getFeaturedProject = unstable_cache(
   async (): Promise<Project | null> => {

@@ -28,12 +28,16 @@ export async function Navbar() {
   const contactEmail = settings.contactEmail ?? null
 
   return (
-    <header
-      className={cn(
-        'border-border sticky top-0 z-[45] border-b',
-        'bg-bg/90 supports-backdrop-blur:bg-bg/80 backdrop-blur-md',
-      )}
-    >
+    <header className="border-border sticky top-0 z-[45] border-b">
+      {/*
+        Backdrop-blur lives on a separate absolutely-positioned child, NOT on the
+        sticky element itself. iOS Safari has a documented bug where backdrop-filter
+        on a sticky/fixed ancestor silently breaks touch events for all its children.
+      */}
+      <div
+        aria-hidden="true"
+        className="bg-bg/90 supports-backdrop-blur:bg-bg/80 absolute inset-0 -z-10 backdrop-blur-md"
+      />
       <Container className="max-w-none">
         <nav
           aria-label="Primary navigation"

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useSyncExternalStore } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, useReducedMotion } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import { useTheme } from 'next-themes'
 import { Sun, Moon } from 'lucide-react'
@@ -9,8 +9,6 @@ import { cn } from '@/lib/utils'
 import type { NavItem } from '@/lib/nav'
 import { NavSearch } from './search/NavSearch'
 import { MobileMenu } from './MobileMenu'
-
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 interface NavMenuProps {
   links: NavItem[]
@@ -33,36 +31,41 @@ function useIsClient() {
 }
 
 // ── Morphing hamburger ↔ X icon ───────────────────────────────────────────────
-// Three bars animate: top/bottom rotate ±45° toward center, middle fades out.
+// Pure CSS transitions — no framer-motion inside the button so iOS touch
+// events are never intercepted by framer's pointer capture logic.
 function HamburgerIcon({ open }: { open: boolean }) {
   const reduced = useReducedMotion()
-  const t = { duration: reduced ? 0 : 0.3, ease: EASE }
+  const dur = reduced ? '0ms' : '280ms'
+  const ease = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
   return (
-    // Container: 20×14 px, bars absolutely positioned for precise X morph math
-    <span
-      className="relative block h-[14px] w-5 shrink-0"
-      aria-hidden="true"
-      style={{ willChange: 'transform' }}
-    >
-      {/* Top bar — translates to center and rotates 45° */}
-      <motion.span
+    <span className="relative block h-[14px] w-5 shrink-0" aria-hidden="true">
+      {/* Top bar */}
+      <span
         className="absolute inset-x-0 top-0 h-[1.5px] origin-center rounded-full bg-current"
-        animate={{ y: open ? 6.25 : 0, rotate: open ? 45 : 0 }}
-        transition={t}
+        style={{
+          transition: `transform ${dur} ${ease}`,
+          transform: open ? 'translateY(6.25px) rotate(45deg)' : 'none',
+        }}
       />
-      {/* Middle bar — fades and scales out */}
-      <motion.span
+      {/* Middle bar */}
+      <span
         className="absolute inset-x-0 h-[1.5px] origin-center rounded-full bg-current"
-        style={{ top: '50%', marginTop: '-0.75px' }}
-        animate={{ opacity: open ? 0 : 1, scaleX: open ? 0 : 1 }}
-        transition={t}
+        style={{
+          top: '50%',
+          marginTop: '-0.75px',
+          transition: `opacity ${dur} ${ease}, transform ${dur} ${ease}`,
+          opacity: open ? 0 : 1,
+          transform: open ? 'scaleX(0)' : 'none',
+        }}
       />
-      {/* Bottom bar — translates to center and rotates –45° */}
-      <motion.span
+      {/* Bottom bar */}
+      <span
         className="absolute inset-x-0 bottom-0 h-[1.5px] origin-center rounded-full bg-current"
-        animate={{ y: open ? -6.25 : 0, rotate: open ? -45 : 0 }}
-        transition={t}
+        style={{
+          transition: `transform ${dur} ${ease}`,
+          transform: open ? 'translateY(-6.25px) rotate(-45deg)' : 'none',
+        }}
       />
     </span>
   )
@@ -100,6 +103,7 @@ export function NavMenu({ links, social, contactEmail }: NavMenuProps) {
 
       {/* ── Mobile trigger — hamburger morphs to X ───────────────────────────── */}
       <button
+        type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="mobile-nav-overlay"
