@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Microscope, FlaskConical, Dna } from 'lucide-react'
 import { FadeUp } from '@/components/FadeUp'
@@ -94,16 +95,25 @@ export function AboutTeaser({ about }: AboutTeaserProps) {
                 <div className="from-surface/80 absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t to-transparent" />
               </div>
             ) : (
-              /* No portrait yet — show a decorative lab visual */
-              <div className="bg-bg border-border flex aspect-[4/5] w-full max-w-sm items-center justify-center overflow-hidden rounded-2xl border">
-                <div className="flex flex-col items-center gap-4 p-10 text-center">
-                  <div className="bg-primary/10 flex h-20 w-20 items-center justify-center rounded-full">
-                    <Microscope size={36} className="text-primary" />
-                  </div>
-                  <p className="text-muted text-sm leading-relaxed">
-                    Exploring the invisible ecosystems that shape human health
-                  </p>
-                </div>
+              /* No portrait set — show SEM lab background image */
+              <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl">
+                <Image
+                  src="/media/site-hero-bg.jpg"
+                  alt=""
+                  fill
+                  aria-hidden="true"
+                  sizes="(max-width: 768px) 100vw, 360px"
+                  className="object-cover"
+                  style={{ filter: 'grayscale(0.3) brightness(0.75)' }}
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, color-mix(in oklch, #0E6E6E 40%, transparent) 0%, transparent 70%)',
+                  }}
+                />
+                <div className="from-surface/70 absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t to-transparent" />
               </div>
             )}
           </FadeUp>
