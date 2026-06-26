@@ -456,3 +456,18 @@ video {
   border-top: 1px solid var(--border);
   margin: 2em 0;
 }
+
+/* Force white text when richtext is rendered on a dark banner background */
+.page-banner .richtext,
+.page-banner .richtext p,
+.page-banner .richtext h1,
+.page-banner .richtext h2,
+.page-banner .richtext h3,
+.page-banner .richtext h4,
+.page-banner .richtext h5,
+.page-banner .richtext h6,
+.page-banner .richtext strong,
+.page-banner .richtext em,
+.page-banner .richtext li {
+  color: inherit;
+}
