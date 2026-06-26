@@ -7,36 +7,27 @@ import { cn } from '@/lib/utils'
 export function CookieBanner() {
   const { consent, ready, grant, deny } = useConsent()
 
-  // Don't render until localStorage has been read (prevents flash on reload)
-  // and don't render if the user has already made a choice
   if (!ready || consent !== null) return null
 
   return (
     <>
-      {/* Backdrop — pointer-events-none so iOS Safari backdrop-filter doesn't
-          kill touch events on the z-50 modal buttons above it */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-      />
+      {/* Backdrop — pointer-events-none + no backdrop-filter so iOS Safari
+          never creates a stacking context that blocks touches on z-50 buttons */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-40 bg-black/40" />
 
-      {/* Modal — slides up from bottom on mobile, floating card on sm+ */}
+      {/* Modal — no CSS transform animation: iOS Safari caches the touch
+          hit-area at the translateY(100%) start position, making buttons
+          appear visible but untappable. Static render is instant and safe. */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Cookie consent"
         className={cn(
-          // Mobile: full-width sheet anchored to bottom edge
           'fixed inset-x-0 bottom-0 z-50',
-          // sm+: floating card with rounded corners on all sides
           'sm:inset-x-4 sm:bottom-6 sm:mx-auto sm:max-w-lg sm:rounded-2xl',
           'rounded-t-2xl',
           'bg-surface border-border border-t shadow-2xl sm:border',
-          // Padding — extra bottom padding for notched phones
           'px-5 pt-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:p-7',
-          // Cap height so it never overflows on short screens
-          'max-h-[85svh] overflow-y-auto',
-          'motion-safe:animate-[slideUp_260ms_cubic-bezier(0.22,1,0.36,1)]',
         )}
       >
         {/* Drag handle — visual hint for mobile sheet */}
