@@ -18,10 +18,11 @@ export const DUR = {
 } as const
 
 /**
- * whileInView viewport config: fires once, 80 px before the element enters the viewport.
- * Use with `viewport={VIEWPORT}` on motion components.
+ * whileInView viewport config: fires once when 5 % of the element is visible.
+ * Using `amount` instead of a negative margin avoids elements getting stuck
+ * at opacity 0 after HMR hot-reloads when sections are partially in-viewport.
  */
-export const VIEWPORT = { once: true, margin: '-80px 0px' } as const
+export const VIEWPORT = { once: true, amount: 0.05 } as const
 
 /** Standard fade-up reveal used by FadeUp and RevealList. */
 export const FADE_UP = {

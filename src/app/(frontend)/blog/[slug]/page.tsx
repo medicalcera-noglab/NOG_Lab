@@ -91,7 +91,7 @@ export default async function BlogDetailPage({ params }: Props) {
               <a
                 key={t}
                 href={`/blog?tag=${encodeURIComponent(t)}`}
-                className="bg-accent/10 text-accent hover:bg-accent/20 rounded-full px-2.5 py-1 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none"
+                className="bg-primary/10 text-primary hover:bg-primary/20 rounded-full px-2.5 py-1 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none"
               >
                 {t}
               </a>

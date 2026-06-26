@@ -9,6 +9,7 @@ type ConsentState = 'granted' | 'denied' | null
 
 interface ConsentContextValue {
   consent: ConsentState
+  ready: boolean
   grant: () => void
   deny: () => void
   reset: () => void
@@ -16,30 +17,31 @@ interface ConsentContextValue {
 
 const ConsentContext = createContext<ConsentContextValue>({
   consent: null,
+  ready: false,
   grant: () => {},
   deny: () => {},
   reset: () => {},
 })
 
 export function ConsentProvider({ children }: { children: React.ReactNode }) {
-  // null = unknown (banner visible); 'granted'|'denied' = banner dismissed
+  // null = no preference yet; 'granted'|'denied' = user has decided
   const [consent, setConsent] = useState<ConsentState>(null)
+  // ready = localStorage has been read; banner must not show before this
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    // Read localStorage inside a window event listener — not directly in the
-    // effect body — so the pattern is compatible with strict-mode ESLint rules.
     const sync = () => {
       try {
         const v = localStorage.getItem(STORAGE_KEY)
         setConsent(v === 'granted' ? 'granted' : v === 'denied' ? 'denied' : null)
       } catch {
-        // localStorage unavailable (private mode, etc.) — keep null; banner stays dismissed in-session
+        // localStorage unavailable (private mode, etc.)
       }
+      setReady(true)
     }
 
     window.addEventListener(EVENT, sync)
-    // Fire immediately so the initial localStorage value is read on mount
-    window.dispatchEvent(new Event(EVENT))
+    sync()
 
     return () => window.removeEventListener(EVENT, sync)
   }, [])
@@ -72,7 +74,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <ConsentContext.Provider value={{ consent, grant, deny, reset }}>
+    <ConsentContext.Provider value={{ consent, ready, grant, deny, reset }}>
       {children}
     </ConsentContext.Provider>
   )

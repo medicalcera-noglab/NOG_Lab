@@ -35,7 +35,7 @@ export function BlogCard({ post }: Props) {
           {tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="bg-accent/10 text-accent rounded-full px-2 py-0.5 text-xs font-medium"
+              className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs font-medium"
             >
               {tag}
             </span>
