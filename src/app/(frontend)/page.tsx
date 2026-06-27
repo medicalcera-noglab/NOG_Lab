@@ -18,7 +18,6 @@ import {
 import { HeroSection } from '@/components/home/HeroSection'
 import { BigQuestionsStrip } from '@/components/home/BigQuestionsStrip'
 import { AboutTeaser } from '@/components/home/AboutTeaser'
-import { CountersSection } from '@/components/home/CountersSection'
 import { FeaturedProject } from '@/components/home/FeaturedProject'
 import { ProjectsGrid } from '@/components/home/ProjectsGrid'
 import { PublicationsTeaser } from '@/components/home/PublicationsTeaser'
@@ -109,9 +108,12 @@ export default async function HomePage() {
 
       <AboutTeaser about={about} themes={themes} />
 
-      <AboutFull about={about} settings={settings} hidePortrait />
-
-      <CountersSection counts={counts} />
+      <AboutFull
+        about={about}
+        settings={settings}
+        piPerson={people.find((p) => p.role === 'pi') ?? null}
+        counts={counts}
+      />
 
       <FeaturedProject project={featuredProject} />
 

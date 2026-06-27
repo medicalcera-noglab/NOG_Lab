@@ -102,39 +102,35 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
 
         {/* Two-column: portrait + mission text */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
-          {/* Left: portrait or SEM fallback */}
+          {/* Left: professional lab/microscopy image */}
           <FadeUp delay={0.05}>
-            {portrait ? (
-              <div className="relative aspect-[3/4] w-full max-w-sm overflow-hidden rounded-2xl">
-                <MediaImage
-                  doc={portrait}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 360px"
-                  className="object-cover object-top"
-                />
-                <div className="from-surface/80 absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t to-transparent" />
+            <div className="relative aspect-[3/4] w-full max-w-sm overflow-hidden rounded-2xl shadow-xl">
+              <Image
+                src="/media/site-hero-bg.jpg"
+                alt="Electron microscopy imagery from the NOG Lab"
+                fill
+                sizes="(max-width: 768px) 100vw, 360px"
+                className="object-cover"
+                style={{ filter: 'brightness(0.7) saturate(1.1)' }}
+              />
+              {/* Teal gradient overlay — top-left corner accent */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    'linear-gradient(145deg, color-mix(in oklch, #0E6E6E 55%, transparent) 0%, transparent 60%)',
+                }}
+              />
+              {/* Bottom fade */}
+              <div className="from-surface/70 absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t to-transparent" />
+              {/* Lab badge */}
+              <div className="absolute top-5 left-5 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
+                <Microscope size={13} className="text-white/90" aria-hidden="true" />
+                <span className="text-xs font-semibold tracking-wide text-white/90">
+                  NOG Lab · KMU
+                </span>
               </div>
-            ) : (
-              <div className="relative aspect-[3/4] w-full max-w-sm overflow-hidden rounded-2xl">
-                <Image
-                  src="/media/site-hero-bg.jpg"
-                  alt=""
-                  fill
-                  aria-hidden="true"
-                  sizes="(max-width: 768px) 100vw, 360px"
-                  className="object-cover"
-                  style={{ filter: 'grayscale(0.3) brightness(0.75)' }}
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      'linear-gradient(135deg, color-mix(in oklch, #0E6E6E 40%, transparent) 0%, transparent 70%)',
-                  }}
-                />
-                <div className="from-surface/70 absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t to-transparent" />
-              </div>
-            )}
+            </div>
           </FadeUp>
 
           {/* Right: mission + pillars + director quote */}
