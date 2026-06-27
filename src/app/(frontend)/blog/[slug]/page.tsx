@@ -76,7 +76,7 @@ export default async function BlogDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
       />
-      <Section className="pt-16 pb-6">
+      <Section className="pt-8 pb-4">
         <Container className="max-w-3xl">
           <Link
             href="/blog"

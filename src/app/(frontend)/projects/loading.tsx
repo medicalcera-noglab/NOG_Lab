@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 export default function ProjectsLoading() {
   return (
     <div aria-busy="true" aria-label="Loading projects">
-      <Container className="py-16 md:py-24">
+      <Container className="py-8 md:py-16">
         {/* Header */}
         <Skeleton className="mb-3 h-10 w-44" />
         <Skeleton className="mb-12 h-5 w-60" />

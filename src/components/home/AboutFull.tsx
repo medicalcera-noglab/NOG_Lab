@@ -34,7 +34,7 @@ export function AboutFull({ about, settings }: AboutFullProps) {
     <>
       {/* Director's Message */}
       {about.directorMessage && (
-        <Section className="bg-surface py-12 md:py-16">
+        <Section className="bg-surface py-8 md:py-12">
           <Container>
             <FadeUp>
               <div className="flex flex-col items-start gap-8 md:flex-row">
@@ -63,7 +63,7 @@ export function AboutFull({ about, settings }: AboutFullProps) {
 
       {/* KMU Affiliation */}
       {about.kmuAffiliation && (
-        <Section className="py-12 md:py-16">
+        <Section className="py-8 md:py-12">
           <Container>
             <FadeUp>
               <h2 className="font-heading text-fg mb-6 text-2xl font-bold">
@@ -77,7 +77,7 @@ export function AboutFull({ about, settings }: AboutFullProps) {
 
       {/* Facilities Gallery */}
       {hasFacilities && (
-        <Section className="bg-surface py-12 md:py-16">
+        <Section className="bg-surface py-8 md:py-12">
           <Container>
             <FadeUp>
               <h2 className="font-heading text-fg mb-6 text-2xl font-bold">Our Facilities</h2>
@@ -89,7 +89,7 @@ export function AboutFull({ about, settings }: AboutFullProps) {
 
       {/* Brochure Download */}
       {brochureUrl && (
-        <Section className="py-12">
+        <Section className="py-6">
           <Container>
             <FadeUp>
               <a

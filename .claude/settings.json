@@ -137,7 +137,11 @@
       "Bash(curl -s http://localhost:3000/api/media?limit=1)",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); doc=d['docs'][0]; print\\('url:', doc.get\\('url'\\)\\); print\\('filename:', doc.get\\('filename'\\)\\)\")",
       "Bash(mkdir -p /Users/mc/Desktop/medicalcera/public/media && cp /Users/mc/Desktop/medicalcera/media/* /Users/mc/Desktop/medicalcera/public/media/ && ls /Users/mc/Desktop/medicalcera/public/media/)",
-      "Bash(tsx --env-file=.env.local scripts/seed-site-images.ts)"
+      "Bash(tsx --env-file=.env.local scripts/seed-site-images.ts)",
+      "Bash(curl -s -A \"NOGLab/1.0\" \"https://api.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=bacteria+SEM&prop=imageinfo&iiprop=url%7Cmime&format=json&gsrlimit=3&formatversion=2\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -v -A \"NOGLab/1.0\" \"https://api.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=bacteria&prop=imageinfo&format=json&gsrlimit=2\")",
+      "Bash(tsx --require ./scripts/load-env.cjs -e ' *)"
     ],
     "additionalDirectories": [
       "/Users/mc/Desktop/medicalcera/src/app/(frontend)/publications/export",

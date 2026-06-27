@@ -739,6 +739,8 @@ export interface StudySite {
   createdAt: string;
 }
 /**
+ * All contact messages and Join the Lab applications. Click any row to read the full message.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "inquiries".
  */
@@ -757,6 +759,9 @@ export interface Inquiry {
    * Statement of Purpose (join inquiries only)
    */
   sop?: (number | null) | ApplicantFile;
+  /**
+   * Tick this once you have read and actioned this message.
+   */
   isRead?: boolean | null;
   repliedAt?: string | null;
   updatedAt: string;

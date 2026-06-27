@@ -129,12 +129,12 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Section className="bg-bg py-16 md:py-24">
+      <Section className="bg-bg py-8 md:py-16">
         <Container>
           {/* Back */}
           <FadeUp>
             <Link
-              href="/projects"
+              href="/research#projects"
               className={cn(
                 'text-muted hover:text-fg mb-10 inline-flex items-center gap-2 text-sm',
                 'transition-colors duration-150',

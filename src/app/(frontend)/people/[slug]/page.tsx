@@ -97,7 +97,7 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Section className="bg-bg py-16 md:py-24">
+      <Section className="bg-bg py-8 md:py-16">
         <Container>
           {/* Back link */}
           <FadeUp>

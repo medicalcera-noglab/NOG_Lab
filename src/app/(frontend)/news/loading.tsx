@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 export default function NewsLoading() {
   return (
     <div aria-busy="true" aria-label="Loading news">
-      <Container className="py-16 md:py-24">
+      <Container className="py-8 md:py-16">
         {/* Header */}
         <Skeleton className="mb-3 h-10 w-36" />
         <Skeleton className="mb-12 h-5 w-52" />

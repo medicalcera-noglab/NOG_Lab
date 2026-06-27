@@ -119,10 +119,10 @@ export default async function SearchPage({ searchParams }: Props) {
 
           <SearchForm defaultValue={query} />
 
-          {!query && <p className="text-muted py-16 text-center">Type something to search…</p>}
+          {!query && <p className="text-muted py-8 text-center">Type something to search…</p>}
 
           {query && grouped && !hasAny && (
-            <div className="py-16 text-center">
+            <div className="py-8 text-center">
               <p className="text-fg font-medium">No results for &ldquo;{query}&rdquo;</p>
               <p className="text-muted mt-1 text-sm">Try different keywords.</p>
             </div>

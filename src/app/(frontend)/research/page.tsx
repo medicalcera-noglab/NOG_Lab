@@ -120,7 +120,7 @@ export default async function ResearchPage({ searchParams }: ResearchPageProps) 
 
       {/* One section per theme */}
       {themes.length === 0 ? (
-        <div className="bg-bg py-24 text-center">
+        <div className="bg-bg py-10 text-center">
           <p className="text-muted text-sm">No research themes found.</p>
         </div>
       ) : (
