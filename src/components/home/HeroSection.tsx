@@ -36,7 +36,8 @@ export function HeroSection({
   return (
     <section
       aria-label="Lab introduction"
-      className="relative flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden"
+      className="relative flex flex-col overflow-hidden"
+      style={{ minHeight: 'calc(100svh - 4rem)' }}
     >
       {/* ── Layer 1: Static dark teal base — first paint (LCP) ───────────────── */}
       <div aria-hidden="true" className="absolute inset-0 bg-[#071918]" />
