@@ -115,17 +115,21 @@ export default async function BlogPage({ searchParams }: PageProps) {
       {/* ── Articles tab ── */}
       {tab === 'articles' && (
         <>
-          {/* Tag filter */}
+          {/* Tag filter — single-row horizontal scroll on all screen sizes */}
           {allTags.length > 0 && (
-            <Section className="pt-6 pb-0!">
+            <Section className="pt-5 pb-0!">
               <Container>
                 <nav aria-label="Filter by tag">
-                  <ul className="flex flex-wrap gap-2" role="list">
-                    <li>
+                  <ul
+                    className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
+                    style={{ scrollbarWidth: 'none' }}
+                    role="list"
+                  >
+                    <li className="shrink-0">
                       <Link
                         href="/blog"
                         className={cn(
-                          'rounded-full px-4 py-2 text-sm font-medium transition-colors',
+                          'inline-block rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',
                           'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
                           !tag
                             ? 'bg-primary text-white'
@@ -137,11 +141,11 @@ export default async function BlogPage({ searchParams }: PageProps) {
                       </Link>
                     </li>
                     {allTags.map((t) => (
-                      <li key={t}>
+                      <li key={t} className="shrink-0">
                         <Link
                           href={`/blog?tag=${encodeURIComponent(t)}`}
                           className={cn(
-                            'rounded-full px-4 py-2 text-sm font-medium transition-colors',
+                            'inline-block rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',
                             'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
                             tag === t
                               ? 'bg-primary text-white'
