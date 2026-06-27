@@ -76,7 +76,7 @@ export async function Navbar() {
                 )}
               </>
             ) : (
-              /* Fallback to public SVG files — teal mark in light, white in dark */
+              /* Fallback to public SVG mark files */
               <>
                 <span className="relative block h-8 w-8 dark:hidden" aria-hidden="true">
                   <Image

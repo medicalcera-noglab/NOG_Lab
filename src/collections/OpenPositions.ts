@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { isAdminOrEditor } from '../access'
 import { revalidateOpenPositions, revalidateOpenPositionsOnDelete } from '../hooks/revalidateCache'
 import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
@@ -35,6 +36,10 @@ export const OpenPositions: CollectionConfig = {
       name: 'description',
       type: 'richText',
       required: true,
+      editor: lexicalEditor({
+        features: ({ defaultFeatures }) =>
+          defaultFeatures.filter((f) => f.key !== 'orderedList' && f.key !== 'checklist'),
+      }),
     },
     {
       name: 'type',
@@ -52,15 +57,6 @@ export const OpenPositions: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: 'Uncheck to hide from the public site.',
-      },
-    },
-    {
-      name: 'isDemo',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
       },
     },
   ],

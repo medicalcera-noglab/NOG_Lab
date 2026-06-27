@@ -73,23 +73,22 @@ export async function Footer() {
                 </>
               ) : (
                 <>
-                  <span className="relative block h-7 w-7 dark:hidden" aria-hidden="true">
-                    <Image src="/logo.svg" alt="" fill sizes="28px" className="object-contain" />
-                  </span>
-                  <span className="relative hidden h-7 w-7 dark:block" aria-hidden="true">
-                    <Image
-                      src="/logo-white.svg"
-                      alt=""
-                      fill
-                      sizes="28px"
-                      className="object-contain"
-                    />
-                  </span>
+                  <Image
+                    src="/logo-stacked.svg"
+                    alt={settings.labName}
+                    width={120}
+                    height={159}
+                    className="dark:hidden"
+                  />
+                  <Image
+                    src="/logo-stacked-white.svg"
+                    alt={settings.labName}
+                    width={120}
+                    height={159}
+                    className="hidden dark:block"
+                  />
                 </>
               )}
-              <span className="font-heading text-primary text-base font-bold">
-                {settings.labName}
-              </span>
             </div>
 
             {/* Mission */}

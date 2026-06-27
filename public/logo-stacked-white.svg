@@ -1,43 +1,43 @@
-<svg viewBox="0 0 200 270" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NOG Lab — Nutrition, Oral, Gut Microbiome">
+<svg viewBox="0 0 200 270" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NOG Lab — Nutrition, Oral, Gut Microbiome (light version for dark backgrounds)">
 
   <!-- ── CIRCLE ARCS ──────────────────────────────────────────────────── -->
   <path d="M 139 167 A 78 78 0 1 1 139 33"
-        stroke="#0E6E6E" stroke-width="4.5" stroke-linecap="round"/>
+        stroke="white" stroke-width="4.5" stroke-linecap="round"/>
   <path d="M 139 33 A 78 78 0 0 1 139 167"
-        stroke="#E2725B" stroke-width="4.5" stroke-linecap="round"/>
+        stroke="#F08070" stroke-width="4.5" stroke-linecap="round"/>
 
   <!-- ── DNA HELIX ─────────────────────────────────────────────────────── -->
   <path d="M 50 52 C 50 65, 20 65, 20 78
            C 20 91, 50 91, 50 104
            C 50 117, 20 117, 20 130
            C 20 143, 50 143, 50 156"
-        fill="none" stroke="#0E6E6E" stroke-width="2.5" stroke-linecap="round"/>
+        fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
   <path d="M 20 52 C 20 65, 50 65, 50 78
            C 50 91, 20 91, 20 104
            C 20 117, 50 117, 50 130
            C 50 143, 20 143, 20 156"
-        fill="none" stroke="#0E6E6E" stroke-width="2.5" stroke-linecap="round"/>
-  <line x1="20" y1="52"  x2="50" y2="52"  stroke="#0E6E6E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="20" y1="78"  x2="50" y2="78"  stroke="#0E6E6E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="20" y1="104" x2="50" y2="104" stroke="#0E6E6E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="20" y1="130" x2="50" y2="130" stroke="#0E6E6E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="20" y1="156" x2="50" y2="156" stroke="#0E6E6E" stroke-width="1.5" stroke-linecap="round"/>
+        fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="20" y1="52"  x2="50" y2="52"  stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="20" y1="78"  x2="50" y2="78"  stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="20" y1="104" x2="50" y2="104" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="20" y1="130" x2="50" y2="130" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="20" y1="156" x2="50" y2="156" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
 
   <!-- ── TOOTH ──────────────────────────────────────────────────────────── -->
   <path d="M 89 23 C 89 13, 96 6, 100 12
            C 104 6, 111 13, 111 23
            L 109 36 C 108 43, 92 43, 91 36 Z"
-        fill="none" stroke="#0E6E6E" stroke-width="2.5" stroke-linejoin="round"/>
+        fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
 
   <!-- ── LEAVES ────────────────────────────────────────────────────────── -->
   <path d="M 72 27 C 57 16, 47 28, 55 38 C 60 44, 73 41, 72 27 Z"
-        fill="none" stroke="#0E6E6E" stroke-width="2" stroke-linejoin="round"/>
+        fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
   <line x1="72" y1="28" x2="56" y2="39"
-        stroke="#0E6E6E" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+        stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
   <path d="M 128 27 C 143 16, 153 28, 145 38 C 140 44, 127 41, 128 27 Z"
-        fill="none" stroke="#0E6E6E" stroke-width="2" stroke-linejoin="round"/>
+        fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
   <line x1="128" y1="28" x2="144" y2="39"
-        stroke="#0E6E6E" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+        stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
 
   <!-- ── INTESTINAL COILS ───────────────────────────────────────────────── -->
   <path d="M 100 44
@@ -47,7 +47,7 @@
            C 122 133, 78 137, 78 148
            C 78 159, 115 163, 112 172
            C 109 179, 100 180, 100 176"
-        fill="none" stroke="#E2725B" stroke-width="14"
+        fill="none" stroke="#F08070" stroke-width="14"
         stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M 100 44
            C 100 55, 122 59, 122 70
@@ -57,25 +57,25 @@
            C 78 159, 115 163, 112 172
            C 109 179, 100 180, 100 176"
         fill="none" stroke="white" stroke-width="5"
-        stroke-linecap="round" stroke-linejoin="round" opacity="0.38"/>
+        stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
 
   <!-- ── THREE DOTS ─────────────────────────────────────────────────────── -->
-  <circle cx="162" cy="103" r="4.5" fill="#E2725B"/>
-  <circle cx="167" cy="120" r="4.5" fill="#E2725B"/>
-  <circle cx="161" cy="137" r="4.5" fill="#E2725B"/>
+  <circle cx="162" cy="103" r="4.5" fill="#F08070"/>
+  <circle cx="167" cy="120" r="4.5" fill="#F08070"/>
+  <circle cx="161" cy="137" r="4.5" fill="#F08070"/>
 
   <!-- ── WORDMARK ───────────────────────────────────────────────────────── -->
   <text x="100" y="228"
         text-anchor="middle"
         font-family="'Plus Jakarta Sans', system-ui, sans-serif"
-        font-size="34" font-weight="800" fill="#0E6E6E" letter-spacing="1.5">NOG LAB</text>
+        font-size="34" font-weight="800" fill="white" letter-spacing="1.5">NOG LAB</text>
 
   <!-- ── TAGLINE ────────────────────────────────────────────────────────── -->
   <text x="100" y="252"
         text-anchor="middle"
         font-family="system-ui, sans-serif"
         font-size="8.5" font-weight="500" letter-spacing="0.4">
-    <tspan fill="#0E6E6E">NUTRITION</tspan><tspan fill="#9CA3AF"> • </tspan><tspan fill="#0E6E6E">ORAL</tspan><tspan fill="#9CA3AF"> • </tspan><tspan fill="#E2725B">GUT MICROBIOME</tspan>
+    <tspan fill="white">NUTRITION</tspan><tspan fill="rgba(255,255,255,0.4)"> • </tspan><tspan fill="white">ORAL</tspan><tspan fill="rgba(255,255,255,0.4)"> • </tspan><tspan fill="#F08070">GUT MICROBIOME</tspan>
   </text>
 
 </svg>
