@@ -18,16 +18,17 @@ export function BlogCard({ post }: Props) {
       {/* Image area — always rendered for consistent card height */}
       <Link
         href={`/blog/${post.slug ?? post.id}`}
-        className="block aspect-video max-h-44 overflow-hidden sm:max-h-none"
+        className="relative block aspect-video max-h-44 overflow-hidden sm:max-h-none"
         tabIndex={-1}
         aria-hidden
       >
         <MediaImage
           doc={cover}
           seed={post.id}
+          fill
           placeholderLabel={`Illustration placeholder for ${post.title}`}
           sizes="(max-width:768px) 100vw, 50vw"
-          className="h-full w-full object-cover"
+          className="object-cover"
         />
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-4 sm:gap-3 sm:p-5">

@@ -739,7 +739,7 @@ export interface StudySite {
   createdAt: string;
 }
 /**
- * All contact messages and Join the Lab applications. Click any row to read the full message.
+ * Contact messages and Join the Lab applications. Use the tabs above to filter by type. Opening a message marks it as read automatically.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "inquiries".
@@ -750,17 +750,17 @@ export interface Inquiry {
   name: string;
   email: string;
   message: string;
-  /**
-   * Position applied for (join inquiries only)
-   */
   positionTitle?: string | null;
+  /**
+   * File uploaded by the applicant — view only.
+   */
   cv?: (number | null) | ApplicantFile;
   /**
-   * Statement of Purpose (join inquiries only)
+   * File uploaded by the applicant — view only.
    */
   sop?: (number | null) | ApplicantFile;
   /**
-   * Tick this once you have read and actioned this message.
+   * Auto-set when you open the message. Uncheck to flag as unread again.
    */
   isRead?: boolean | null;
   repliedAt?: string | null;

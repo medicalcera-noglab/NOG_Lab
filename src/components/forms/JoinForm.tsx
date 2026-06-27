@@ -20,9 +20,10 @@ const initial: JoinFormState = { success: false }
 interface Props {
   positions: OpenPosition[]
   recaptchaSiteKey?: string | null
+  defaultPosition?: string
 }
 
-export function JoinForm({ positions, recaptchaSiteKey }: Props) {
+export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props) {
   const [state, action, pending] = useActionState(submitJoin, initial)
 
   const handleSubmit = useCallback(
@@ -99,8 +100,10 @@ export function JoinForm({ positions, recaptchaSiteKey }: Props) {
               Position of Interest
             </label>
             <select
+              key={defaultPosition}
               id="join-position"
               name="positionTitle"
+              defaultValue={defaultPosition ?? ''}
               className="border-border bg-bg text-fg w-full rounded-lg border px-4 py-2.5 focus:ring-2 focus:ring-[var(--ring)] focus:outline-none"
             >
               <option value="">— General Inquiry —</option>

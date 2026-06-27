@@ -61,7 +61,7 @@ export function CollaboratorsGrid({ collaborators }: CollaboratorsGridProps) {
               {/* ── Image header ── */}
               <div className="bg-surface-raised relative h-44 overflow-hidden">
                 <motion.div
-                  className="h-full w-full"
+                  className="relative h-full w-full overflow-hidden"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.5, ease: 'easeOut' }}
                 >
