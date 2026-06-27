@@ -1692,7 +1692,14 @@ export interface PageSeo {
 export interface SiteSetting {
   id: number;
   labName: string;
+  /**
+   * Bold statement displayed as the hero H1 (5–8 words).
+   */
   tagline?: string | null;
+  /**
+   * One-line descriptor shown below the headline — scientific, no marketing language.
+   */
+  heroSubline?: string | null;
   logo?: (number | null) | Media;
   /**
    * Upload the white/reversed logo variant. Shown automatically when the site is in dark mode.
@@ -1957,6 +1964,7 @@ export interface PageSeoSelect<T extends boolean = true> {
 export interface SiteSettingsSelect<T extends boolean = true> {
   labName?: T;
   tagline?: T;
+  heroSubline?: T;
   logo?: T;
   logoDark?: T;
   footerText?: T;

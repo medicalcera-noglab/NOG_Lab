@@ -23,6 +23,7 @@ import * as migration_20260621_000005_navigation_varchar_id from './20260621_000
 import * as migration_20260621_100000_drop_localization from './20260621_100000_drop_localization'
 import * as migration_20260622_000001_nav_join_us from './20260622_000001_nav_join_us'
 import * as migration_20260623_170421 from './20260623_170421'
+import * as migration_20260627_000001_site_settings_hero_subline from './20260627_000001_site_settings_hero_subline'
 
 export const migrations = [
   {
@@ -149,5 +150,10 @@ export const migrations = [
     up: migration_20260623_170421.up,
     down: migration_20260623_170421.down,
     name: '20260623_170421',
+  },
+  {
+    up: migration_20260627_000001_site_settings_hero_subline.up,
+    down: migration_20260627_000001_site_settings_hero_subline.down,
+    name: '20260627_000001_site_settings_hero_subline',
   },
 ]

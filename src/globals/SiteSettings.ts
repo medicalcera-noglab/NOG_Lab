@@ -35,7 +35,17 @@ export const SiteSettings: GlobalConfig = {
     {
       name: 'tagline',
       type: 'text',
-      label: 'Tagline',
+      label: 'Hero Headline',
+      admin: { description: 'Bold statement displayed as the hero H1 (5–8 words).' },
+    },
+    {
+      name: 'heroSubline',
+      type: 'text',
+      label: 'Hero Subline',
+      admin: {
+        description:
+          'One-line descriptor shown below the headline — scientific, no marketing language.',
+      },
     },
     {
       name: 'logo',

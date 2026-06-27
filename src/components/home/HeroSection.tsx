@@ -10,6 +10,7 @@ import type { SiteSetting, Media } from '../../../payload-types'
 interface HeroSectionProps {
   labName: string
   tagline: SiteSetting['tagline']
+  heroSubline: SiteSetting['heroSubline']
   ctaPrimary: SiteSetting['heroCtaPrimary']
   ctaSecondary: SiteSetting['heroCtaSecondary']
   heroMedia?: SiteSetting['heroMedia']
@@ -18,6 +19,7 @@ interface HeroSectionProps {
 export function HeroSection({
   labName,
   tagline,
+  heroSubline,
   ctaPrimary,
   ctaSecondary,
   heroMedia,
@@ -110,30 +112,14 @@ export function HeroSection({
       <div className="relative z-10 flex flex-1 flex-col items-start justify-center">
         <Container className="py-10 sm:py-16 lg:py-24">
           <div className="max-w-4xl">
-            {/* Lab name badge — fine horizontal rule + label */}
-            <div className="hero-badge mb-5 flex items-center gap-3">
-              <span aria-hidden="true" className="block h-px w-10 bg-[#1A9090]" />
-              <span className="text-[0.65rem] font-semibold tracking-[0.25em] text-[#1A9090] uppercase sm:text-xs">
-                {labName}
-              </span>
-            </div>
-
-            {/* Eyebrow — institution */}
-            <p
-              className="hero-eyebrow mb-4 text-[0.6rem] font-medium tracking-[0.16em] text-white/35 uppercase sm:text-[0.7rem]"
-              aria-hidden="true"
-            >
-              Institute of Basic Medical Sciences · Khyber Medical University
-            </p>
-
             {/* Oversized headline — LCP text node.
                 Words reveal via CSS stagger driven by --word-index.
                 Starts at opacity 0.01 (never 0) so Lighthouse sees it from first paint. */}
             <h1
               className={cn(
-                'font-heading leading-[1.08] font-bold tracking-tight text-white',
-                'text-[clamp(2.4rem,7.5vw,5.25rem)]',
-                'mb-8 sm:mb-10',
+                'font-heading leading-[1.06] font-bold tracking-tight text-white',
+                'text-[clamp(2.6rem,8vw,5.5rem)]',
+                'mb-5 sm:mb-6',
               )}
             >
               {words.map((word, i) => (
@@ -145,6 +131,13 @@ export function HeroSection({
                 </span>
               ))}
             </h1>
+
+            {/* Subline — one measured sentence, from CMS, no marketing language */}
+            {heroSubline && (
+              <p className="hero-tagline mb-8 max-w-xl text-base font-normal text-white/55 sm:mb-10 sm:text-lg">
+                {heroSubline}
+              </p>
+            )}
 
             {/* CTAs — coral primary emphasized, outline secondary */}
             {(ctaPrimary?.label || ctaSecondary?.label) && (
