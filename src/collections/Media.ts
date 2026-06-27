@@ -23,7 +23,18 @@ export const Media: CollectionConfig = {
   upload: {
     staticDir: path.resolve(dirname, '../../public/media'),
     mimeTypes: [...PUBLIC_MEDIA_MIMES],
-    adminThumbnail: 'thumbnail',
+    // Use a function so the URL points to /media/ (static files in public/).
+    // The default string form builds /api/media/file/... which returns 404 because
+    // files are served statically by Next.js from public/media/, not via Payload's API.
+    adminThumbnail: ({ doc }) => {
+      const sizes = (doc as Record<string, unknown>).sizes as
+        | Record<string, { filename?: string }>
+        | undefined
+      const thumbFilename = sizes?.thumbnail?.filename
+      if (thumbFilename) return `/media/${encodeURIComponent(thumbFilename)}`
+      const filename = (doc as Record<string, unknown>).filename as string | undefined
+      return filename ? `/media/${encodeURIComponent(filename)}` : null
+    },
     // Sharp generates WebP derivatives at upload time.
     // Non-image types (PDF, MP4) skip resize; Sharp won't process them.
     imageSizes: [
