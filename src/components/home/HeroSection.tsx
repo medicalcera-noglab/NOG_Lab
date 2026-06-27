@@ -34,7 +34,7 @@ export function HeroSection({
   return (
     <section
       aria-label="Lab introduction"
-      className="relative flex min-h-[480px] flex-col overflow-hidden md:min-h-[560px]"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden"
     >
       {/* ── Layer 1: Static dark teal base — first paint (LCP) ───────────────── */}
       <div aria-hidden="true" className="absolute inset-0 bg-[#071918]" />
@@ -61,8 +61,8 @@ export function HeroSection({
           backgroundImage: 'url(/hero-micro.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.14,
-          filter: 'brightness(0.5)',
+          opacity: 0.22,
+          filter: 'brightness(0.6)',
         }}
       />
 
@@ -78,7 +78,7 @@ export function HeroSection({
             sizes="100vw"
             priority
             style={{
-              filter: 'grayscale(1) brightness(0.18) contrast(1.2)',
+              filter: 'grayscale(1) brightness(0.32) contrast(1.15)',
             }}
           />
           {/* Teal shadow layer — multiplies into dark base */}
@@ -103,7 +103,7 @@ export function HeroSection({
       {/* ── Layer 7: Bottom vignette for scroll legibility ───────────────────── */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#071918]/80 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#071918]/90 to-transparent"
       />
 
       {/* ── Hero content ─────────────────────────────────────────────────────── */}
