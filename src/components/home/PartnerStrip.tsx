@@ -13,7 +13,7 @@ export function PartnerStrip({ collaborators }: PartnerStripProps) {
   if (!collaborators.length) return null
 
   return (
-    <Section className="bg-bg py-12 md:py-16" aria-label="Partner institutions">
+    <Section className="bg-bg py-6 md:py-10" aria-label="Partner institutions">
       <Container>
         <FadeUp>
           <p className="text-muted mb-8 text-center text-xs font-semibold tracking-[0.15em] uppercase">

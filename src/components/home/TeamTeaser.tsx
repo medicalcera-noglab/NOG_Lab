@@ -39,7 +39,7 @@ export function TeamTeaser({ people }: TeamTeaserProps) {
   const preview = people.slice(0, 6)
 
   return (
-    <Section className="bg-bg py-16 md:py-24">
+    <Section className="bg-bg py-10 md:py-16">
       <Container>
         <FadeUp>
           <div className="mb-10 flex items-end justify-between gap-6">

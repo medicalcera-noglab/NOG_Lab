@@ -35,7 +35,7 @@ export function PublicationsTeaser({ publications }: PublicationsTeaserProps) {
 
   return (
     <Section
-      className="bg-surface relative overflow-hidden py-16 md:py-24"
+      className="bg-surface relative overflow-hidden py-10 md:py-16"
       aria-label="Recent publications"
     >
       <Container>

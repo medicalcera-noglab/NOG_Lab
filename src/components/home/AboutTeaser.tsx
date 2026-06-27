@@ -68,7 +68,7 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
       : FALLBACK_PILLARS.map((p) => ({ ...p, color: 'var(--color-teal)' }))
 
   return (
-    <Section className="bg-surface relative overflow-hidden py-16 md:py-24">
+    <Section className="bg-surface relative overflow-hidden py-10 md:py-16">
       {/* Subtle teal corner accent */}
       <div
         aria-hidden="true"

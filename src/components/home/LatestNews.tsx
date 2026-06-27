@@ -32,7 +32,7 @@ export function LatestNews({ items }: LatestNewsProps) {
 
   return (
     <Section
-      className="bg-surface relative overflow-hidden py-16 md:py-24"
+      className="bg-surface relative overflow-hidden py-10 md:py-16"
       aria-label="Latest news and events"
     >
       <MolecularDots className="absolute inset-0" />

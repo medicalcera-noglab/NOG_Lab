@@ -22,7 +22,7 @@ const MARKERS = [
 export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
   return (
     <Section
-      className="bg-bg relative overflow-hidden py-16 md:py-20"
+      className="bg-bg relative overflow-hidden py-10 md:py-16"
       aria-label="Study sites map preview"
     >
       <Container>

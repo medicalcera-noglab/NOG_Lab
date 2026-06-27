@@ -21,7 +21,7 @@ export function FeaturedProject({ project }: FeaturedProjectProps) {
   const summary = lexicalToText(project.summary as Parameters<typeof lexicalToText>[0], ' ')
 
   return (
-    <Section className="bg-surface py-16 md:py-24" aria-label="Featured research project">
+    <Section className="bg-surface py-10 md:py-16" aria-label="Featured research project">
       <Container>
         <FadeUp>
           <p className="text-primary mb-10 text-xs font-semibold tracking-[0.15em] uppercase">

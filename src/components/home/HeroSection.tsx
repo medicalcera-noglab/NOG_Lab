@@ -108,7 +108,7 @@ export function HeroSection({
 
       {/* ── Hero content ─────────────────────────────────────────────────────── */}
       <div className="relative z-10 flex flex-1 flex-col items-start justify-center">
-        <Container className="py-14 sm:py-20 lg:py-24">
+        <Container className="py-10 sm:py-16 lg:py-24">
           <div className="max-w-4xl">
             {/* Lab name badge — fine horizontal rule + label */}
             <div className="hero-badge mb-5 flex items-center gap-3">

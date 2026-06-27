@@ -17,7 +17,7 @@ const COUNTER_DEFS = [
 
 export function CountersSection({ counts }: CountersSectionProps) {
   return (
-    <Section className="bg-bg py-16 md:py-20">
+    <Section className="bg-bg py-8 md:py-14">
       <Container>
         <div
           role="list"

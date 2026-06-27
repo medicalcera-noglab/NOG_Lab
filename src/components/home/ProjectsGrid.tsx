@@ -16,7 +16,7 @@ export function ProjectsGrid({ projects }: ProjectsGridProps) {
   if (!projects.length) return null
 
   return (
-    <Section className="bg-bg py-16 md:py-24" aria-label="Research projects">
+    <Section className="bg-bg py-10 md:py-16" aria-label="Research projects">
       <Container>
         <FadeUp>
           <div className="mb-10 flex items-end justify-between gap-6">

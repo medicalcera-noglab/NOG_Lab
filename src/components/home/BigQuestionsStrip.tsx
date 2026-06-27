@@ -12,7 +12,7 @@ export function BigQuestionsStrip({ questions }: BigQuestionsStripProps) {
   if (!questions.length) return null
 
   return (
-    <Section className="bg-surface relative overflow-hidden py-16 md:py-20">
+    <Section className="bg-surface relative overflow-hidden py-6 md:py-10">
       {/* Faint dot grid background */}
       <MolecularDots className="absolute inset-0" />
 
