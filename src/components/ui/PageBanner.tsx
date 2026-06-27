@@ -24,7 +24,7 @@ export function PageBanner({
   children,
 }: PageBannerProps) {
   return (
-    <div className="page-banner relative overflow-hidden py-14 md:py-20">
+    <div className="page-banner relative overflow-hidden py-8 md:py-14">
       {/* ── Background: dark base ─────────────────────────────────────── */}
       <div aria-hidden="true" className="absolute inset-0 bg-[#071918]" />
 
