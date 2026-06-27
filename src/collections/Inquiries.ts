@@ -7,10 +7,11 @@ export const Inquiries: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Forms',
     description:
-      'All contact messages and Join the Lab applications. Click any row to read the full message.',
+      'Contact messages and Join the Lab applications. Use the tabs above to filter by type. Opening a message marks it as read automatically.',
     defaultColumns: ['formType', 'name', 'email', 'message', 'isRead', 'createdAt'],
     listSearchableFields: ['name', 'email', 'message'],
     components: {
+      beforeList: ['@/components/admin/InquiriesFilterTabs#InquiriesFilterTabs'],
       afterList: ['@/components/admin/InquiriesCsvButton#InquiriesCsvButton'],
     },
     hidden: ({ user }) => {
@@ -19,11 +20,32 @@ export const Inquiries: CollectionConfig = {
     },
   },
   access: {
-    // Admin/editor manage; public creation is wired in a later step via API
     read: isAdminOrEditor,
-    create: () => true, // public submissions allowed
+    create: () => true,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
+  },
+  hooks: {
+    afterRead: [
+      // Auto-mark as read when an admin opens a single inquiry (not when listing)
+      async ({ doc, req, findMany }) => {
+        if (!findMany && req.user && !doc.isRead) {
+          try {
+            await req.payload.update({
+              collection: 'inquiries',
+              id: doc.id,
+              data: { isRead: true },
+              req,
+              overrideAccess: true,
+            })
+            doc.isRead = true
+          } catch {
+            // non-fatal — don't break the read if the update fails
+          }
+        }
+        return doc
+      },
+    ],
   },
   fields: [
     {
@@ -54,28 +76,32 @@ export const Inquiries: CollectionConfig = {
     {
       name: 'positionTitle',
       type: 'text',
+      label: 'Position Applied For',
       admin: {
         position: 'sidebar',
-        description: 'Position applied for',
         condition: (data) => data?.formType === 'join',
       },
     },
     {
       name: 'cv',
       type: 'upload',
+      label: 'CV / Resume',
       relationTo: 'applicant_files',
       admin: {
-        description: 'CV / Resume uploaded by the applicant',
+        description: 'File uploaded by the applicant — view only.',
         condition: (data) => data?.formType === 'join',
+        readOnly: true,
       },
     },
     {
       name: 'sop',
       type: 'upload',
+      label: 'Statement of Purpose',
       relationTo: 'applicant_files',
       admin: {
-        description: 'Statement of Purpose uploaded by the applicant',
+        description: 'File uploaded by the applicant — view only.',
         condition: (data) => data?.formType === 'join',
+        readOnly: true,
       },
     },
     {
@@ -85,12 +111,13 @@ export const Inquiries: CollectionConfig = {
       defaultValue: false,
       admin: {
         position: 'sidebar',
-        description: 'Tick this once you have read and actioned this message.',
+        description: 'Auto-set when you open the message. Uncheck to flag as unread again.',
       },
     },
     {
       name: 'repliedAt',
       type: 'date',
+      label: 'Replied At',
       admin: {
         position: 'sidebar',
         date: { displayFormat: 'dd MMM yyyy' },
