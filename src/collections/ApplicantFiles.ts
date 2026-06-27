@@ -26,10 +26,9 @@ export const ApplicantFiles: CollectionConfig = {
     useAsTitle: 'filename',
     group: 'Forms',
     defaultColumns: ['filename', 'mimeType', 'filesize', 'createdAt'],
-    hidden: ({ user }) => {
-      const role = (user as { role?: string } | null)?.role
-      return role !== 'super_admin' && role !== 'editor'
-    },
+    // Hidden from sidebar — files are accessed via the Inquiries collection.
+    // Visit /admin/collections/applicant_files directly if you need raw file management.
+    hidden: () => true,
   },
   access: {
     read: isAdminOrEditor,

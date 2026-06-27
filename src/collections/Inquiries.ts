@@ -56,20 +56,27 @@ export const Inquiries: CollectionConfig = {
       type: 'text',
       admin: {
         position: 'sidebar',
-        description: 'Position applied for (join inquiries only)',
+        description: 'Position applied for',
+        condition: (data) => data?.formType === 'join',
       },
     },
     {
       name: 'cv',
       type: 'upload',
-      // Private collection — served via signed URLs, not public CDN.
       relationTo: 'applicant_files',
+      admin: {
+        description: 'CV / Resume uploaded by the applicant',
+        condition: (data) => data?.formType === 'join',
+      },
     },
     {
       name: 'sop',
       type: 'upload',
       relationTo: 'applicant_files',
-      admin: { description: 'Statement of Purpose (join inquiries only)' },
+      admin: {
+        description: 'Statement of Purpose uploaded by the applicant',
+        condition: (data) => data?.formType === 'join',
+      },
     },
     {
       name: 'isRead',
