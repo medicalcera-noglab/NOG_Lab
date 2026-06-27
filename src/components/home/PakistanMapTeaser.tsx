@@ -43,7 +43,7 @@ export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
                 scale.
               </p>
               <Link
-                href="/projects?view=map"
+                href="/research?view=map"
                 className={cn(
                   'text-primary mt-6 inline-flex items-center gap-2 text-sm font-semibold',
                   'transition-[gap] duration-150 hover:gap-3',

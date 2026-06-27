@@ -1,6 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, Microscope, FlaskConical, Dna, Activity, TestTube, Atom } from 'lucide-react'
+import {
+  ArrowRight,
+  Microscope,
+  FlaskConical,
+  Dna,
+  Activity,
+  TestTube,
+  Atom,
+  Quote,
+} from 'lucide-react'
 import { FadeUp } from '@/components/FadeUp'
 import { Section } from '@/components/ui/Section'
 import { Container } from '@/components/ui/Container'
@@ -50,7 +59,11 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
       : null
 
   const missionText = about?.mission
-    ? lexicalToText(about.mission as Parameters<typeof lexicalToText>[0], ' ').slice(0, 280)
+    ? lexicalToText(about.mission as Parameters<typeof lexicalToText>[0], ' ')
+    : null
+
+  const directorQuote = about?.directorMessage
+    ? lexicalToText(about.directorMessage as Parameters<typeof lexicalToText>[0], ' ').slice(0, 220)
     : null
 
   // Use live themes (up to 3); fall back to hardcoded pillars only if CMS has none
@@ -124,14 +137,11 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
             )}
           </FadeUp>
 
-          {/* Right: mission + pillars */}
+          {/* Right: mission + pillars + director quote */}
           <FadeUp delay={0.1}>
             <div className="flex flex-col justify-center gap-8">
               {missionText && (
-                <p className="text-muted text-lg leading-relaxed">
-                  {missionText}
-                  {missionText.length >= 280 ? '…' : ''}
-                </p>
+                <p className="text-muted line-clamp-5 text-lg leading-relaxed">{missionText}</p>
               )}
 
               {/* Research pillars — driven by ResearchThemes from CMS */}
@@ -151,6 +161,17 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
                   </li>
                 ))}
               </ul>
+
+              {/* Director's voice — pull-quote without repeating the portrait */}
+              {directorQuote && (
+                <blockquote className="border-primary/30 bg-primary/5 relative rounded-xl border-l-4 px-5 py-4">
+                  <Quote size={16} className="text-primary/40 mb-2" aria-hidden="true" />
+                  <p className="text-muted text-sm leading-relaxed italic">
+                    {directorQuote}
+                    {directorQuote.length >= 220 ? '…' : ''}
+                  </p>
+                </blockquote>
+              )}
 
               <Link
                 href="/research"
