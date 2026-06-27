@@ -102,6 +102,22 @@ export const People: CollectionConfig = {
       label: 'ResearchGate URL',
     },
     {
+      name: 'scopus',
+      type: 'text',
+      label: 'Scopus Profile URL',
+    },
+    {
+      name: 'academicTitle',
+      type: 'text',
+      label: 'Academic Title',
+      admin: { description: 'e.g. Professor, Associate Professor, Dr.' },
+    },
+    {
+      name: 'institution',
+      type: 'text',
+      label: 'Primary Institution',
+    },
+    {
       name: 'interests',
       type: 'array',
       label: 'Research Interests',
@@ -111,6 +127,40 @@ export const People: CollectionConfig = {
           type: 'text',
           required: true,
         },
+      ],
+    },
+    {
+      name: 'education',
+      type: 'array',
+      label: 'Education',
+      fields: [
+        { name: 'degree', type: 'text', required: true, label: 'Degree / Qualification' },
+        { name: 'institution', type: 'text', required: true, label: 'Institution' },
+        { name: 'country', type: 'text', label: 'Country' },
+        { name: 'startYear', type: 'text', label: 'Start Year' },
+        { name: 'endYear', type: 'text', label: 'End Year (or "present")' },
+      ],
+    },
+    {
+      name: 'experience',
+      type: 'array',
+      label: 'Academic / Professional Experience',
+      fields: [
+        { name: 'role', type: 'text', required: true, label: 'Position / Role' },
+        { name: 'institution', type: 'text', required: true, label: 'Institution' },
+        { name: 'country', type: 'text', label: 'Country' },
+        { name: 'startYear', type: 'text', label: 'Start Year' },
+        { name: 'endYear', type: 'text', label: 'End Year (or "present")' },
+      ],
+    },
+    {
+      name: 'grants',
+      type: 'array',
+      label: 'Grants & Funding',
+      fields: [
+        { name: 'title', type: 'text', required: true, label: 'Grant Title' },
+        { name: 'funder', type: 'text', label: 'Funding Body' },
+        { name: 'year', type: 'text', label: 'Year(s)' },
       ],
     },
     {

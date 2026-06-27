@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Mail, ExternalLink, ArrowLeft } from 'lucide-react'
+import { Mail, ExternalLink, ArrowLeft, GraduationCap, Briefcase, Award } from 'lucide-react'
 import {
   getSiteSettings,
   getPersonBySlug,
@@ -18,7 +18,42 @@ import { MediaImage } from '@/components/MediaImage'
 import { RichText } from '@/components/RichText'
 import { PublicationListItem } from '@/components/publications/PublicationListItem'
 import { cn } from '@/lib/utils'
-import type { Media } from '../../../../../payload-types'
+import type { Media, Person } from '../../../../../payload-types'
+
+// Extended type for fields added by migration 20260628_000001_people_profile_fields
+interface EducationEntry {
+  id?: string | null
+  degree: string
+  institution: string
+  country?: string | null
+  startYear?: string | null
+  endYear?: string | null
+}
+
+interface ExperienceEntry {
+  id?: string | null
+  role: string
+  institution: string
+  country?: string | null
+  startYear?: string | null
+  endYear?: string | null
+}
+
+interface GrantEntry {
+  id?: string | null
+  title: string
+  funder?: string | null
+  year?: string | null
+}
+
+interface ExtendedPerson extends Person {
+  academicTitle?: string | null
+  institution?: string | null
+  scopus?: string | null
+  education?: EducationEntry[] | null
+  experience?: ExperienceEntry[] | null
+  grants?: GrantEntry[] | null
+}
 
 const DEFAULT_ROLE_LABELS: Record<string, string> = {
   pi: 'Principal Investigator',
@@ -43,11 +78,12 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
   const [person, settings] = await Promise.all([getPersonBySlug(slug), getSiteSettings()])
   if (!person) return { title: 'Person not found' }
 
-  const photo = (person.photo as Media | null | undefined) ?? null
+  const p = person as ExtendedPerson
+  const photo = (p.photo as Media | null | undefined) ?? null
   return buildMetadata(
     {
-      title: person.name,
-      description: person.interests?.map((i) => i.interest).join(', ') ?? undefined,
+      title: p.name,
+      description: p.interests?.map((i) => i.interest).join(', ') ?? undefined,
       canonical: `/people/${slug}`,
       ogImage: photo?.url ?? null,
     },
@@ -61,32 +97,37 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
 
   if (!person) notFound()
 
-  const alumni = isAlumni(person)
+  const p = person as ExtendedPerson
+  const alumni = isAlumni(p)
   const rl = settings.roleLabels
   const roleLabel = alumni
     ? rl?.alumni || DEFAULT_ROLE_LABELS.alumni
-    : rl?.[person.role as keyof typeof rl] || DEFAULT_ROLE_LABELS[person.role] || person.role
+    : rl?.[p.role as keyof typeof rl] || DEFAULT_ROLE_LABELS[p.role] || p.role
 
   const [publications, projects] = await Promise.all([
-    getPersonPublications(person.id),
-    getPersonProjects(person.id),
+    getPersonPublications(p.id),
+    getPersonProjects(p.id),
   ])
 
-  const photo = (person.photo as Media | null | undefined) ?? null
+  const photo = (p.photo as Media | null | undefined) ?? null
+  const education = p.education ?? []
+  const experience = p.experience ?? []
+  const grants = p.grants ?? []
 
-  // JSON-LD structured data
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: person.name,
-    jobTitle: roleLabel,
-    ...(person.email ? { email: `mailto:${person.email}` } : {}),
+    name: p.name,
+    jobTitle: p.academicTitle ?? roleLabel,
+    worksFor: p.institution ? { '@type': 'Organization', name: p.institution } : undefined,
+    ...(p.email ? { email: `mailto:${p.email}` } : {}),
     ...(photo?.url ? { image: photo.url } : {}),
     sameAs: [
-      person.orcid ? `https://orcid.org/${person.orcid}` : null,
-      person.googleScholar,
-      person.linkedin,
-      person.researchgate,
+      p.orcid ? `https://orcid.org/${p.orcid}` : null,
+      p.googleScholar,
+      p.scopus,
+      p.linkedin,
+      p.researchgate,
     ].filter(Boolean),
   }
 
@@ -139,7 +180,7 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
                         className="text-muted font-heading text-6xl font-bold select-none"
                         aria-hidden="true"
                       >
-                        {person.name.charAt(0).toUpperCase()}
+                        {p.name.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
@@ -151,14 +192,16 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
                 <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
                   {roleLabel}
                 </p>
-                <h1 className="font-heading text-fg mb-4 text-3xl font-bold md:text-4xl">
-                  {person.name}
+                <h1 className="font-heading text-fg mb-1 text-3xl font-bold md:text-4xl">
+                  {p.academicTitle ? `${p.academicTitle} ${p.name}` : p.name}
                 </h1>
 
+                {p.institution && <p className="text-muted mb-4 text-sm">{p.institution}</p>}
+
                 {/* Interests */}
-                {person.interests && person.interests.length > 0 && (
+                {p.interests && p.interests.length > 0 && (
                   <div className="mb-5 flex flex-wrap gap-2">
-                    {person.interests.map((interest) => (
+                    {p.interests.map((interest) => (
                       <span
                         key={interest.id ?? interest.interest}
                         className={cn(
@@ -171,64 +214,66 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
                   </div>
                 )}
 
-                {/* Social links */}
-                <div className="flex flex-wrap items-center gap-3">
-                  {person.email && (
-                    <ProfileSocialLink
-                      href={`mailto:${person.email}`}
-                      label="Email"
-                      external={false}
-                    >
-                      <Mail size={15} aria-hidden="true" />
-                      <span>{person.email}</span>
+                {/* Academic / social links */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {p.email && (
+                    <ProfileSocialLink href={`mailto:${p.email}`} label="Email" external={false}>
+                      <Mail size={13} aria-hidden="true" />
+                      <span>{p.email}</span>
                     </ProfileSocialLink>
                   )}
-                  {person.orcid && (
-                    <ProfileSocialLink href={`https://orcid.org/${person.orcid}`} label="ORCID">
+                  {p.orcid && (
+                    <ProfileSocialLink href={`https://orcid.org/${p.orcid}`} label="ORCID">
                       <span className="text-xs font-bold">iD</span>
                       <span>ORCID</span>
                     </ProfileSocialLink>
                   )}
-                  {person.googleScholar && (
-                    <ProfileSocialLink href={person.googleScholar} label="Google Scholar">
-                      <ExternalLink size={14} aria-hidden="true" />
+                  {p.googleScholar && (
+                    <ProfileSocialLink href={p.googleScholar} label="Google Scholar">
+                      <ExternalLink size={12} aria-hidden="true" />
                       <span>Google Scholar</span>
                     </ProfileSocialLink>
                   )}
-                  {person.linkedin && (
-                    <ProfileSocialLink href={person.linkedin} label="LinkedIn">
-                      <ExternalLink size={14} aria-hidden="true" />
+                  {p.scopus && (
+                    <ProfileSocialLink href={p.scopus} label="Scopus">
+                      <ExternalLink size={12} aria-hidden="true" />
+                      <span>Scopus</span>
+                    </ProfileSocialLink>
+                  )}
+                  {p.linkedin && (
+                    <ProfileSocialLink href={p.linkedin} label="LinkedIn">
+                      <ExternalLink size={12} aria-hidden="true" />
                       <span>LinkedIn</span>
                     </ProfileSocialLink>
                   )}
-                  {person.researchgate && (
-                    <ProfileSocialLink href={person.researchgate} label="ResearchGate">
-                      <ExternalLink size={14} aria-hidden="true" />
+                  {p.researchgate && (
+                    <ProfileSocialLink href={p.researchgate} label="ResearchGate">
+                      <ExternalLink size={12} aria-hidden="true" />
                       <span>ResearchGate</span>
                     </ProfileSocialLink>
                   )}
                 </div>
 
                 {/* Dates for alumni */}
-                {alumni && (person.joinedDate || person.leftDate) && (
+                {alumni && (p.joinedDate || p.leftDate) && (
                   <p className="text-muted mt-4 text-xs">
-                    {person.joinedDate && (
+                    {p.joinedDate && (
                       <>
                         Joined{' '}
-                        <time dateTime={person.joinedDate}>
-                          {new Date(person.joinedDate).toLocaleDateString('en-GB', {
+                        <time dateTime={p.joinedDate}>
+                          {new Date(p.joinedDate).toLocaleDateString('en-GB', {
                             month: 'short',
                             year: 'numeric',
                           })}
                         </time>
                       </>
                     )}
-                    {person.joinedDate && person.leftDate && ' · '}
-                    {person.leftDate && (
+                    {p.joinedDate && p.leftDate && ' · '}
+                    {p.leftDate && (
                       <>
                         Left{' '}
-                        <time dateTime={person.leftDate}>
-                          {new Date(person.leftDate).toLocaleDateString('en-GB', {
+                        <time dateTime={p.leftDate}>
+                          {new Date(p.leftDate).toLocaleDateString('en-GB', {
                             month: 'short',
                             year: 'numeric',
                           })}
@@ -242,20 +287,137 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
           </FadeUp>
 
           {/* Bio */}
-          {person.bio && (
+          {p.bio && (
             <FadeUp delay={0.1}>
               <section aria-labelledby="bio-heading" className="mb-12">
                 <h2 id="bio-heading" className="font-heading text-fg mb-4 text-xl font-bold">
                   Biography
                 </h2>
-                <RichText data={person.bio} className="max-w-3xl text-base" />
+                <RichText data={p.bio} className="max-w-3xl text-base" />
+              </section>
+            </FadeUp>
+          )}
+
+          {/* Experience */}
+          {experience.length > 0 && (
+            <FadeUp delay={0.11}>
+              <section aria-labelledby="experience-heading" className="mb-12">
+                <h2
+                  id="experience-heading"
+                  className="font-heading text-fg mb-6 flex items-center gap-2 text-xl font-bold"
+                >
+                  <Briefcase size={18} style={{ color: 'var(--color-teal)' }} aria-hidden="true" />
+                  Academic Experience
+                </h2>
+                <ol className="relative space-y-6 border-l-2 border-[var(--border)] pl-6">
+                  {experience.map((entry, i) => (
+                    <li key={entry.id ?? i} className="relative">
+                      <span
+                        className="bg-bg absolute top-1.5 -left-[25px] h-3 w-3 rounded-full border-2 border-[var(--color-teal)]"
+                        aria-hidden="true"
+                      />
+                      <p className="text-fg text-sm leading-snug font-semibold">{entry.role}</p>
+                      <p className="text-muted mt-0.5 text-sm">
+                        {entry.institution}
+                        {entry.country ? `, ${entry.country}` : ''}
+                      </p>
+                      {(entry.startYear || entry.endYear) && (
+                        <p className="text-muted mt-0.5 text-xs">
+                          {entry.startYear ?? ''}
+                          {entry.endYear ? `–${entry.endYear}` : ''}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            </FadeUp>
+          )}
+
+          {/* Education */}
+          {education.length > 0 && (
+            <FadeUp delay={0.12}>
+              <section aria-labelledby="education-heading" className="mb-12">
+                <h2
+                  id="education-heading"
+                  className="font-heading text-fg mb-6 flex items-center gap-2 text-xl font-bold"
+                >
+                  <GraduationCap
+                    size={18}
+                    style={{ color: 'var(--color-teal)' }}
+                    aria-hidden="true"
+                  />
+                  Education
+                </h2>
+                <ol className="relative space-y-6 border-l-2 border-[var(--border)] pl-6">
+                  {education.map((entry, i) => (
+                    <li key={entry.id ?? i} className="relative">
+                      <span
+                        className="bg-bg absolute top-1.5 -left-[25px] h-3 w-3 rounded-full border-2 border-[var(--color-teal)]"
+                        aria-hidden="true"
+                      />
+                      <p className="text-fg text-sm leading-snug font-semibold">{entry.degree}</p>
+                      <p className="text-muted mt-0.5 text-sm">
+                        {entry.institution}
+                        {entry.country ? `, ${entry.country}` : ''}
+                      </p>
+                      {(entry.startYear || entry.endYear) && (
+                        <p className="text-muted mt-0.5 text-xs">
+                          {entry.startYear ?? ''}
+                          {entry.endYear ? `–${entry.endYear}` : ''}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            </FadeUp>
+          )}
+
+          {/* Grants */}
+          {grants.length > 0 && (
+            <FadeUp delay={0.13}>
+              <section aria-labelledby="grants-heading" className="mb-12">
+                <h2
+                  id="grants-heading"
+                  className="font-heading text-fg mb-6 flex items-center gap-2 text-xl font-bold"
+                >
+                  <Award size={18} style={{ color: 'var(--color-coral)' }} aria-hidden="true" />
+                  Grants &amp; Funding
+                  <span className="text-muted text-base font-normal">({grants.length})</span>
+                </h2>
+                <ul role="list" className="flex flex-col gap-4">
+                  {grants.map((grant, i) => (
+                    <li
+                      key={grant.id ?? i}
+                      className="border-border bg-surface-raised rounded-xl border p-4"
+                    >
+                      <p className="text-fg text-sm leading-snug font-semibold">{grant.title}</p>
+                      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                        {grant.funder && <span className="text-muted text-xs">{grant.funder}</span>}
+                        {grant.year && (
+                          <span
+                            className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                            style={{
+                              background:
+                                'color-mix(in oklch, var(--color-coral) 12%, transparent)',
+                              color: 'var(--color-coral)',
+                            }}
+                          >
+                            {grant.year}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </section>
             </FadeUp>
           )}
 
           {/* Projects */}
           {projects.length > 0 && (
-            <FadeUp delay={0.12}>
+            <FadeUp delay={0.14}>
               <section aria-labelledby="projects-heading" className="mb-12">
                 <h2 id="projects-heading" className="font-heading text-fg mb-5 text-xl font-bold">
                   Projects
@@ -294,7 +456,7 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
 
           {/* Publications */}
           {publications.length > 0 && (
-            <FadeUp delay={0.14}>
+            <FadeUp delay={0.16}>
               <section aria-labelledby="pubs-heading">
                 <h2 id="pubs-heading" className="font-heading text-fg mb-5 text-xl font-bold">
                   Publications{' '}
@@ -303,7 +465,7 @@ export default async function PersonProfilePage({ params }: ProfilePageProps) {
                 <ul role="list" className="flex flex-col gap-4">
                   {publications.map((pub) => (
                     <li key={pub.id}>
-                      <PublicationListItem publication={pub} highlightPersonName={person.name} />
+                      <PublicationListItem publication={pub} highlightPersonName={p.name} />
                     </li>
                   ))}
                 </ul>

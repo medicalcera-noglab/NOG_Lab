@@ -253,9 +253,43 @@ export interface Person {
   googleScholar?: string | null;
   linkedin?: string | null;
   researchgate?: string | null;
+  scopus?: string | null;
+  /**
+   * e.g. Professor, Associate Professor, Dr.
+   */
+  academicTitle?: string | null;
+  institution?: string | null;
   interests?:
     | {
         interest: string;
+        id?: string | null;
+      }[]
+    | null;
+  education?:
+    | {
+        degree: string;
+        institution: string;
+        country?: string | null;
+        startYear?: string | null;
+        endYear?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  experience?:
+    | {
+        role: string;
+        institution: string;
+        country?: string | null;
+        startYear?: string | null;
+        endYear?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  grants?:
+    | {
+        title: string;
+        funder?: string | null;
+        year?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1156,10 +1190,41 @@ export interface PeopleSelect<T extends boolean = true> {
   googleScholar?: T;
   linkedin?: T;
   researchgate?: T;
+  scopus?: T;
+  academicTitle?: T;
+  institution?: T;
   interests?:
     | T
     | {
         interest?: T;
+        id?: T;
+      };
+  education?:
+    | T
+    | {
+        degree?: T;
+        institution?: T;
+        country?: T;
+        startYear?: T;
+        endYear?: T;
+        id?: T;
+      };
+  experience?:
+    | T
+    | {
+        role?: T;
+        institution?: T;
+        country?: T;
+        startYear?: T;
+        endYear?: T;
+        id?: T;
+      };
+  grants?:
+    | T
+    | {
+        title?: T;
+        funder?: T;
+        year?: T;
         id?: T;
       };
   joinedDate?: T;
