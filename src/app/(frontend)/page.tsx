@@ -26,6 +26,7 @@ import { PakistanMapTeaser } from '@/components/home/PakistanMapTeaser'
 import { TeamTeaser } from '@/components/home/TeamTeaser'
 import { LatestNews } from '@/components/home/LatestNews'
 import { PartnerStrip } from '@/components/home/PartnerStrip'
+import { AboutFull } from '@/components/home/AboutFull'
 
 export const revalidate = 60
 
@@ -107,6 +108,8 @@ export default async function HomePage() {
       ) : null}
 
       <AboutTeaser about={about} themes={themes} />
+
+      <AboutFull about={about} settings={settings} hidePortrait />
 
       <CountersSection counts={counts} />
 

@@ -23,10 +23,10 @@ export function BigQuestionsStrip({ questions }: BigQuestionsStripProps) {
           </p>
         </FadeUp>
 
-        <ol role="list" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ol role="list" className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {questions.map((item, i) => (
-            <FadeUp key={item.id ?? i} delay={i * 0.08}>
-              <li className="group border-border bg-bg relative flex gap-4 rounded-xl border p-6 transition-shadow duration-200 hover:shadow-md">
+            <FadeUp key={item.id ?? i} delay={i * 0.08} className="h-full">
+              <li className="group border-border bg-bg relative flex h-full min-h-[120px] gap-4 rounded-xl border p-6 transition-shadow duration-200 hover:shadow-md">
                 {/* Index number */}
                 <span
                   className="font-heading text-primary/20 text-4xl leading-none font-bold select-none"

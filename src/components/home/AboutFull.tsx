@@ -11,9 +11,11 @@ import type { About, Media, SiteSetting } from '../../../payload-types'
 interface AboutFullProps {
   about: About | null
   settings: SiteSetting
+  /** Pass true when the portrait is already rendered above (e.g. in AboutTeaser) */
+  hidePortrait?: boolean
 }
 
-export function AboutFull({ about, settings }: AboutFullProps) {
+export function AboutFull({ about, settings, hidePortrait = false }: AboutFullProps) {
   if (!about) return null
 
   const portrait =
@@ -38,7 +40,7 @@ export function AboutFull({ about, settings }: AboutFullProps) {
           <Container>
             <FadeUp>
               <div className="flex flex-col items-start gap-8 md:flex-row">
-                {portrait && (
+                {portrait && !hidePortrait && (
                   <div className="border-border relative h-44 w-32 shrink-0 overflow-hidden rounded-2xl border shadow-sm sm:h-56 sm:w-40">
                     <MediaImage
                       doc={portrait}
