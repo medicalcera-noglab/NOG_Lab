@@ -100,6 +100,22 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
           </div>
         </FadeUp>
 
+        {/* NOG Lab research graphic — full width below the header */}
+        <FadeUp delay={0.03}>
+          <div className="mb-10 dark:rounded-2xl dark:bg-white/95 dark:p-4">
+            <Image
+              src="/nog-lab-graphic.png"
+              alt="NOG Lab — Nutrition, Oral, Gut Microbiome research illustration"
+              width={1400}
+              height={800}
+              sizes="(max-width: 768px) 100vw, 1100px"
+              className="h-auto w-full object-contain"
+              style={{ mixBlendMode: 'multiply' }}
+              priority
+            />
+          </div>
+        </FadeUp>
+
         {/* Two-column: portrait + mission text */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
           {/* Left: professional lab/microscopy image */}

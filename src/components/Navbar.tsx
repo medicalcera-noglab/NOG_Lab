@@ -76,34 +76,33 @@ export async function Navbar() {
                 )}
               </>
             ) : (
-              /* Fallback to public SVG mark files */
+              /* Fallback: horizontal lockup — mark + NOG LAB + tagline in one SVG */
               <>
-                <span className="relative block h-8 w-8 dark:hidden" aria-hidden="true">
-                  <Image
-                    src="/logo.svg"
-                    alt=""
-                    fill
-                    sizes="32px"
-                    className="object-contain"
-                    priority
-                  />
-                </span>
-                <span className="relative hidden h-8 w-8 dark:block" aria-hidden="true">
-                  <Image
-                    src="/logo-white.svg"
-                    alt=""
-                    fill
-                    sizes="32px"
-                    className="object-contain"
-                    priority
-                  />
-                </span>
+                <Image
+                  src="/logo-horizontal.svg"
+                  alt={settings.labName}
+                  width={170}
+                  height={40}
+                  className="dark:hidden"
+                  priority
+                />
+                <Image
+                  src="/logo-horizontal-white.svg"
+                  alt={settings.labName}
+                  width={170}
+                  height={40}
+                  className="hidden dark:block"
+                  priority
+                />
               </>
             )}
 
-            <span className="font-heading text-primary text-lg leading-none font-bold">
-              {settings.labName}
-            </span>
+            {/* Only show text label when a CMS logo mark is uploaded (text is in the SVG otherwise) */}
+            {logo && (
+              <span className="font-heading text-primary text-lg leading-none font-bold">
+                {settings.labName}
+              </span>
+            )}
           </Link>
 
           {/* ── MIDDLE: primary nav links (desktop only) — always rendered to hold col 2 */}

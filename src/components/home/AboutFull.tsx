@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Download } from 'lucide-react'
 import { FadeUp } from '@/components/FadeUp'
@@ -129,30 +128,6 @@ export function AboutFull({ about, settings, piPerson, counts }: AboutFullProps)
           </Container>
         </Section>
       )}
-
-      {/* NOG Lab Graphic — DNA + Body + Microbiome */}
-      <Section className="bg-surface py-10 md:py-14">
-        <Container>
-          <FadeUp>
-            <div className="flex justify-center">
-              {/* Light mode: multiply blend removes white bg; dark mode: wrapped in subtle dark card */}
-              <div className="relative w-full max-w-2xl">
-                <div className="dark:bg-surface/60 rounded-2xl dark:p-6">
-                  <Image
-                    src="/nog-lab-graphic.png"
-                    alt="NOG Lab research pillars — nutrition, oral and gut microbiome illustrated"
-                    width={800}
-                    height={450}
-                    sizes="(max-width: 768px) 100vw, 800px"
-                    className="h-auto w-full object-contain"
-                    style={{ mixBlendMode: 'multiply' }}
-                  />
-                </div>
-              </div>
-            </div>
-          </FadeUp>
-        </Container>
-      </Section>
 
       {/* Facilities Gallery */}
       {hasFacilities && (
