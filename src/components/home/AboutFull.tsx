@@ -1,66 +1,40 @@
-import type { Metadata } from 'next'
-import { buildMetadata } from '@/lib/metadata'
 import { Download } from 'lucide-react'
 import { FadeUp } from '@/components/FadeUp'
-import { Container } from '@/components/ui/Container'
 import { Section } from '@/components/ui/Section'
-import { PageBanner } from '@/components/ui/PageBanner'
-import { buttonVariants } from '@/components/ui/Button'
+import { Container } from '@/components/ui/Container'
 import { RichText } from '@/components/RichText'
 import { MediaImage } from '@/components/MediaImage'
 import { FacilitiesGallery } from '@/components/about/FacilitiesGallery'
-import { getAbout } from '@/lib/data/about'
-import { getSiteSettings } from '@/lib/data/site-settings'
-import { getPageSeo, resolvePageSeo } from '@/lib/data'
-import type { Media } from '../../../../payload-types'
+import { buttonVariants } from '@/components/ui/Button'
+import type { About, Media, SiteSetting } from '../../../payload-types'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
-  const seo = resolvePageSeo(pageSeo, 'about')
-  return buildMetadata(
-    {
-      title: seo.title ?? 'About',
-      description:
-        seo.description ?? 'Our mission, leadership, institutional affiliation, and facilities.',
-      canonical: '/about',
-      ogImage: seo.ogImageUrl,
-    },
-    settings,
-  )
+interface AboutFullProps {
+  about: About | null
+  settings: SiteSetting
 }
 
-export const revalidate = 300
-
-export default async function AboutPage() {
-  const [about, settings] = await Promise.all([getAbout(), getSiteSettings()])
+export function AboutFull({ about, settings }: AboutFullProps) {
+  if (!about) return null
 
   const portrait =
-    about?.directorPortrait && typeof about.directorPortrait === 'object'
+    about.directorPortrait && typeof about.directorPortrait === 'object'
       ? (about.directorPortrait as Media)
       : null
+
   const brochureUrl =
-    settings?.brochure && typeof settings.brochure === 'object'
+    settings.brochure && typeof settings.brochure === 'object'
       ? (settings.brochure as Media).url
       : null
 
+  const hasFacilities = about.facilities && about.facilities.length > 0
+
+  if (!about.directorMessage && !about.kmuAffiliation && !hasFacilities && !brochureUrl) return null
+
   return (
     <>
-      <PageBanner eyebrow="Who we are" title="About NOG Lab" tint="#0E6E6E" />
-
-      {/* Mission */}
-      {about?.mission && (
-        <Section className="py-12 md:py-16">
-          <Container>
-            <FadeUp>
-              <RichText data={about.mission} className="max-w-3xl text-lg" />
-            </FadeUp>
-          </Container>
-        </Section>
-      )}
-
       {/* Director's Message */}
-      {about?.directorMessage && (
-        <Section className="bg-surface py-12">
+      {about.directorMessage && (
+        <Section className="bg-surface py-12 md:py-16">
           <Container>
             <FadeUp>
               <div className="flex flex-col items-start gap-8 md:flex-row">
@@ -76,7 +50,9 @@ export default async function AboutPage() {
                   </div>
                 )}
                 <div className="flex-1">
-                  <h2 className="mb-4 text-2xl font-bold">Director&apos;s Message</h2>
+                  <h2 className="font-heading text-fg mb-4 text-2xl font-bold">
+                    Director&apos;s Message
+                  </h2>
                   <RichText data={about.directorMessage} className="max-w-2xl" />
                 </div>
               </div>
@@ -86,11 +62,13 @@ export default async function AboutPage() {
       )}
 
       {/* KMU Affiliation */}
-      {about?.kmuAffiliation && (
-        <Section className="py-12">
+      {about.kmuAffiliation && (
+        <Section className="py-12 md:py-16">
           <Container>
             <FadeUp>
-              <h2 className="mb-6 text-2xl font-bold">Institutional Affiliation</h2>
+              <h2 className="font-heading text-fg mb-6 text-2xl font-bold">
+                Institutional Affiliation
+              </h2>
               <RichText data={about.kmuAffiliation} className="max-w-3xl" />
             </FadeUp>
           </Container>
@@ -98,12 +76,12 @@ export default async function AboutPage() {
       )}
 
       {/* Facilities Gallery */}
-      {about?.facilities && about.facilities.length > 0 && (
-        <Section className="bg-surface py-12">
+      {hasFacilities && (
+        <Section className="bg-surface py-12 md:py-16">
           <Container>
             <FadeUp>
-              <h2 className="mb-6 text-2xl font-bold">Our Facilities</h2>
-              <FacilitiesGallery facilities={about.facilities} />
+              <h2 className="font-heading text-fg mb-6 text-2xl font-bold">Our Facilities</h2>
+              <FacilitiesGallery facilities={about.facilities!} />
             </FadeUp>
           </Container>
         </Section>

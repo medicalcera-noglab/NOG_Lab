@@ -1,13 +1,30 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
-import { getSiteSettings, getResearchPageData, getPageSeo, resolvePageSeo } from '@/lib/data'
+import Link from 'next/link'
+import { List, Map } from 'lucide-react'
+import {
+  getSiteSettings,
+  getResearchPageData,
+  getPageSeo,
+  resolvePageSeo,
+  getAllResearchThemes,
+  getFilteredProjects,
+  getProjectFilterOptions,
+} from '@/lib/data'
 import { getAbout } from '@/lib/data/about'
 import { Container } from '@/components/ui/Container'
+import { Section } from '@/components/ui/Section'
 import { PageBanner } from '@/components/ui/PageBanner'
 import { FadeUp } from '@/components/FadeUp'
 import { RichText } from '@/components/RichText'
 import { ResearchInPageNav } from '@/components/research/ResearchInPageNav'
 import { ThemeSection, deriveLeads } from '@/components/research/ThemeSection'
+import { ProjectCard } from '@/components/projects/ProjectCard'
+import { ProjectFilters } from '@/components/projects/ProjectFilters'
+import { FilterSheet } from '@/components/ui/FilterSheet'
+import { ProjectsMap } from '@/components/projects/ProjectsMap'
+import { EmptyState } from '@/components/placeholders'
+import { cn } from '@/lib/utils'
 import type { Project, Publication, Person, ResearchTheme } from '../../../../payload-types'
 
 export const revalidate = 60
@@ -26,11 +43,64 @@ export async function generateMetadata(): Promise<Metadata> {
   )
 }
 
-export default async function ResearchPage() {
-  const [{ themes, projects, publications }, about] = await Promise.all([
-    getResearchPageData(),
-    getAbout(),
-  ])
+interface ResearchPageProps {
+  searchParams: Promise<{
+    theme?: string
+    status?: string
+    funder?: string
+    province?: string
+    view?: string
+  }>
+}
+
+function makeToggleHref(
+  current: Record<string, string | undefined>,
+  key: string,
+  value: string,
+): string {
+  const p = new URLSearchParams()
+  Object.entries(current).forEach(([k, v]) => {
+    if (v && k !== key) p.set(k, v)
+  })
+  if (value) p.set(key, value)
+  const qs = p.toString()
+  return qs ? `/research?${qs}` : '/research'
+}
+
+export default async function ResearchPage({ searchParams }: ResearchPageProps) {
+  const sp = await searchParams
+  const viewParam = sp.view === 'map' ? 'map' : 'list'
+
+  const [{ themes, projects: themeProjects, publications }, about, filterOptions, allProjects] =
+    await Promise.all([
+      getResearchPageData(),
+      getAbout(),
+      getProjectFilterOptions(),
+      getFilteredProjects({
+        themeSlug: sp.theme,
+        status: sp.status,
+        funder: sp.funder,
+        province: sp.province,
+      }),
+    ])
+
+  // We also need the full theme list for the filter sidebar
+  const allThemes = themes as ResearchTheme[]
+
+  const view = viewParam
+  const active = {
+    theme: sp.theme,
+    status: sp.status,
+    funder: sp.funder,
+    province: sp.province,
+    view,
+  }
+
+  const listHref = makeToggleHref(active, 'view', 'list')
+  const mapHref = makeToggleHref(active, 'view', 'map')
+
+  const hasFilters = Boolean(sp.theme || sp.status || sp.funder || sp.province)
+  const activeFilterCount = [sp.theme, sp.status, sp.funder, sp.province].filter(Boolean).length
 
   return (
     <>
@@ -46,7 +116,7 @@ export default async function ResearchPage() {
       />
 
       {/* Sticky in-page nav */}
-      {themes.length > 0 && <ResearchInPageNav themes={themes as ResearchTheme[]} />}
+      {themes.length > 0 && <ResearchInPageNav themes={allThemes} />}
 
       {/* One section per theme */}
       {themes.length === 0 ? (
@@ -57,7 +127,7 @@ export default async function ResearchPage() {
         themes.map((theme, i) => {
           const typedTheme = theme as ResearchTheme
 
-          const themeProjects = projects.filter((p) => {
+          const themeProjectItems = themeProjects.filter((p) => {
             const t = p as Project
             const themeRef = t.theme
             const id =
@@ -73,13 +143,13 @@ export default async function ResearchPage() {
             })
           }) as Publication[]
 
-          const leads = deriveLeads(themeProjects) as Person[]
+          const leads = deriveLeads(themeProjectItems) as Person[]
 
           return (
             <ThemeSection
               key={typedTheme.id}
               theme={typedTheme}
-              projects={themeProjects}
+              projects={themeProjectItems}
               publications={themePublications}
               leads={leads}
               alternate={i % 2 === 1}
@@ -87,6 +157,139 @@ export default async function ResearchPage() {
           )
         })
       )}
+
+      {/* ── All Projects filterable grid ── */}
+      <Section id="projects" className="bg-bg py-8 md:py-20">
+        <Container>
+          <FadeUp>
+            <div className="mb-8">
+              <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
+                Browse all
+              </p>
+              <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
+                Research Projects
+              </h2>
+            </div>
+          </FadeUp>
+
+          {/* Mobile filter trigger */}
+          <div className="mb-4 lg:hidden">
+            <FilterSheet activeCount={activeFilterCount}>
+              <ProjectFilters
+                themes={allThemes}
+                funders={filterOptions.funders}
+                provinces={filterOptions.provinces}
+                active={active}
+                basePath="/research"
+              />
+            </FilterSheet>
+          </div>
+
+          <div className="flex flex-col gap-6 lg:flex-row lg:gap-12">
+            {/* Sidebar filters — desktop only */}
+            <FadeUp delay={0.05} className="hidden lg:block lg:w-56 lg:shrink-0">
+              <ProjectFilters
+                themes={allThemes}
+                funders={filterOptions.funders}
+                provinces={filterOptions.provinces}
+                active={active}
+                basePath="/research"
+              />
+            </FadeUp>
+
+            {/* Main content */}
+            <div className="min-w-0 flex-1">
+              {/* View toggle + result count */}
+              <FadeUp delay={0.08}>
+                <div className="mb-6 flex items-center justify-between gap-4">
+                  <p className="text-muted text-sm">
+                    {allProjects.length === 0
+                      ? 'No projects found'
+                      : `${allProjects.length} project${allProjects.length !== 1 ? 's' : ''}`}
+                  </p>
+
+                  <div
+                    role="group"
+                    aria-label="Switch between list and map view"
+                    className="border-border flex overflow-hidden rounded-lg border"
+                  >
+                    <Link
+                      href={listHref}
+                      aria-current={view === 'list' ? 'page' : undefined}
+                      aria-label="List view"
+                      className={cn(
+                        'inline-flex h-9 w-9 items-center justify-center',
+                        'transition-colors duration-150',
+                        'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
+                        view === 'list'
+                          ? 'bg-primary text-white'
+                          : 'text-muted hover:bg-surface-raised',
+                      )}
+                    >
+                      <List size={16} aria-hidden="true" />
+                    </Link>
+                    <Link
+                      href={mapHref}
+                      aria-current={view === 'map' ? 'page' : undefined}
+                      aria-label="Map view"
+                      className={cn(
+                        'inline-flex h-9 w-9 items-center justify-center',
+                        'border-border border-l transition-colors duration-150',
+                        'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
+                        view === 'map'
+                          ? 'bg-primary text-white'
+                          : 'text-muted hover:bg-surface-raised',
+                      )}
+                    >
+                      <Map size={16} aria-hidden="true" />
+                    </Link>
+                  </div>
+                </div>
+              </FadeUp>
+
+              {view === 'map' ? (
+                <FadeUp delay={0.1}>
+                  <ProjectsMap
+                    searchParams={{
+                      theme: sp.theme,
+                      status: sp.status,
+                      funder: sp.funder,
+                      province: sp.province,
+                    }}
+                  />
+                </FadeUp>
+              ) : allProjects.length === 0 ? (
+                <FadeUp delay={0.1}>
+                  <EmptyState
+                    variant={3}
+                    heading={
+                      !hasFilters ? 'Projects coming soon' : 'No projects match these filters'
+                    }
+                    body={
+                      !hasFilters
+                        ? 'Research projects will appear here once they are published.'
+                        : 'Try adjusting or clearing the active filters to see more projects.'
+                    }
+                    action={
+                      hasFilters
+                        ? { label: 'Clear all filters', href: '/research#projects' }
+                        : undefined
+                    }
+                  />
+                </FadeUp>
+              ) : (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                  {allProjects.map((project, i) => (
+                    <FadeUp key={project.id} delay={i * 0.04} className="h-full">
+                      <ProjectCard project={project} />
+                    </FadeUp>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </Container>
+      </Section>
     </>
   )
 }

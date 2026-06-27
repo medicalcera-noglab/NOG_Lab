@@ -16,6 +16,7 @@ interface ProjectFiltersProps {
   funders: string[]
   provinces: string[]
   active: ActiveFilters
+  basePath?: string
 }
 
 /** Build a new href preserving all current filters except the toggled one. */
@@ -23,6 +24,7 @@ function filterHref(
   current: ActiveFilters,
   key: keyof Omit<ActiveFilters, 'view'>,
   value: string,
+  basePath: string,
 ): string {
   const p = new URLSearchParams()
   const next: ActiveFilters = { ...current }
@@ -40,18 +42,24 @@ function filterHref(
   if (next.view && next.view !== 'list') p.set('view', next.view)
 
   const qs = p.toString()
-  return qs ? `/projects?${qs}` : '/projects'
+  return qs ? `${basePath}?${qs}` : basePath
 }
 
 /** href that clears all filters (preserves view). */
-function clearHref(current: ActiveFilters): string {
-  if (!current.view || current.view === 'list') return '/projects'
-  return `/projects?view=${current.view}`
+function clearHref(current: ActiveFilters, basePath: string): string {
+  if (!current.view || current.view === 'list') return basePath
+  return `${basePath}?view=${current.view}`
 }
 
 const hasActiveFilter = (f: ActiveFilters) => Boolean(f.theme || f.status || f.funder || f.province)
 
-export function ProjectFilters({ themes, funders, provinces, active }: ProjectFiltersProps) {
+export function ProjectFilters({
+  themes,
+  funders,
+  provinces,
+  active,
+  basePath = '/research',
+}: ProjectFiltersProps) {
   return (
     <aside aria-label="Project filters" className="flex flex-col gap-6">
       {/* Clear all */}
@@ -61,7 +69,7 @@ export function ProjectFilters({ themes, funders, provinces, active }: ProjectFi
             Filters active
           </span>
           <Link
-            href={clearHref(active)}
+            href={clearHref(active, basePath)}
             className={cn(
               'text-muted hover:text-fg inline-flex items-center gap-1 text-xs',
               'focus-visible:ring-ring rounded focus-visible:ring-2 focus-visible:outline-none',
@@ -78,7 +86,7 @@ export function ProjectFilters({ themes, funders, provinces, active }: ProjectFi
         {(['ongoing', 'completed'] as const).map((s) => (
           <FilterPill
             key={s}
-            href={filterHref(active, 'status', s)}
+            href={filterHref(active, 'status', s, basePath)}
             isActive={active.status === s}
             label={s.charAt(0).toUpperCase() + s.slice(1)}
           />
@@ -91,7 +99,7 @@ export function ProjectFilters({ themes, funders, provinces, active }: ProjectFi
           {themes.map((t) => (
             <FilterPill
               key={t.id}
-              href={filterHref(active, 'theme', t.slug ?? String(t.id))}
+              href={filterHref(active, 'theme', t.slug ?? String(t.id), basePath)}
               isActive={active.theme === (t.slug ?? String(t.id))}
               label={t.name}
               accentColor={t.color}
@@ -106,7 +114,7 @@ export function ProjectFilters({ themes, funders, provinces, active }: ProjectFi
           {funders.map((f) => (
             <FilterPill
               key={f}
-              href={filterHref(active, 'funder', f)}
+              href={filterHref(active, 'funder', f, basePath)}
               isActive={active.funder === f}
               label={f}
             />
@@ -120,7 +128,7 @@ export function ProjectFilters({ themes, funders, provinces, active }: ProjectFi
           {provinces.map((p) => (
             <FilterPill
               key={p}
-              href={filterHref(active, 'province', p)}
+              href={filterHref(active, 'province', p, basePath)}
               isActive={active.province === p}
               label={p}
             />

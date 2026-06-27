@@ -27,7 +27,7 @@ export function ProjectsGrid({ projects }: ProjectsGridProps) {
               <h2 className="font-heading text-fg text-3xl font-bold">Research projects</h2>
             </div>
             <Link
-              href="/projects"
+              href="/research#projects"
               className={cn(
                 'text-primary hidden items-center gap-1.5 text-sm font-semibold sm:inline-flex',
                 'transition-[gap] duration-150 hover:gap-2.5',
@@ -125,7 +125,7 @@ export function ProjectsGrid({ projects }: ProjectsGridProps) {
         <FadeUp delay={0.2}>
           <div className="mt-8 text-center sm:hidden">
             <Link
-              href="/projects"
+              href="/research#projects"
               className={cn(
                 'text-primary inline-flex items-center gap-2 text-sm font-semibold',
                 'focus-visible:ring-ring rounded focus-visible:ring-2 focus-visible:outline-none',

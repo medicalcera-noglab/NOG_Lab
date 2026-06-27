@@ -18,6 +18,7 @@ import {
 import { HeroSection } from '@/components/home/HeroSection'
 import { BigQuestionsStrip } from '@/components/home/BigQuestionsStrip'
 import { AboutTeaser } from '@/components/home/AboutTeaser'
+import { AboutFull } from '@/components/home/AboutFull'
 import { CountersSection } from '@/components/home/CountersSection'
 import { FeaturedProject } from '@/components/home/FeaturedProject'
 import { ProjectsGrid } from '@/components/home/ProjectsGrid'
@@ -106,6 +107,8 @@ export default async function HomePage() {
       ) : null}
 
       <AboutTeaser about={about} themes={themes} />
+
+      <AboutFull about={about} settings={settings} />
 
       <CountersSection counts={counts} />
 

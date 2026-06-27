@@ -79,26 +79,11 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
       <Container className="relative z-10">
         {/* Header row */}
         <FadeUp>
-          <div className="mb-12 grid grid-cols-1 items-end gap-6 md:grid-cols-2">
-            <div>
-              <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
-                Who we are
-              </p>
-              <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">About the Lab</h2>
-            </div>
-            <div className="flex md:justify-end">
-              <Link
-                href="/about"
-                className={cn(
-                  'text-primary inline-flex items-center gap-2 text-sm font-semibold',
-                  'transition-[gap] duration-150 hover:gap-3',
-                  'focus-visible:ring-ring rounded focus-visible:ring-2 focus-visible:outline-none',
-                )}
-              >
-                Full story
-                <ArrowRight size={16} aria-hidden="true" />
-              </Link>
-            </div>
+          <div className="mb-12">
+            <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
+              Who we are
+            </p>
+            <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">About the Lab</h2>
           </div>
         </FadeUp>
 
