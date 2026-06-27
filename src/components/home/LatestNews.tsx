@@ -47,7 +47,7 @@ export function LatestNews({ items }: LatestNewsProps) {
               <h2 className="font-heading text-fg text-3xl font-bold">News &amp; events</h2>
             </div>
             <Link
-              href="/news"
+              href="/blog?tab=news"
               className={cn(
                 'text-primary hidden items-center gap-1.5 text-sm font-semibold sm:inline-flex',
                 'transition-[gap] duration-150 hover:gap-2.5',
@@ -111,7 +111,7 @@ export function LatestNews({ items }: LatestNewsProps) {
         <FadeUp delay={0.2}>
           <div className="mt-8 text-center sm:hidden">
             <Link
-              href="/news"
+              href="/blog?tab=news"
               className={cn(
                 'text-primary inline-flex items-center gap-2 text-sm font-semibold',
                 'focus-visible:ring-ring rounded focus-visible:ring-2 focus-visible:outline-none',
