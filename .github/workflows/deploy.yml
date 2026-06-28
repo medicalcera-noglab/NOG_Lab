@@ -3,6 +3,7 @@ name: Deploy to Production
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 # Vercel's native GitHub integration handles the actual deployment.
 # This workflow only runs Payload schema migrations ahead of the build.
