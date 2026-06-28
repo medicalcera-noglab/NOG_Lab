@@ -81,18 +81,18 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
       : FALLBACK_PILLARS.map((p) => ({ ...p, color: 'var(--color-teal)' }))
 
   return (
-    <Section className="bg-surface relative overflow-hidden py-10 md:py-16">
+    <Section className="bg-surface relative overflow-hidden py-14 md:py-24">
       {/* Subtle teal corner accent */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 right-0 h-64 w-64 opacity-[0.06]"
+        className="pointer-events-none absolute top-0 right-0 h-96 w-96 opacity-[0.07]"
         style={{ background: 'radial-gradient(circle, var(--color-teal) 0%, transparent 70%)' }}
       />
 
       <Container className="relative z-10">
         {/* Header row */}
         <FadeUp>
-          <div className="mb-12">
+          <div className="mb-10">
             <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
               Who we are
             </p>
@@ -100,17 +100,24 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
           </div>
         </FadeUp>
 
-        {/* Two-column: NOG Lab graphic + mission text */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12">
-          {/* Left: NOG Lab research graphic — landscape card matching the image's 16:9 ratio */}
-          <FadeUp delay={0.05}>
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-white">
+        {/* Two-column: NOG Lab graphic + mission text — stretch so both columns match height */}
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-stretch md:gap-14">
+          {/* Left: NOG Lab research graphic — stretches to full column height */}
+          <FadeUp delay={0.05} className="md:h-full">
+            <div
+              className="relative w-full overflow-hidden rounded-2xl shadow-lg md:h-full"
+              style={{
+                minHeight: '320px',
+                background:
+                  'linear-gradient(145deg, color-mix(in oklch, var(--color-teal) 5%, white) 0%, white 55%, color-mix(in oklch, var(--color-sand) 8%, white) 100%)',
+              }}
+            >
               <Image
                 src="/nog-lab-graphic.png"
                 alt="NOG Lab — Nutrition, Oral, Gut Microbiome research illustration"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-contain p-3"
+                className="object-contain p-8"
                 priority
               />
             </div>
@@ -118,13 +125,15 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
 
           {/* Right: mission + pillars + director quote */}
           <FadeUp delay={0.1}>
-            <div className="flex flex-col justify-center gap-8">
+            <div className="flex flex-col justify-center gap-7">
               {missionText && (
-                <p className="text-muted line-clamp-5 text-lg leading-relaxed">{missionText}</p>
+                <p className="text-muted line-clamp-6 text-base leading-relaxed md:text-lg">
+                  {missionText}
+                </p>
               )}
 
               {/* Research pillars — driven by ResearchThemes from CMS */}
-              <ul className="grid gap-5" role="list">
+              <ul className="grid gap-4" role="list">
                 {pillars.map(({ icon: Icon, name, body, color }) => (
                   <li key={name} className="flex items-start gap-4">
                     <div
