@@ -337,10 +337,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       .page-wrap { padding: 0; }
       .page {
         width: 100%;
-        min-height: auto;
+        /* Keep 297mm so flex:1 children have a parent height to grow into */
+        min-height: 297mm;
         box-shadow: none;
         margin: 0;
+        overflow: visible;
       }
+      .body { overflow: visible; }
+      .letter-body { overflow: visible; }
       @page {
         size: A4;
         margin: 0;
@@ -361,7 +365,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
       <!-- Header -->
       <div class="header">
-        <img src="${siteUrl}/NOG_LAB.png" alt="${labName}" class="header-logo" />
+        <img src="/NOG_LAB.png" alt="${labName}" class="header-logo" />
         <div class="header-text">
           <h1>${labName}</h1>
           <p class="tagline">Nutrition · Oral · Gut Microbiome Research</p>

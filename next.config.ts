@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
     // Pin workspace root so Next.js doesn't infer the wrong monorepo root
     root: path.resolve(__dirname),
   },
+  experimental: {
+    serverActions: {
+      // Default is 4.5 MB which blocks PDF/Word CV uploads.
+      bodySizeLimit: '25mb',
+    },
+  },
 }
 
 const configWithPayload = withPayload(nextConfig)
