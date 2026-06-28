@@ -42,7 +42,7 @@ export function TeamTeaser({ people }: TeamTeaserProps) {
     <Section className="bg-bg py-10 md:py-16">
       <Container>
         <FadeUp>
-          <div className="mb-10 flex items-end justify-between gap-6">
+          <div className="mb-10 flex flex-col items-center gap-4 text-center">
             <div>
               <p className="text-primary mb-1.5 text-xs font-semibold tracking-[0.15em] uppercase">
                 The people
@@ -52,7 +52,7 @@ export function TeamTeaser({ people }: TeamTeaserProps) {
             <Link
               href="/people"
               className={cn(
-                'text-primary hidden items-center gap-1.5 text-sm font-semibold sm:inline-flex',
+                'text-primary inline-flex items-center gap-1.5 text-sm font-semibold',
                 'transition-[gap] duration-150 hover:gap-2.5',
                 'focus-visible:ring-ring rounded focus-visible:ring-2 focus-visible:outline-none',
               )}

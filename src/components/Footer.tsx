@@ -76,15 +76,15 @@ export async function Footer() {
                   <Image
                     src="/logo-stacked.svg"
                     alt={settings.labName}
-                    width={120}
-                    height={159}
+                    width={72}
+                    height={95}
                     className="dark:hidden"
                   />
                   <Image
                     src="/logo-stacked-white.svg"
                     alt={settings.labName}
-                    width={120}
-                    height={159}
+                    width={72}
+                    height={95}
                     className="hidden dark:block"
                   />
                 </>
