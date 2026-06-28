@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": "next build",
+  "buildCommand": "npm run payload migrate && next build",
   "regions": ["iad1"],
   "functions": {
     "src/app/(payload)/api/cron/citations/route.ts": { "maxDuration": 300 },

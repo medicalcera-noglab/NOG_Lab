@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useCallback, useTransition } from 'react'
+import { useActionState, useCallback } from 'react'
 import Script from 'next/script'
 import { Button } from '@/components/ui/Button'
 import { submitJoin, type JoinFormState } from '@/lib/actions/submitJoin'
@@ -24,8 +24,8 @@ interface Props {
 }
 
 export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props) {
-  const [state, dispatch] = useActionState(submitJoin, initial)
-  const [isPending, startTransition] = useTransition()
+  // Third element is the built-in pending flag — same pattern as ContactForm
+  const [state, action, isPending] = useActionState(submitJoin, initial)
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,9 +34,7 @@ export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props
 
       const submit = (token?: string) => {
         if (token) formData.set('recaptchaToken', token)
-        startTransition(() => {
-          dispatch(formData)
-        })
+        action(formData)
       }
 
       if (recaptchaSiteKey && window.grecaptcha) {
@@ -50,7 +48,7 @@ export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props
         submit()
       }
     },
-    [recaptchaSiteKey, dispatch],
+    [recaptchaSiteKey, action],
   )
 
   if (state.success) {
