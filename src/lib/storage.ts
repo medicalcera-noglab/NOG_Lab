@@ -7,7 +7,6 @@
  * Falls back to local disk in dev if credentials are missing.
  */
 import { s3Storage } from '@payloadcms/storage-s3'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage'
 import { v2 as cloudinary } from 'cloudinary'
 import type { Plugin } from 'payload'
@@ -223,7 +222,10 @@ export function buildStoragePlugin(): Plugin[] {
     plugins.push(buildCloudinaryPlugin())
   }
 
-  // Vercel Blob for applicant files
+  // Vercel Blob for applicant files only (CV/SOP uploads).
+  // Media images are handled by Cloudinary; if Cloudinary is absent they fall
+  // back to local disk. Never add vercelBlobStorage for media — its strict
+  // token-format regex throws during Payload init if the token format changes.
   if (hasVercelBlob()) {
     const blobToken = process.env.BLOB_READ_WRITE_TOKEN!
     try {
@@ -231,17 +233,6 @@ export function buildStoragePlugin(): Plugin[] {
     } catch (err) {
       // Never let a bad token crash the whole app — log and skip
       console.error('[NOG Lab] Vercel Blob plugin failed to init:', err)
-    }
-
-    // If Cloudinary is NOT configured, also handle public media through the
-    // standard plugin (public blobs are fine for non-sensitive images).
-    if (!hasCloudinary()) {
-      plugins.push(
-        vercelBlobStorage({
-          token: blobToken,
-          collections: { media: true },
-        }),
-      )
     }
   }
 
