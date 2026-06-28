@@ -100,52 +100,20 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
           </div>
         </FadeUp>
 
-        {/* NOG Lab research graphic — full width below the header */}
-        <FadeUp delay={0.03}>
-          <div className="mb-10 dark:rounded-2xl dark:bg-white/95 dark:p-4">
-            <Image
-              src="/nog-lab-graphic.png"
-              alt="NOG Lab — Nutrition, Oral, Gut Microbiome research illustration"
-              width={1400}
-              height={800}
-              sizes="(max-width: 768px) 100vw, 1100px"
-              className="h-auto w-full object-contain"
-              style={{ mixBlendMode: 'multiply' }}
-              priority
-            />
-          </div>
-        </FadeUp>
-
-        {/* Two-column: portrait + mission text */}
+        {/* Two-column: NOG Lab graphic + mission text */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
-          {/* Left: professional lab/microscopy image */}
+          {/* Left: NOG Lab research graphic */}
           <FadeUp delay={0.05}>
-            <div className="relative aspect-[3/4] w-full max-w-sm overflow-hidden rounded-2xl shadow-xl">
+            <div className="flex items-center justify-center rounded-2xl bg-white p-6 shadow-xl dark:bg-white">
               <Image
-                src="/media/site-hero-bg.jpg"
-                alt="Electron microscopy imagery from the NOG Lab"
-                fill
-                sizes="(max-width: 768px) 100vw, 360px"
-                className="object-cover"
-                style={{ filter: 'brightness(0.7) saturate(1.1)' }}
+                src="/nog-lab-graphic.png"
+                alt="NOG Lab — Nutrition, Oral, Gut Microbiome research illustration"
+                width={1400}
+                height={800}
+                sizes="(max-width: 768px) 100vw, 500px"
+                className="h-auto w-full object-contain"
+                priority
               />
-              {/* Teal gradient overlay — top-left corner accent */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'linear-gradient(145deg, color-mix(in oklch, #0E6E6E 55%, transparent) 0%, transparent 60%)',
-                }}
-              />
-              {/* Bottom fade */}
-              <div className="from-surface/70 absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t to-transparent" />
-              {/* Lab badge */}
-              <div className="absolute top-5 left-5 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
-                <Microscope size={13} className="text-white/90" aria-hidden="true" />
-                <span className="text-xs font-semibold tracking-wide text-white/90">
-                  NOG Lab · KMU
-                </span>
-              </div>
             </div>
           </FadeUp>
 

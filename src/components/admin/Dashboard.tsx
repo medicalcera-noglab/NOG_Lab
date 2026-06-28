@@ -1,6 +1,7 @@
 import type { AdminViewProps } from 'payload'
 import { getPayload, type Payload } from 'payload'
 import Link from 'next/link'
+import { StudySitesMapWidget, type SiteForMap } from './StudySitesMapWidget'
 
 async function getCounts(payload: Payload) {
   const [publications, projects, people, collaborators, unreadInquiries, blogPosts, newsEvents] =
@@ -28,6 +29,26 @@ async function getCounts(payload: Payload) {
   }
 }
 
+async function getStudySites(payload: Payload): Promise<SiteForMap[]> {
+  const result = await payload.find({
+    collection: 'study_sites',
+    limit: 200,
+    depth: 1,
+    overrideAccess: true,
+  })
+  return result.docs
+    .filter((s) => Array.isArray(s.location) && s.location.length === 2)
+    .map((s) => ({
+      id: String(s.id),
+      name: s.name,
+      location: s.location as [number, number],
+      project:
+        s.project && typeof s.project === 'object'
+          ? ((s.project as { title?: string }).title ?? null)
+          : null,
+    }))
+}
+
 async function getRecentActivity(payload: Payload) {
   const result = await payload.find({
     collection: 'audit_log',
@@ -50,9 +71,10 @@ export async function Dashboard(props: AdminViewProps) {
   const isSuperAdmin = role === 'super_admin'
   const isEditor = role === 'editor'
 
-  const [counts, activity] = await Promise.all([
+  const [counts, activity, studySites] = await Promise.all([
     getCounts(payload),
     isSuperAdmin ? getRecentActivity(payload) : Promise.resolve([]),
+    isSuperAdmin || isEditor ? getStudySites(payload) : Promise.resolve([]),
   ])
 
   // KPIs scoped to role
@@ -245,6 +267,24 @@ export async function Dashboard(props: AdminViewProps) {
                 {action.label}
               </Link>
             ))}
+            {(isSuperAdmin || isEditor) && (
+              <Link
+                href="/admin/collections/study-sites/create"
+                style={{
+                  display: 'block',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '0.375rem',
+                  border: '1px solid var(--theme-border-color, #e5e7eb)',
+                  background: 'var(--theme-elevation-0, #fff)',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: 'var(--theme-text, inherit)',
+                }}
+              >
+                Add Study Site
+              </Link>
+            )}
           </div>
         </section>
 
@@ -309,6 +349,47 @@ export async function Dashboard(props: AdminViewProps) {
           </section>
         )}
       </div>
+
+      {/* Study Sites Map — visible to super_admin and editor */}
+      {(isSuperAdmin || isEditor) && (
+        <section style={{ marginTop: '2.5rem' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              justifyContent: 'space-between',
+              marginBottom: '0.75rem',
+              gap: '1rem',
+              flexWrap: 'wrap',
+            }}
+          >
+            <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>
+              Study Sites Map
+              <span
+                style={{
+                  marginLeft: '0.5rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 400,
+                  color: 'var(--theme-text-muted, #6b7280)',
+                }}
+              >
+                {studySites.length} site{studySites.length !== 1 ? 's' : ''}
+              </span>
+            </h2>
+            <Link
+              href="/admin/collections/study-sites"
+              style={{
+                fontSize: '0.8rem',
+                color: 'var(--theme-text-muted, #6b7280)',
+                textDecoration: 'underline',
+              }}
+            >
+              Manage Study Sites
+            </Link>
+          </div>
+          <StudySitesMapWidget sites={studySites} />
+        </section>
+      )}
     </div>
   )
 }

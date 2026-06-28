@@ -38,7 +38,9 @@ export const OpenPositions: CollectionConfig = {
       required: true,
       editor: lexicalEditor({
         features: ({ defaultFeatures }) =>
-          defaultFeatures.filter((f) => f.key !== 'orderedList' && f.key !== 'checklist'),
+          defaultFeatures.filter((f) =>
+            ['bold', 'italic', 'underline', 'paragraph', 'link'].includes(f.key ?? ''),
+          ),
       }),
     },
     {
