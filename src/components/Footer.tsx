@@ -54,16 +54,20 @@ export async function Footer() {
         <div className="flex flex-col gap-10 py-10 lg:flex-row lg:gap-16">
           {/* Brand block */}
           <div className="shrink-0 space-y-3 lg:w-52">
-            {/* Logo: NOG_LAB.png has a black background — wrap in dark pill on light mode */}
+            {/* Logo */}
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center rounded-lg bg-black p-1.5 dark:bg-transparent dark:p-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/NOG_LAB.png"
-                  alt={settings.labName}
-                  style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
-                />
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/NOG_LAB.png"
+                alt={settings.labName}
+                style={{
+                  height: '52px',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
+                  borderRadius: '8px',
+                }}
+              />
             </div>
 
             {/* Mission */}

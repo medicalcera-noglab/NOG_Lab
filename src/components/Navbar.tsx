@@ -47,15 +47,18 @@ export async function Navbar() {
               'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
             )}
           >
-            {/* Logo: NOG_LAB.png has a black background — wrap in dark pill on light mode */}
-            <span className="inline-flex items-center justify-center rounded-lg bg-black p-1.5 dark:bg-transparent dark:p-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/NOG_LAB.png"
-                alt={settings.labName}
-                style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
-              />
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/NOG_LAB.png"
+              alt={settings.labName}
+              style={{
+                height: '44px',
+                width: 'auto',
+                objectFit: 'contain',
+                display: 'block',
+                borderRadius: '8px',
+              }}
+            />
           </Link>
 
           {/* ── MIDDLE: primary nav links (desktop only) — always rendered to hold col 2 */}
