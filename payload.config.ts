@@ -43,6 +43,9 @@ export default buildConfig({
     meta: {
       titleSuffix: ' — NOG Lab Admin',
     },
+    avatar: {
+      Component: '@/components/admin/AdminAvatar#AdminAvatar',
+    },
     components: {
       graphics: {
         Logo: '@/components/admin/AdminLogo#AdminLogo',

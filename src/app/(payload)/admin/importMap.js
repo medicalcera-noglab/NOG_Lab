@@ -25,8 +25,10 @@ import { DoiFetchButton as DoiFetchButton_3d938f66d5e079436496f4b778f87934 } fro
 import { MapPicker as MapPicker_e5079da11d3c9f4bf1d1da8f05f623e4 } from '@/components/admin/MapPicker'
 import { InquiryNameCell as InquiryNameCell_82e81ba05bb5092baba78227e6dda36f } from '@/components/admin/InquiryNameCell'
 import { DownloadFileField as DownloadFileField_46dc812231033320dcbb8798eb1f9773 } from '@/components/admin/DownloadFileField'
+import { ReplyLetterButton as ReplyLetterButton_9c0f7666dc4f27104b47ba7acc2c21f9 } from '@/components/admin/ReplyLetterButton'
 import { InquiriesCsvButton as InquiriesCsvButton_82a1cfcc9173c430c0c737930930cc47 } from '@/components/admin/InquiriesCsvButton'
 import { InquiriesFilterTabs as InquiriesFilterTabs_e7d664945c4b3de509bc476241246ffe } from '@/components/admin/InquiriesFilterTabs'
+import { AdminAvatar as AdminAvatar_01044ecea0e6871a793487000c795212 } from '@/components/admin/AdminAvatar'
 import { AdminIcon as AdminIcon_d500ae2ad98a0a33d640ae0ac1a3417c } from '@/components/admin/AdminIcon'
 import { AdminLogo as AdminLogo_b80a86fce1072afc84cd6a430a965697 } from '@/components/admin/AdminLogo'
 import { NavBackToSite as NavBackToSite_0e0d12d95084b56eda57275689d5f6a4 } from '@/components/admin/NavBackToSite'
@@ -63,8 +65,10 @@ export const importMap = {
   "@/components/admin/MapPicker#MapPicker": MapPicker_e5079da11d3c9f4bf1d1da8f05f623e4,
   "@/components/admin/InquiryNameCell#InquiryNameCell": InquiryNameCell_82e81ba05bb5092baba78227e6dda36f,
   "@/components/admin/DownloadFileField#DownloadFileField": DownloadFileField_46dc812231033320dcbb8798eb1f9773,
+  "@/components/admin/ReplyLetterButton#ReplyLetterButton": ReplyLetterButton_9c0f7666dc4f27104b47ba7acc2c21f9,
   "@/components/admin/InquiriesCsvButton#InquiriesCsvButton": InquiriesCsvButton_82a1cfcc9173c430c0c737930930cc47,
   "@/components/admin/InquiriesFilterTabs#InquiriesFilterTabs": InquiriesFilterTabs_e7d664945c4b3de509bc476241246ffe,
+  "@/components/admin/AdminAvatar#AdminAvatar": AdminAvatar_01044ecea0e6871a793487000c795212,
   "@/components/admin/AdminIcon#AdminIcon": AdminIcon_d500ae2ad98a0a33d640ae0ac1a3417c,
   "@/components/admin/AdminLogo#AdminLogo": AdminLogo_b80a86fce1072afc84cd6a430a965697,
   "@/components/admin/NavBackToSite#NavBackToSite": NavBackToSite_0e0d12d95084b56eda57275689d5f6a4,

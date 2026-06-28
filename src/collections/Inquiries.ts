@@ -135,6 +135,27 @@ export const Inquiries: CollectionConfig = {
       },
     },
     {
+      name: 'replyText',
+      type: 'textarea',
+      label: 'Reply / Response',
+      admin: {
+        description:
+          'Write your reply here. Save first, then click "Generate Reply Letter" to download the A4 PDF.',
+        condition: (data) => data?.formType === 'join',
+        rows: 8,
+      },
+    },
+    {
+      name: 'replyLetterButton',
+      type: 'ui',
+      admin: {
+        condition: (data) => data?.formType === 'join',
+        components: {
+          Field: '@/components/admin/ReplyLetterButton#ReplyLetterButton',
+        },
+      },
+    },
+    {
       name: 'isRead',
       type: 'checkbox',
       label: 'Marked as Read',
