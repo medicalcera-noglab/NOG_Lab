@@ -100,6 +100,8 @@ export default async function HomePage() {
         ctaPrimary={settings.heroCtaPrimary}
         ctaSecondary={settings.heroCtaSecondary}
         heroMedia={settings.heroMedia}
+        counts={{ publications: counts.publications, teamMembers: counts.teamMembers }}
+        foundingYear={settings.foundingYear ?? null}
       />
 
       {settings.bigQuestions?.length ? (

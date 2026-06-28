@@ -212,9 +212,6 @@ export interface BlogPost {
    */
   scheduledPublishAt?: string | null;
   createdBy?: (number | null) | User;
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
   isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -303,9 +300,6 @@ export interface Person {
    * Uncheck to soft-hide from the public site.
    */
   is_active?: boolean | null;
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
   isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -333,9 +327,6 @@ export interface Media {
    * License for this image, e.g. CC BY 4.0 or Unsplash License.
    */
   sourceLicense?: string | null;
-  /**
-   * Demo image — remove with npm run seed:clear-demo-media.
-   */
   isDemo?: boolean | null;
   createdBy?: (number | null) | User;
   updatedAt: string;
@@ -456,9 +447,6 @@ export interface NewsEvent {
    */
   scheduledPublishAt?: string | null;
   createdBy?: (number | null) | User;
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
   isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -494,10 +482,6 @@ export interface OpenPosition {
    * Uncheck to hide from the public site.
    */
   is_active?: boolean | null;
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
-  isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -531,9 +515,6 @@ export interface ImpactStory {
     [k: string]: unknown;
   };
   relatedProjects?: (number | Project)[] | null;
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
   isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -597,9 +578,6 @@ export interface Project {
       }[]
     | null;
   relatedPublications?: (number | Publication)[] | null;
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
   isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -652,9 +630,6 @@ export interface ResearchTheme {
       }[]
     | null;
   displayOrder?: number | null;
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
   isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -671,9 +646,6 @@ export interface Collaborator {
   logo?: (number | null) | Media;
   website?: string | null;
   displayOrder?: number | null;
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
   isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -765,9 +737,6 @@ export interface StudySite {
    * @maxItems 2
    */
   location: [number, number];
-  /**
-   * Demo content — remove with npm run seed:clear-demo.
-   */
   isDemo?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -786,13 +755,25 @@ export interface Inquiry {
   message: string;
   positionTitle?: string | null;
   /**
-   * File uploaded by the applicant — view only.
+   * Filename submitted by the applicant (always stored, even if upload failed).
    */
-  cv?: (number | null) | ApplicantFile;
+  cvFilename?: string | null;
   /**
-   * File uploaded by the applicant — view only.
+   * Direct Vercel Blob URL. Click to download the file.
    */
-  sop?: (number | null) | ApplicantFile;
+  cvUrl?: string | null;
+  /**
+   * Filename submitted by the applicant (always stored, even if upload failed).
+   */
+  sopFilename?: string | null;
+  /**
+   * Direct Vercel Blob URL. Click to download the file.
+   */
+  sopUrl?: string | null;
+  /**
+   * Write your reply here. Save first, then click "Generate Reply Letter" to download the A4 PDF.
+   */
+  replyText?: string | null;
   /**
    * Auto-set when you open the message. Uncheck to flag as unread again.
    */
@@ -1038,7 +1019,6 @@ export interface OpenPositionsSelect<T extends boolean = true> {
   description?: T;
   type?: T;
   is_active?: T;
-  isDemo?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1318,8 +1298,11 @@ export interface InquiriesSelect<T extends boolean = true> {
   email?: T;
   message?: T;
   positionTitle?: T;
-  cv?: T;
-  sop?: T;
+  cvFilename?: T;
+  cvUrl?: T;
+  sopFilename?: T;
+  sopUrl?: T;
+  replyText?: T;
   isRead?: T;
   repliedAt?: T;
   updatedAt?: T;
@@ -1856,6 +1839,10 @@ export interface SiteSetting {
    * Displayed on the /contact page.
    */
   contactEmail?: string | null;
+  /**
+   * Used to compute "Years Active" in the hero stat counters (e.g. 2019).
+   */
+  foundingYear?: number | null;
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2092,6 +2079,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   googleMapsEmbedUrl?: T;
   noOpenPositionsMessage?: T;
   contactEmail?: T;
+  foundingYear?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;

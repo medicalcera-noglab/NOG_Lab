@@ -255,5 +255,13 @@ export const SiteSettings: GlobalConfig = {
         description: 'Displayed on the /contact page.',
       },
     },
+    {
+      name: 'foundingYear',
+      type: 'number',
+      label: 'Lab Founding Year',
+      admin: {
+        description: 'Used to compute "Years Active" in the hero stat counters (e.g. 2019).',
+      },
+    },
   ],
 }
