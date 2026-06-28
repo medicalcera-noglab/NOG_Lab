@@ -269,7 +269,7 @@ export async function Dashboard(props: AdminViewProps) {
             ))}
             {(isSuperAdmin || isEditor) && (
               <Link
-                href="/admin/collections/study-sites/create"
+                href="/admin/collections/study_sites/create"
                 style={{
                   display: 'block',
                   padding: '0.75rem 1rem',
@@ -377,7 +377,7 @@ export async function Dashboard(props: AdminViewProps) {
               </span>
             </h2>
             <Link
-              href="/admin/collections/study-sites"
+              href="/admin/collections/study_sites"
               style={{
                 fontSize: '0.8rem',
                 color: 'var(--theme-text-muted, #6b7280)',
