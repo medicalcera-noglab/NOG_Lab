@@ -32,5 +32,5 @@ jobs:
       - name: Run Payload migrations
         run: npx payload migrate
         env:
-          DATABASE_URL: ${{ secrets.NEON_DIRECT_URL }}
+          DATABASE_URI: ${{ secrets.NEON_DIRECT_URL }}
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
