@@ -1,9 +1,8 @@
 'use client'
 
-import { useActionState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import Script from 'next/script'
 import { Button } from '@/components/ui/Button'
-import { submitJoin, type JoinFormState } from '@/lib/actions/submitJoin'
 import type { OpenPosition } from '../../../payload-types'
 
 declare global {
@@ -15,7 +14,7 @@ declare global {
   }
 }
 
-const initial: JoinFormState = { success: false }
+type Status = 'idle' | 'pending' | 'success' | 'error'
 
 interface Props {
   positions: OpenPosition[]
@@ -24,34 +23,55 @@ interface Props {
 }
 
 export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props) {
-  // Third element is the built-in pending flag — same pattern as ContactForm
-  const [state, action, isPending] = useActionState(submitJoin, initial)
+  const [status, setStatus] = useState<Status>('idle')
+  const [errorMsg, setErrorMsg] = useState<string>('')
+  const formRef = useRef<HTMLFormElement>(null)
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
+      // Capture formData synchronously before any async work
       const formData = new FormData(e.currentTarget)
 
-      const submit = (token?: string) => {
+      const doSubmit = async (token?: string) => {
         if (token) formData.set('recaptchaToken', token)
-        action(formData)
+        setStatus('pending')
+        setErrorMsg('')
+        try {
+          const res = await fetch('/api/join-submit', {
+            method: 'POST',
+            body: formData,
+          })
+          const data = (await res.json()) as { success: boolean; error?: string }
+          if (data.success) {
+            setStatus('success')
+          } else {
+            setStatus('error')
+            setErrorMsg(data.error ?? 'Something went wrong. Please try again.')
+          }
+        } catch {
+          setStatus('error')
+          setErrorMsg('Network error. Please check your connection and try again.')
+        }
       }
 
       if (recaptchaSiteKey && window.grecaptcha) {
         window.grecaptcha.ready(() => {
           window
             .grecaptcha!.execute(recaptchaSiteKey, { action: 'join_submit' })
-            .then(submit)
-            .catch(() => submit())
+            .then((token) => doSubmit(token))
+            .catch(() => doSubmit())
         })
       } else {
-        submit()
+        void doSubmit()
       }
     },
-    [recaptchaSiteKey, action],
+    [recaptchaSiteKey],
   )
 
-  if (state.success) {
+  const isPending = status === 'pending'
+
+  if (status === 'success') {
     return (
       <div
         role="status"
@@ -72,7 +92,13 @@ export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props
         />
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5" noValidate aria-busy={isPending}>
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="space-y-5"
+        noValidate
+        aria-busy={isPending}
+      >
         {/* Honeypot */}
         <input
           type="text"
@@ -85,12 +111,12 @@ export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props
         {/* Populated by handleSubmit before submission */}
         <input type="hidden" name="recaptchaToken" />
 
-        {state.error && (
+        {status === 'error' && errorMsg && (
           <p
             role="alert"
             className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
           >
-            {state.error}
+            {errorMsg}
           </p>
         )}
 
