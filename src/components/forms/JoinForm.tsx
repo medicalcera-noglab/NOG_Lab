@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useCallback } from 'react'
+import { useActionState, useCallback, useTransition } from 'react'
 import Script from 'next/script'
 import { Button } from '@/components/ui/Button'
 import { submitJoin, type JoinFormState } from '@/lib/actions/submitJoin'
@@ -24,17 +24,19 @@ interface Props {
 }
 
 export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props) {
-  const [state, action, pending] = useActionState(submitJoin, initial)
+  const [state, dispatch] = useActionState(submitJoin, initial)
+  const [isPending, startTransition] = useTransition()
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      const form = e.currentTarget
-      const formData = new FormData(form)
+      const formData = new FormData(e.currentTarget)
 
       const submit = (token?: string) => {
         if (token) formData.set('recaptchaToken', token)
-        action(formData)
+        startTransition(() => {
+          dispatch(formData)
+        })
       }
 
       if (recaptchaSiteKey && window.grecaptcha) {
@@ -48,7 +50,7 @@ export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props
         submit()
       }
     },
-    [recaptchaSiteKey, action],
+    [recaptchaSiteKey, dispatch],
   )
 
   if (state.success) {
@@ -72,7 +74,7 @@ export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props
         />
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5" noValidate aria-busy={pending}>
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate aria-busy={isPending}>
         {/* Honeypot */}
         <input
           type="text"
@@ -184,8 +186,8 @@ export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props
           />
         </div>
 
-        <Button type="submit" disabled={pending} className={pending ? 'opacity-80' : ''}>
-          {pending ? (
+        <Button type="submit" disabled={isPending} className={isPending ? 'opacity-80' : ''}>
+          {isPending ? (
             <span className="flex items-center gap-2">
               <svg
                 className="h-4 w-4 animate-spin"
@@ -214,7 +216,7 @@ export function JoinForm({ positions, recaptchaSiteKey, defaultPosition }: Props
             'Submit Application'
           )}
         </Button>
-        {pending && (
+        {isPending && (
           <p role="status" className="text-muted mt-2 text-sm">
             Uploading your files and submitting — please wait a moment.
           </p>
