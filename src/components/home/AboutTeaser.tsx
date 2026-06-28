@@ -101,21 +101,18 @@ export function AboutTeaser({ about, themes }: AboutTeaserProps) {
         </FadeUp>
 
         {/* Two-column: NOG Lab graphic + mission text */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
-          {/* Left: NOG Lab research graphic — portrait card, image centred */}
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12">
+          {/* Left: NOG Lab research graphic — landscape card matching the image's 16:9 ratio */}
           <FadeUp delay={0.05}>
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-white">
-              <div className="absolute inset-0 flex items-center justify-center p-8">
-                <Image
-                  src="/nog-lab-graphic.png"
-                  alt="NOG Lab — Nutrition, Oral, Gut Microbiome research illustration"
-                  width={1400}
-                  height={800}
-                  sizes="(max-width: 768px) 100vw, 500px"
-                  className="h-auto w-full object-contain"
-                  priority
-                />
-              </div>
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-white">
+              <Image
+                src="/nog-lab-graphic.png"
+                alt="NOG Lab — Nutrition, Oral, Gut Microbiome research illustration"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-contain p-3"
+                priority
+              />
             </div>
           </FadeUp>
 
