@@ -7,7 +7,7 @@ import type {
 
 function tryRevalidateTag(tag: string) {
   try {
-    revalidateTag(tag, 'default')
+    ;(revalidateTag as (tag: string) => void)(tag)
   } catch {
     // no-op outside Next.js request context (e.g. seed scripts)
   }
