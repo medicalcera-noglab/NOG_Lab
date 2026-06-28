@@ -96,17 +96,12 @@ export function JoinPageContent({
       {/* ── Open Positions ──────────────────────────────────────────────── */}
       <Section className="bg-bg py-16 md:py-24">
         <Container>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-12"
-          >
+          <div className="mb-12">
             <p className="text-primary mb-3 text-xs font-semibold tracking-[0.15em] uppercase">
               Current openings
             </p>
             <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">Open Positions</h2>
-          </motion.div>
+          </div>
 
           {positions.length === 0 ? (
             <motion.div
@@ -157,8 +152,7 @@ export function JoinPageContent({
                   <motion.li
                     key={position.id}
                     initial={{ opacity: 0, y: 32 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-30px' }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{
                       duration: 0.45,
                       delay: (i % 3) * 0.08,
