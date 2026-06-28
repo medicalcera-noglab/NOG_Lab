@@ -1,11 +1,9 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { ExternalLink, BookOpen, MapPin, Download } from 'lucide-react'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { getLegalPages } from '@/lib/data/legal'
 import { lexicalToText } from '@/lib/richtext'
 import { Container } from './ui/Container'
-import { MediaImage } from './MediaImage'
 import { CookiePreferencesLink } from './CookiePreferencesLink'
 import { CellBlob } from './motifs/CellBlob'
 import { buttonVariants } from './ui/Button'
@@ -32,8 +30,6 @@ export async function Footer() {
     ' ',
   )
 
-  const logo = typeof settings.logo === 'object' ? (settings.logo as Media) : null
-  const logoDark = typeof settings.logoDark === 'object' ? (settings.logoDark as Media) : null
   const brochureUrl =
     settings.brochure && typeof settings.brochure === 'object'
       ? (settings.brochure as Media).url
@@ -58,37 +54,16 @@ export async function Footer() {
         <div className="flex flex-col gap-10 py-10 lg:flex-row lg:gap-16">
           {/* Brand block */}
           <div className="shrink-0 space-y-3 lg:w-52">
-            {/* Logo + wordmark */}
+            {/* Logo: NOG_LAB.png has a black background — wrap in dark pill on light mode */}
             <div className="flex items-center gap-2">
-              {logo ? (
-                <>
-                  <span className={logoDark ? 'block dark:hidden' : 'block'}>
-                    <MediaImage doc={logo} sizes="28px" className="h-7 w-7 object-contain" />
-                  </span>
-                  {logoDark && (
-                    <span className="hidden dark:block">
-                      <MediaImage doc={logoDark} sizes="28px" className="h-7 w-7 object-contain" />
-                    </span>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Image
-                    src="/logo-stacked.svg"
-                    alt={settings.labName}
-                    width={72}
-                    height={95}
-                    className="dark:hidden"
-                  />
-                  <Image
-                    src="/logo-stacked-white.svg"
-                    alt={settings.labName}
-                    width={72}
-                    height={95}
-                    className="hidden dark:block"
-                  />
-                </>
-              )}
+              <span className="inline-flex items-center justify-center rounded-lg bg-black p-1.5 dark:bg-transparent dark:p-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/NOG_LAB.png"
+                  alt={settings.labName}
+                  style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                />
+              </span>
             </div>
 
             {/* Mission */}

@@ -1,19 +1,13 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { NavMenu } from './NavMenu'
 import { NavLinks } from './NavLinks'
 import { Container } from './ui/Container'
-import { MediaImage } from './MediaImage'
 import { cn } from '@/lib/utils'
-import type { Media } from '@/../../payload-types'
 import type { NavItem } from '@/lib/nav'
 
 export async function Navbar() {
   const [settings, navData] = await Promise.all([getSiteSettings(), getNavigation()])
-
-  const logo = typeof settings.logo === 'object' ? (settings.logo as Media) : null
-  const logoDark = typeof settings.logoDark === 'object' ? (settings.logoDark as Media) : null
 
   const headerLinks: NavItem[] = (navData?.headerLinks ?? [])
     .filter((l) => l.isVisible !== false)
@@ -53,56 +47,15 @@ export async function Navbar() {
               'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
             )}
           >
-            {logo ? (
-              /* CMS-uploaded logo takes priority */
-              <>
-                <span className={cn('relative block h-8 w-8', logoDark ? 'dark:hidden' : '')}>
-                  <MediaImage
-                    doc={logo}
-                    sizes="32px"
-                    className="h-full w-full object-contain"
-                    priority
-                  />
-                </span>
-                {logoDark && (
-                  <span className="relative hidden h-8 w-8 dark:block">
-                    <MediaImage
-                      doc={logoDark}
-                      sizes="32px"
-                      className="h-full w-full object-contain"
-                      priority
-                    />
-                  </span>
-                )}
-              </>
-            ) : (
-              /* Fallback: horizontal lockup — mark + NOG LAB + tagline in one SVG */
-              <>
-                <Image
-                  src="/logo-horizontal.svg"
-                  alt={settings.labName}
-                  width={170}
-                  height={40}
-                  className="dark:hidden"
-                  priority
-                />
-                <Image
-                  src="/logo-horizontal-white.svg"
-                  alt={settings.labName}
-                  width={170}
-                  height={40}
-                  className="hidden dark:block"
-                  priority
-                />
-              </>
-            )}
-
-            {/* Only show text label when a CMS logo mark is uploaded (text is in the SVG otherwise) */}
-            {logo && (
-              <span className="font-heading text-primary text-lg leading-none font-bold">
-                {settings.labName}
-              </span>
-            )}
+            {/* Logo: NOG_LAB.png has a black background — wrap in dark pill on light mode */}
+            <span className="inline-flex items-center justify-center rounded-lg bg-black p-1.5 dark:bg-transparent dark:p-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/NOG_LAB.png"
+                alt={settings.labName}
+                style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
+              />
+            </span>
           </Link>
 
           {/* ── MIDDLE: primary nav links (desktop only) — always rendered to hold col 2 */}
