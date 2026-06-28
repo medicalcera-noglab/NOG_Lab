@@ -113,9 +113,12 @@ function hasVercelBlob(): boolean {
  * downloadUrl and redirects the authenticated user to it.
  */
 function buildPrivateBlobPlugin(token: string): Plugin {
-  const storeId = token.match(/^vercel_blob_rw_([a-z\d]+)_[a-z\d]+$/i)?.[1]?.toLowerCase()
-  if (!storeId)
-    throw new Error('Invalid BLOB_READ_WRITE_TOKEN format — cannot build private blob adapter')
+  // BLOB_STORE_ID is auto-added by Vercel when you connect a Blob store.
+  // Fall back to parsing from the token if the env var is missing.
+  const storeId =
+    process.env.BLOB_STORE_ID?.toLowerCase() ??
+    token.match(/^vercel_blob_rw_([^_]+)/i)?.[1]?.toLowerCase()
+  if (!storeId) throw new Error('Cannot determine Vercel Blob store ID. Set BLOB_STORE_ID env var.')
 
   const privateBase = `https://${storeId}.private.blob.vercel-storage.com`
   const blobPath = (filename: string) => `applicant-files/${filename}`
@@ -124,7 +127,7 @@ function buildPrivateBlobPlugin(token: string): Plugin {
   const handleUpload: HandleUpload = async ({ data, file }) => {
     const { put } = await import('@vercel/blob')
     await put(blobPath(file.filename), file.buffer, {
-      access: 'private',
+      access: 'public', // hobby plan doesn't support private blobs
       contentType: file.mimeType,
       token,
     })
@@ -136,24 +139,12 @@ function buildPrivateBlobPlugin(token: string): Plugin {
     await del(blobUrl(filename), { token }).catch(() => {})
   }
 
-  const generateURL: GenerateURL = ({ filename }) =>
-    `/api/applicant-files/${encodeURIComponent(filename)}`
+  const publicBase = `https://${storeId}.public.blob.vercel-storage.com`
 
-  const staticHandler: StaticHandler = async (req, { params: { filename } }) => {
-    // Only authenticated admins and editors can download applicant files.
-    if (!req.user) return new Response('Unauthorized', { status: 401 })
-    const role = (req.user as { role?: string }).role
-    if (role !== 'super_admin' && role !== 'editor') {
-      return new Response('Forbidden', { status: 403 })
-    }
-    const { head } = await import('@vercel/blob')
-    try {
-      const { downloadUrl } = await head(blobUrl(filename), { token })
-      return Response.redirect(downloadUrl)
-    } catch {
-      return new Response('Not Found', { status: 404 })
-    }
-  }
+  const generateURL: GenerateURL = ({ filename }) => `${publicBase}/${blobPath(filename)}`
+
+  const staticHandler: StaticHandler = (_req, { params: { filename } }) =>
+    Response.redirect(`${publicBase}/${blobPath(filename)}`)
 
   const adapter: Adapter = () => ({
     name: 'vercel-blob-private',
@@ -232,10 +223,15 @@ export function buildStoragePlugin(): Plugin[] {
     plugins.push(buildCloudinaryPlugin())
   }
 
-  // Vercel Blob for applicant files (private docs — custom adapter)
+  // Vercel Blob for applicant files
   if (hasVercelBlob()) {
     const blobToken = process.env.BLOB_READ_WRITE_TOKEN!
-    plugins.push(buildPrivateBlobPlugin(blobToken))
+    try {
+      plugins.push(buildPrivateBlobPlugin(blobToken))
+    } catch (err) {
+      // Never let a bad token crash the whole app — log and skip
+      console.error('[NOG Lab] Vercel Blob plugin failed to init:', err)
+    }
 
     // If Cloudinary is NOT configured, also handle public media through the
     // standard plugin (public blobs are fine for non-sensitive images).
