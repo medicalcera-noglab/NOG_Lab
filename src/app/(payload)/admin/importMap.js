@@ -24,6 +24,7 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { DoiFetchButton as DoiFetchButton_3d938f66d5e079436496f4b778f87934 } from '@/components/admin/DoiFetchButton'
 import { MapPicker as MapPicker_e5079da11d3c9f4bf1d1da8f05f623e4 } from '@/components/admin/MapPicker'
 import { InquiryNameCell as InquiryNameCell_82e81ba05bb5092baba78227e6dda36f } from '@/components/admin/InquiryNameCell'
+import { DownloadFileField as DownloadFileField_46dc812231033320dcbb8798eb1f9773 } from '@/components/admin/DownloadFileField'
 import { InquiriesCsvButton as InquiriesCsvButton_82a1cfcc9173c430c0c737930930cc47 } from '@/components/admin/InquiriesCsvButton'
 import { InquiriesFilterTabs as InquiriesFilterTabs_e7d664945c4b3de509bc476241246ffe } from '@/components/admin/InquiriesFilterTabs'
 import { AdminIcon as AdminIcon_d500ae2ad98a0a33d640ae0ac1a3417c } from '@/components/admin/AdminIcon'
@@ -61,6 +62,7 @@ export const importMap = {
   "@/components/admin/DoiFetchButton#DoiFetchButton": DoiFetchButton_3d938f66d5e079436496f4b778f87934,
   "@/components/admin/MapPicker#MapPicker": MapPicker_e5079da11d3c9f4bf1d1da8f05f623e4,
   "@/components/admin/InquiryNameCell#InquiryNameCell": InquiryNameCell_82e81ba05bb5092baba78227e6dda36f,
+  "@/components/admin/DownloadFileField#DownloadFileField": DownloadFileField_46dc812231033320dcbb8798eb1f9773,
   "@/components/admin/InquiriesCsvButton#InquiriesCsvButton": InquiriesCsvButton_82a1cfcc9173c430c0c737930930cc47,
   "@/components/admin/InquiriesFilterTabs#InquiriesFilterTabs": InquiriesFilterTabs_e7d664945c4b3de509bc476241246ffe,
   "@/components/admin/AdminIcon#AdminIcon": AdminIcon_d500ae2ad98a0a33d640ae0ac1a3417c,

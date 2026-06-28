@@ -89,49 +89,49 @@ export const Inquiries: CollectionConfig = {
       },
     },
     {
-      name: 'cv',
-      type: 'upload',
-      label: 'CV / Resume',
-      relationTo: 'applicant_files',
-      admin: {
-        description:
-          'File uploaded by the applicant — view only. Requires Vercel Blob storage (BLOB_READ_WRITE_TOKEN).',
-        condition: (data) => data?.formType === 'join',
-        readOnly: true,
-      },
-    },
-    {
       name: 'cvFilename',
       type: 'text',
-      label: 'CV Filename',
+      label: 'CV / Resume — Original Filename',
       admin: {
-        description:
-          'Original filename submitted by the applicant (always set, even if upload failed).',
+        description: 'Filename submitted by the applicant (always stored, even if upload failed).',
         condition: (data) => data?.formType === 'join',
         readOnly: true,
       },
     },
     {
-      name: 'sop',
-      type: 'upload',
-      label: 'Statement of Purpose',
-      relationTo: 'applicant_files',
+      name: 'cvUrl',
+      type: 'text',
+      label: 'CV / Resume — Download',
       admin: {
-        description:
-          'File uploaded by the applicant — view only. Requires Vercel Blob storage (BLOB_READ_WRITE_TOKEN).',
+        description: 'Direct Vercel Blob URL. Click to download the file.',
         condition: (data) => data?.formType === 'join',
         readOnly: true,
+        components: {
+          Field: '@/components/admin/DownloadFileField#DownloadFileField',
+        },
       },
     },
     {
       name: 'sopFilename',
       type: 'text',
-      label: 'SOP Filename',
+      label: 'Statement of Purpose — Original Filename',
       admin: {
-        description:
-          'Original filename submitted by the applicant (always set, even if upload failed).',
+        description: 'Filename submitted by the applicant (always stored, even if upload failed).',
         condition: (data) => data?.formType === 'join',
         readOnly: true,
+      },
+    },
+    {
+      name: 'sopUrl',
+      type: 'text',
+      label: 'Statement of Purpose — Download',
+      admin: {
+        description: 'Direct Vercel Blob URL. Click to download the file.',
+        condition: (data) => data?.formType === 'join',
+        readOnly: true,
+        components: {
+          Field: '@/components/admin/DownloadFileField#DownloadFileField',
+        },
       },
     },
     {

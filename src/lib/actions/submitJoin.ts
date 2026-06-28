@@ -64,10 +64,12 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
   try {
     const payload = await getPayload({ config })
 
-    let cvId: number | undefined
-    let sopId: number | undefined
+    let cvUrl: string | undefined
+    let sopUrl: string | undefined
     let cvFilename: string | undefined
     let sopFilename: string | undefined
+
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
 
     if (cvFile instanceof File && cvFile.size > 0) {
       if (cvFile.size > MAX_BYTES)
@@ -75,20 +77,23 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
       if (!ALLOWED_MIME.includes(cvFile.type))
         return { success: false, error: 'CV must be PDF or Word doc.' }
       cvFilename = cvFile.name
-      try {
-        const buf = Buffer.from(await cvFile.arrayBuffer())
-        const created = await payload.create({
-          collection: 'applicant_files',
-          data: { submittedBy: email },
-          file: { data: buf, mimetype: cvFile.type, name: cvFile.name, size: cvFile.size },
-          overrideAccess: true,
-        })
-        cvId = created.id
-      } catch (fileErr) {
-        console.error(
-          '[submitJoin] CV upload failed (configure BLOB_READ_WRITE_TOKEN on Vercel):',
-          fileErr,
-        )
+      if (blobToken) {
+        try {
+          const { put } = await import('@vercel/blob')
+          const safeName = cvFile.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+          const { url } = await put(
+            `applicant-files/${Date.now()}-cv-${safeName}`,
+            Buffer.from(await cvFile.arrayBuffer()),
+            {
+              access: 'public',
+              contentType: cvFile.type,
+              token: blobToken,
+            },
+          )
+          cvUrl = url
+        } catch (fileErr) {
+          console.error('[submitJoin] CV upload to Vercel Blob failed:', fileErr)
+        }
       }
     }
 
@@ -98,20 +103,23 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
       if (!ALLOWED_MIME.includes(sopFile.type))
         return { success: false, error: 'SOP must be PDF or Word doc.' }
       sopFilename = sopFile.name
-      try {
-        const buf = Buffer.from(await sopFile.arrayBuffer())
-        const created = await payload.create({
-          collection: 'applicant_files',
-          data: { submittedBy: email },
-          file: { data: buf, mimetype: sopFile.type, name: sopFile.name, size: sopFile.size },
-          overrideAccess: true,
-        })
-        sopId = created.id
-      } catch (fileErr) {
-        console.error(
-          '[submitJoin] SOP upload failed (configure BLOB_READ_WRITE_TOKEN on Vercel):',
-          fileErr,
-        )
+      if (blobToken) {
+        try {
+          const { put } = await import('@vercel/blob')
+          const safeName = sopFile.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+          const { url } = await put(
+            `applicant-files/${Date.now()}-sop-${safeName}`,
+            Buffer.from(await sopFile.arrayBuffer()),
+            {
+              access: 'public',
+              contentType: sopFile.type,
+              token: blobToken,
+            },
+          )
+          sopUrl = url
+        } catch (fileErr) {
+          console.error('[submitJoin] SOP upload to Vercel Blob failed:', fileErr)
+        }
       }
     }
 
@@ -123,10 +131,10 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
         email,
         message,
         ...(positionTitle ? { positionTitle } : {}),
-        ...(cvId ? { cv: cvId } : {}),
         ...(cvFilename ? { cvFilename } : {}),
-        ...(sopId ? { sop: sopId } : {}),
+        ...(cvUrl ? { cvUrl } : {}),
         ...(sopFilename ? { sopFilename } : {}),
+        ...(sopUrl ? { sopUrl } : {}),
       },
       overrideAccess: true,
     })
@@ -138,7 +146,7 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
         payload.sendEmail({
           to: notifyAddress,
           subject: `[NOG Lab] New application from ${name}`,
-          html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) applied${positionTitle ? ` for <em>${htmlEscape(positionTitle)}</em>` : ''}.</p>${cvFilename ? `<p>CV: ${htmlEscape(cvFilename)}${cvId ? ' ✓ stored' : ' ⚠ not stored'}</p>` : ''}${sopFilename ? `<p>SOP: ${htmlEscape(sopFilename)}${sopId ? ' ✓ stored' : ' ⚠ not stored'}</p>` : ''}<blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
+          html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) applied${positionTitle ? ` for <em>${htmlEscape(positionTitle)}</em>` : ''}.</p>${cvFilename ? `<p>CV: ${htmlEscape(cvFilename)} ${cvUrl ? `— <a href="${cvUrl}">Download</a> ✓` : '⚠ not stored'}</p>` : ''}${sopFilename ? `<p>SOP: ${htmlEscape(sopFilename)} ${sopUrl ? `— <a href="${sopUrl}">Download</a> ✓` : '⚠ not stored'}</p>` : ''}<blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
         }),
         payload.sendEmail({
           to: email,
