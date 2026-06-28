@@ -66,6 +66,7 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
 
     let cvId: number | undefined
     let sopId: number | undefined
+    const fileNotes: string[] = []
 
     if (cvFile instanceof File && cvFile.size > 0) {
       if (cvFile.size > MAX_BYTES)
@@ -82,8 +83,8 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
         })
         cvId = created.id
       } catch (fileErr) {
-        // Storage not configured — log and continue without the file
-        console.error('[submitJoin] CV upload failed (storage not configured?):', fileErr)
+        console.error('[submitJoin] CV upload failed:', fileErr)
+        fileNotes.push(`CV: ${cvFile.name} (${(cvFile.size / 1024).toFixed(0)} KB)`)
       }
     }
 
@@ -102,9 +103,18 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
         })
         sopId = created.id
       } catch (fileErr) {
-        console.error('[submitJoin] SOP upload failed (storage not configured?):', fileErr)
+        console.error('[submitJoin] SOP upload failed:', fileErr)
+        fileNotes.push(
+          `Statement of Purpose: ${sopFile.name} (${(sopFile.size / 1024).toFixed(0)} KB)`,
+        )
       }
     }
+
+    // If storage failed, append filename notes to message so admin knows files were submitted
+    const fullMessage =
+      fileNotes.length > 0
+        ? `${message}\n\n[Files submitted but storage not configured — ${fileNotes.join(' | ')}]`
+        : message
 
     await payload.create({
       collection: 'inquiries',
@@ -112,7 +122,7 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
         formType: 'join',
         name,
         email,
-        message,
+        message: fullMessage,
         ...(positionTitle ? { positionTitle } : {}),
         ...(cvId ? { cv: cvId } : {}),
         ...(sopId ? { sop: sopId } : {}),
@@ -127,7 +137,7 @@ export async function submitJoin(_prev: JoinFormState, formData: FormData): Prom
         payload.sendEmail({
           to: notifyAddress,
           subject: `[NOG Lab] New application from ${name}`,
-          html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) applied${positionTitle ? ` for <em>${htmlEscape(positionTitle)}</em>` : ''}.</p><blockquote>${htmlEscape(message).replace(/\n/g, '<br>')}</blockquote>`,
+          html: `<p><b>${htmlEscape(name)}</b> (${htmlEscape(email)}) applied${positionTitle ? ` for <em>${htmlEscape(positionTitle)}</em>` : ''}.</p><blockquote>${htmlEscape(fullMessage).replace(/\n/g, '<br>')}</blockquote>`,
         }),
         payload.sendEmail({
           to: email,

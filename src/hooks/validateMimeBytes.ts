@@ -41,9 +41,23 @@ export function makeValidateMimeBytes(allowlist: MimeAllowlist): CollectionBefor
     const detected = await fileTypeFromBuffer(file.data)
 
     if (detected) {
-      if (!allowlist.has(detected.mime)) {
+      // OOXML formats (.docx, .xlsx, .pptx) are ZIP archives — file-type v22 detects
+      // them as 'application/zip'. Fall through to declared MIME in that case.
+      if (detected.mime !== 'application/zip') {
+        if (!allowlist.has(detected.mime)) {
+          throw new Error(
+            `Rejected: detected file type '${detected.mime}' is not permitted. ` +
+              `Allowed types: ${[...allowlist].join(', ')}.`,
+          )
+        }
+        return args
+      }
+      // For ZIP-detected files, accept if the declared MIME is in the allowlist
+      // (covers OOXML: .docx, .xlsx, .pptx)
+      const declared = file.mimetype ?? ''
+      if (!allowlist.has(declared)) {
         throw new Error(
-          `Rejected: detected file type '${detected.mime}' is not permitted. ` +
+          `Rejected: ZIP file with declared type '${declared}' is not permitted. ` +
             `Allowed types: ${[...allowlist].join(', ')}.`,
         )
       }

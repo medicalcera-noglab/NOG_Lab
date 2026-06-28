@@ -62,6 +62,11 @@ export const Inquiries: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
+      admin: {
+        components: {
+          Cell: '@/components/admin/InquiryNameCell#InquiryNameCell',
+        },
+      },
     },
     {
       name: 'email',
