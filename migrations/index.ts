@@ -25,6 +25,7 @@ import * as migration_20260622_000001_nav_join_us from './20260622_000001_nav_jo
 import * as migration_20260623_170421 from './20260623_170421'
 import * as migration_20260627_000001_site_settings_hero_subline from './20260627_000001_site_settings_hero_subline'
 import * as migration_20260628_000001_people_profile_fields from './20260628_000001_people_profile_fields'
+import * as migration_20260628_000002_inquiries_file_fields from './20260628_000002_inquiries_file_fields'
 
 export const migrations = [
   {
@@ -161,5 +162,10 @@ export const migrations = [
     up: migration_20260628_000001_people_profile_fields.up,
     down: migration_20260628_000001_people_profile_fields.down,
     name: '20260628_000001_people_profile_fields',
+  },
+  {
+    up: migration_20260628_000002_inquiries_file_fields.up,
+    down: migration_20260628_000002_inquiries_file_fields.down,
+    name: '20260628_000002_inquiries_file_fields',
   },
 ]

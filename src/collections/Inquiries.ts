@@ -93,7 +93,19 @@ export const Inquiries: CollectionConfig = {
       label: 'CV / Resume',
       relationTo: 'applicant_files',
       admin: {
-        description: 'File uploaded by the applicant — view only.',
+        description:
+          'File uploaded by the applicant — view only. Requires Vercel Blob storage (BLOB_READ_WRITE_TOKEN).',
+        condition: (data) => data?.formType === 'join',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'cvFilename',
+      type: 'text',
+      label: 'CV Filename',
+      admin: {
+        description:
+          'Original filename submitted by the applicant (always set, even if upload failed).',
         condition: (data) => data?.formType === 'join',
         readOnly: true,
       },
@@ -104,7 +116,19 @@ export const Inquiries: CollectionConfig = {
       label: 'Statement of Purpose',
       relationTo: 'applicant_files',
       admin: {
-        description: 'File uploaded by the applicant — view only.',
+        description:
+          'File uploaded by the applicant — view only. Requires Vercel Blob storage (BLOB_READ_WRITE_TOKEN).',
+        condition: (data) => data?.formType === 'join',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'sopFilename',
+      type: 'text',
+      label: 'SOP Filename',
+      admin: {
+        description:
+          'Original filename submitted by the applicant (always set, even if upload failed).',
         condition: (data) => data?.formType === 'join',
         readOnly: true,
       },
