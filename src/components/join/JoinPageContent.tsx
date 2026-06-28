@@ -104,12 +104,7 @@ export function JoinPageContent({
           </div>
 
           {positions.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.15 }}
-              className="border-border bg-surface flex flex-col items-center rounded-2xl border p-10 text-center"
-            >
+            <div className="border-border bg-surface flex flex-col items-center rounded-2xl border p-10 text-center">
               <div
                 className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl"
                 style={{
@@ -137,7 +132,7 @@ export function JoinPageContent({
                 Go to application form
                 <ArrowRight size={14} aria-hidden="true" />
               </button>
-            </motion.div>
+            </div>
           ) : (
             <ul
               role="list"
@@ -149,16 +144,7 @@ export function JoinPageContent({
                 const TypeIcon = getTypeIcon(position.type)
 
                 return (
-                  <motion.li
-                    key={position.id}
-                    initial={{ opacity: 0, y: 32 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.45,
-                      delay: (i % 3) * 0.08,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  >
+                  <li key={position.id}>
                     <motion.article
                       className="group border-border bg-surface flex h-full flex-col overflow-hidden rounded-2xl border shadow-sm"
                       whileHover={{ y: -5, transition: { duration: 0.2 } }}
@@ -239,7 +225,7 @@ export function JoinPageContent({
                         aria-hidden="true"
                       />
                     </motion.article>
-                  </motion.li>
+                  </li>
                 )
               })}
             </ul>
