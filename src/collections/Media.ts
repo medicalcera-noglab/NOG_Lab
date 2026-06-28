@@ -60,6 +60,7 @@ export const Media: CollectionConfig = {
     ],
   },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'alt',
     group: 'Media',
     defaultColumns: ['alt', 'mimeType', 'filesize', 'createdAt'],
@@ -132,8 +133,7 @@ export const Media: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo image — remove with npm run seed:clear-demo-media.',
+        hidden: true,
       },
     },
     {

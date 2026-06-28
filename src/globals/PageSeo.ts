@@ -39,6 +39,7 @@ export const PageSeo: GlobalConfig = {
   slug: 'page_seo',
   label: 'Page SEO',
   admin: {
+    hideAPIURL: true,
     group: 'Site Config',
     description:
       'Per-page SEO overrides — title, description, and OG image for each static page. All fields are optional; blank = use global defaults.',

@@ -34,6 +34,7 @@ export const BlogPosts: CollectionConfig = {
   slug: 'blog_posts',
   labels: { singular: 'Blog Post', plural: 'Blog Posts' },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['title', 'author', 'status', 'publishedAt'],
@@ -171,8 +172,7 @@ export const BlogPosts: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
+        hidden: true,
       },
     },
   ],

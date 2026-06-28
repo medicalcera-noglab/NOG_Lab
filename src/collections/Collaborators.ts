@@ -6,6 +6,7 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 export const Collaborators: CollectionConfig = {
   slug: 'collaborators',
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'name',
     group: 'Team',
     defaultColumns: ['name', 'type', 'country', 'displayOrder'],
@@ -65,8 +66,7 @@ export const Collaborators: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
+        hidden: true,
       },
     },
   ],

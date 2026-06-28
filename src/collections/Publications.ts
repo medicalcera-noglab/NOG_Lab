@@ -6,6 +6,7 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 export const Publications: CollectionConfig = {
   slug: 'publications',
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'title',
     group: 'Research',
     defaultColumns: ['title', 'year', 'type', 'isOpenAccess'],

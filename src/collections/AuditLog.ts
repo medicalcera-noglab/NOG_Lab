@@ -5,6 +5,7 @@ export const AuditLog: CollectionConfig = {
   slug: 'audit_log',
   labels: { singular: 'Audit Log', plural: 'Audit Logs' },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'action',
     group: 'Admin',
     defaultColumns: ['user', 'action', 'entityType', 'createdAt'],

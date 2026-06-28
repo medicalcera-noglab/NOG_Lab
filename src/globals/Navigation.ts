@@ -7,6 +7,7 @@ export const Navigation: GlobalConfig = {
   slug: 'navigation',
   label: 'Navigation',
   admin: {
+    hideAPIURL: true,
     group: 'Site Config',
     description:
       'Header navigation links and footer link groups. Changes take effect on the next page view.',

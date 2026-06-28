@@ -9,6 +9,7 @@ export const ImpactStories: CollectionConfig = {
   slug: 'impact_stories',
   labels: { singular: 'Impact Story', plural: 'Impact Stories' },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['title', 'status', 'publishedAt'],
@@ -88,8 +89,7 @@ export const ImpactStories: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
+        hidden: true,
       },
     },
   ],

@@ -7,6 +7,7 @@ export const LegalPages: GlobalConfig = {
   slug: 'legal_pages',
   label: 'Legal Pages',
   admin: {
+    hideAPIURL: true,
     group: 'Pages',
     description: 'Privacy Policy and Terms of Use — displayed at /privacy and /terms.',
     hidden: ({ user }) => {

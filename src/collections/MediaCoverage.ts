@@ -7,6 +7,7 @@ export const MediaCoverage: CollectionConfig = {
   slug: 'media_coverage',
   labels: { singular: 'Media Coverage', plural: 'Media Coverage' },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['outlet', 'title', 'date'],

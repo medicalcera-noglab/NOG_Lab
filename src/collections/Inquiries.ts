@@ -4,6 +4,7 @@ import { isAdminOrEditor } from '../access'
 export const Inquiries: CollectionConfig = {
   slug: 'inquiries',
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'name',
     group: 'Forms',
     description:

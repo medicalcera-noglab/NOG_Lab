@@ -7,6 +7,7 @@ export const About: GlobalConfig = {
   slug: 'about',
   label: 'About Page',
   admin: {
+    hideAPIURL: true,
     group: 'Pages',
     description:
       'Content for /about — mission, director message, KMU affiliation, facilities, testimonials.',

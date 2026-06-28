@@ -11,6 +11,7 @@ export const ResearchThemes: CollectionConfig = {
   slug: 'research_themes',
   labels: { singular: 'Research Theme', plural: 'Research Themes' },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'name',
     group: 'Research',
     defaultColumns: ['name', 'color', 'displayOrder'],
@@ -98,8 +99,7 @@ export const ResearchThemes: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
+        hidden: true,
       },
     },
   ],

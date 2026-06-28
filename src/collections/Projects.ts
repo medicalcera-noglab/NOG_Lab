@@ -8,6 +8,7 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 export const Projects: CollectionConfig = {
   slug: 'projects',
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'title',
     group: 'Research',
     defaultColumns: ['title', 'status', 'isFeaturedHome', 'updatedAt'],
@@ -161,8 +162,7 @@ export const Projects: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
+        hidden: true,
       },
     },
   ],

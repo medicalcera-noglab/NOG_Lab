@@ -7,6 +7,7 @@ export const SiteSettings: GlobalConfig = {
   slug: 'site_settings',
   label: 'Site Settings',
   admin: {
+    hideAPIURL: true,
     group: 'Site Config',
     description: 'Global site configuration — lab name, branding, footer, SEO, CTAs.',
     hidden: ({ user }) => {

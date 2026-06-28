@@ -8,6 +8,7 @@ export const OpenPositions: CollectionConfig = {
   slug: 'open_positions',
   labels: { singular: 'Open Position', plural: 'Open Positions' },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['title', 'type', 'is_active', 'updatedAt'],

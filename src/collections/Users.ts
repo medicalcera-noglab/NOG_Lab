@@ -14,6 +14,7 @@ export const Users: CollectionConfig = {
     // Email delivery goes through the adapter in payload.config.ts.
   },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'email',
     group: 'Admin',
     defaultColumns: ['email', 'role', 'totpEnabled', 'updatedAt'],

@@ -15,6 +15,7 @@ const autoAlumniHook: CollectionBeforeChangeHook = ({ data }) => {
 export const People: CollectionConfig = {
   slug: 'people',
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'name',
     group: 'Team',
     defaultColumns: ['name', 'role', 'displayOrder', 'is_active'],
@@ -200,8 +201,7 @@ export const People: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
+        hidden: true,
       },
     },
   ],

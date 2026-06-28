@@ -7,6 +7,7 @@ export const StudySites: CollectionConfig = {
   slug: 'study_sites',
   labels: { singular: 'Study Site', plural: 'Study Sites' },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'name',
     group: 'Research',
     defaultColumns: ['name', 'district', 'province', 'project'],
@@ -72,8 +73,7 @@ export const StudySites: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
+        hidden: true,
       },
     },
   ],

@@ -33,6 +33,7 @@ export const NewsEvents: CollectionConfig = {
   slug: 'news_events',
   labels: { singular: 'News & Event', plural: 'News & Events' },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['title', 'category', 'date', 'isFeaturedHome'],
@@ -165,8 +166,7 @@ export const NewsEvents: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        position: 'sidebar',
-        description: 'Demo content — remove with npm run seed:clear-demo.',
+        hidden: true,
       },
     },
   ],

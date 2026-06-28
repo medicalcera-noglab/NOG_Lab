@@ -23,6 +23,7 @@ export const ApplicantFiles: CollectionConfig = {
     // No imageSizes — PDFs and DOCX are never resized.
   },
   admin: {
+    hideAPIURL: true,
     useAsTitle: 'filename',
     group: 'Forms',
     defaultColumns: ['filename', 'mimeType', 'filesize', 'createdAt'],
