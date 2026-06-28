@@ -28,6 +28,7 @@ import * as migration_20260628_000001_people_profile_fields from './20260628_000
 import * as migration_20260628_000002_inquiries_file_fields from './20260628_000002_inquiries_file_fields'
 import * as migration_20260628_000003_inquiries_file_urls from './20260628_000003_inquiries_file_urls'
 import * as migration_20260628_000004_inquiries_reply_text from './20260628_000004_inquiries_reply_text'
+import * as migration_20260628_000005_site_settings_founding_year from './20260628_000005_site_settings_founding_year'
 
 export const migrations = [
   {
@@ -179,5 +180,10 @@ export const migrations = [
     up: migration_20260628_000004_inquiries_reply_text.up,
     down: migration_20260628_000004_inquiries_reply_text.down,
     name: '20260628_000004_inquiries_reply_text',
+  },
+  {
+    up: migration_20260628_000005_site_settings_founding_year.up,
+    down: migration_20260628_000005_site_settings_founding_year.down,
+    name: '20260628_000005_site_settings_founding_year',
   },
 ]
