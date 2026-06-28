@@ -93,8 +93,8 @@ export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
                   strokeLinejoin="round"
                 />
 
-                {/* Dot markers for study-site regions */}
-                {MARKERS.map((m) => (
+                {/* Dot markers — only render as many as real sites in DB */}
+                {MARKERS.slice(0, Math.min(siteCount, MARKERS.length)).map((m) => (
                   <g key={m.label}>
                     {/* Outer pulse ring */}
                     <circle
