@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
   )
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglabkmu.org'
 
 export default async function HomePage() {
   // All data fetched in parallel — each is individually cached by unstable_cache

@@ -11,7 +11,7 @@ export function buildEmailAdapter() {
   // EMAIL_FROM may be "email@example.com" or "Name <email@example.com>".
   // Resend's adapter expects defaultFromAddress to be the bare email only —
   // passing the full "Name <email>" format causes it to double-wrap the name.
-  const raw = process.env.EMAIL_FROM ?? 'noreply@noglab.org'
+  const raw = process.env.EMAIL_FROM ?? 'noreply@noglabkmu.org'
   const fromEmail = raw.match(/<(.+)>/)?.[1] ?? raw
 
   if (key && key.length > 0) {

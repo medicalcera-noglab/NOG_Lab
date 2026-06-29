@@ -48,7 +48,7 @@ const categoryLabels: Record<string, string> = {
   press: 'Press',
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglabkmu.org'
 
 export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params

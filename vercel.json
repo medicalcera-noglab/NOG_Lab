@@ -10,8 +10,8 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.noglab.org" }],
-      "destination": "https://noglab.org/$1",
+      "has": [{ "type": "host", "value": "www.noglabkmu.org" }],
+      "destination": "https://noglabkmu.org/$1",
       "permanent": true
     }
   ]

@@ -51,7 +51,7 @@ function exportHref(format: 'bibtex' | 'ris', filters: Filters): string {
   return `/publications/export/${format}${qs ? `?${qs}` : ''}`
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglabkmu.org'
 
 export default async function PublicationsPage({ searchParams }: PageProps) {
   const params = await searchParams

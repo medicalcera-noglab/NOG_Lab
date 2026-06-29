@@ -50,7 +50,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     overrideAccess: true,
   })) as SiteSetting
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglabkmu.org'
   const today = new Date().toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
@@ -58,7 +58,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   })
 
   const labName = settings.labName ?? 'NOG Lab'
-  const contactEmail = settings.contactEmail ?? 'info@noglab.org'
+  const contactEmail = settings.contactEmail ?? 'info@noglabkmu.org'
   const contactAddress =
     settings.contactAddress ?? 'Khyber Medical University, Peshawar, KPK, Pakistan'
 

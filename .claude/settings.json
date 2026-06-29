@@ -141,7 +141,13 @@
       "Bash(curl -s -A \"NOGLab/1.0\" \"https://api.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=bacteria+SEM&prop=imageinfo&iiprop=url%7Cmime&format=json&gsrlimit=3&formatversion=2\")",
       "Bash(python3 -m json.tool)",
       "Bash(curl -v -A \"NOGLab/1.0\" \"https://api.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=bacteria&prop=imageinfo&format=json&gsrlimit=2\")",
-      "Bash(tsx --require ./scripts/load-env.cjs -e ' *)"
+      "Bash(tsx --require ./scripts/load-env.cjs -e ' *)",
+      "Bash(curl -s \"http://localhost:3000/api/media?limit=20\")",
+      "Bash(echo \"PID $!\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/join-submit -F 'name=Test User' -F email=test@example.com -F 'message=This is a test message from curl to verify the endpoint works correctly.' -F recaptchaToken= -F website= -w '\\\\nHTTP_STATUS:%{http_code}')",
+      "Bash(curl -s 'http://localhost:3000/api/inquiries?where[formType][equals]=join&limit=3&sort=-createdAt' -H 'Cookie: __CMDSUB_OUTPUT__' -w '\\\\nHTTP:%{http_code}')",
+      "Bash(curl -s -X POST http://localhost:3000/api/join-submit -F 'name=Debug Test 2' -F email=debug@test.com -F 'message=Second test to verify database insertion is working end to end.' -F recaptchaToken= -F website=)",
+      "Bash(curl -s \"http://localhost:3000/api/health\")"
     ],
     "additionalDirectories": [
       "/Users/mc/Desktop/medicalcera/src/app/(frontend)/publications/export",

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import type { SiteSetting, Media } from '../../payload-types'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglabkmu.org'
 
 interface PageMetaInput {
   /** Page-specific title — the lab name suffix is appended automatically. */

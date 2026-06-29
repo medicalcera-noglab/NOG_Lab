@@ -53,7 +53,7 @@ export default async function BlogDetailPage({ params }: Props) {
 
   const related = await getRelatedPosts(post.id, tags)
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglabkmu.org'
   const postUrl = `${siteUrl}/blog/${post.slug ?? post.id}`
 
   const blogJsonLd = {

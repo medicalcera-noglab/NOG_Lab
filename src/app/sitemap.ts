@@ -4,7 +4,7 @@ import { getAllProjectSlugs } from '@/lib/data/projects'
 import { getAllBlogSlugs } from '@/lib/data/blog'
 import { getAllNewsSlugs } from '@/lib/data/news'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglab.org'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noglabkmu.org'
 
 function entry(
   path: string,
