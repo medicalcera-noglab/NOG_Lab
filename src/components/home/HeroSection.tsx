@@ -113,7 +113,7 @@ export function HeroSection({
       {/* ── Hero content ──────────────────────────────────────────────────────── */}
       <div className="relative z-10 flex flex-1 flex-col items-start justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className="mx-auto w-full max-w-screen-xl">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_420px] lg:gap-8 xl:grid-cols-[1fr_480px]">
+          <div className="grid grid-cols-1 items-center gap-6 sm:gap-8 lg:grid-cols-[1fr_420px] lg:gap-8 xl:grid-cols-[1fr_480px]">
             {/* ── Left column: content ──────────────────────────────────────── */}
             <div className="flex flex-col">
               {/* Eyebrow */}
@@ -195,8 +195,8 @@ export function HeroSection({
               )}
             </div>
 
-            {/* ── Right column: microbiome visual (hidden on mobile) ─────────── */}
-            <div className="relative hidden lg:flex lg:h-[440px] lg:items-center lg:justify-center xl:h-[500px]">
+            {/* ── Right column: human molecule visual ───────────────────── */}
+            <div className="relative flex h-[300px] items-center justify-center sm:h-[360px] lg:h-[460px] xl:h-[500px]">
               <HeroMicrobiomeVisual />
             </div>
           </div>
