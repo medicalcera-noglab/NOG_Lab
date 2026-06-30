@@ -9,32 +9,50 @@ interface PakistanMapTeaserProps {
   siteCount: number
 }
 
-// Real province paths projected from geographic coordinates into a 300×340 viewBox
-// Pakistan bounding box: lon 60–77°E, lat 23–37°N
-// Scale: x=(lon-60)*17.6  y=(37-lat)*24.3
-const PROVINCE_PATHS = {
-  // KPK (Khyber Pakhtunkhwa) — northwest
-  kpk: 'M 198,15 L 212,12 L 228,18 L 238,30 L 242,48 L 235,60 L 220,65 L 210,75 L 200,85 L 188,90 L 178,80 L 172,68 L 175,52 L 185,38 Z',
-  // Gilgit-Baltistan — north
-  gb: 'M 198,15 L 212,12 L 228,18 L 238,30 L 260,22 L 278,10 L 290,5 L 298,15 L 292,30 L 280,38 L 265,42 L 250,48 L 242,48 L 235,60 L 220,65 Z',
-  // Azad Kashmir — northeast
-  ak: 'M 242,48 L 260,22 L 278,10 L 285,28 L 275,42 L 265,55 L 252,60 L 242,62 Z',
-  // Punjab — center-east
-  punjab:
-    'M 178,80 L 188,90 L 200,85 L 210,75 L 220,65 L 235,60 L 252,60 L 265,75 L 268,95 L 260,115 L 248,130 L 230,140 L 210,145 L 192,138 L 178,125 L 172,108 L 175,92 Z',
-  // Sindh — southeast
-  sindh:
-    'M 178,125 L 192,138 L 210,145 L 228,158 L 235,178 L 228,205 L 210,225 L 192,238 L 172,242 L 155,232 L 145,215 L 148,192 L 158,172 L 165,152 L 172,138 Z',
-  // Balochistan — southwest (largest)
-  balochistan:
-    'M 42,92 L 58,78 L 75,68 L 95,65 L 115,62 L 135,65 L 155,72 L 172,68 L 175,92 L 172,108 L 178,125 L 172,138 L 165,152 L 158,172 L 148,192 L 145,215 L 135,228 L 118,235 L 98,238 L 78,225 L 62,208 L 48,188 L 38,165 L 32,140 L 35,115 L 42,92 Z',
-  // FATA/merged districts (part of KPK)
-  fata: 'M 135,65 L 155,72 L 172,68 L 175,52 L 185,38 L 175,30 L 158,28 L 142,32 L 130,42 L 128,55 Z',
-}
+// SVG paths projected from real GeoJSON (pakistan-boundaries.geojson)
+// ViewBox: 0 0 300 320, PAD=12
+// Projection: equirectangular, lon 60.87–77.5°E, lat 23.6–37.1°N
+const PROVINCES = [
+  {
+    code: 'bal',
+    name: 'Balochistan',
+    active: false,
+    d: 'M 12.0,177.1 L 12.5,233.5 L 30.8,275.1 L 55.6,299.2 L 88.8,303.6 L 122.0,303.6 L 146.9,294.8 L 160.2,266.3 L 166.8,222.5 L 163.5,178.6 L 155.2,145.7 L 138.6,134.8 L 122.0,123.8 L 80.5,134.8 L 55.6,139.2 L 39.1,145.7 L 22.5,156.7 Z',
+  },
+  {
+    code: 'sin',
+    name: 'Sindh',
+    active: false,
+    d: 'M 122.0,303.6 L 146.9,308.0 L 180.1,299.2 L 183.4,266.3 L 180.1,233.5 L 166.8,222.5 L 160.2,266.3 L 146.9,294.8 Z',
+  },
+  {
+    code: 'pun',
+    name: 'Punjab',
+    active: false,
+    d: 'M 166.8,222.5 L 180.1,233.5 L 183.4,266.3 L 213.3,244.4 L 238.2,222.5 L 253.1,167.7 L 238.2,112.9 L 221.6,90.9 L 205.0,80.0 L 188.4,90.9 L 171.8,101.9 L 155.2,134.8 L 155.2,145.7 L 163.5,178.6 Z',
+  },
+  {
+    code: 'ajk',
+    name: 'AJK',
+    active: false,
+    d: 'M 213.3,90.9 L 221.6,90.9 L 229.9,101.9 L 238.2,90.9 L 241.5,69.0 L 238.2,58.0 L 229.9,53.7 L 221.6,58.0 L 213.3,69.0 Z',
+  },
+  {
+    code: 'gb',
+    name: 'Gilgit-Baltistan',
+    active: false,
+    d: 'M 196.7,25.2 L 205.0,36.1 L 213.3,47.1 L 221.6,58.0 L 229.9,53.7 L 238.2,58.0 L 241.5,69.0 L 246.5,62.4 L 263.1,47.1 L 279.7,36.1 L 288.0,18.6 L 263.1,12.0 L 238.2,12.0 L 213.3,18.6 Z',
+  },
+  {
+    code: 'kpk',
+    name: 'Khyber Pakhtunkhwa',
+    active: true, // NOG Lab province
+    d: 'M 155.2,145.7 L 155.2,134.8 L 171.8,101.9 L 188.4,90.9 L 205.0,80.0 L 213.3,69.0 L 213.3,47.1 L 205.0,36.1 L 196.7,25.2 L 180.1,25.2 L 163.5,25.2 L 146.9,47.1 L 138.6,80.0 L 130.3,112.9 L 122.0,123.8 L 138.6,134.8 Z',
+  },
+]
 
-// Study site: Peshawar (KMU) — lon 71.5°E, lat 34.0°N
-// x = (71.5-60)*17.6 = 202.4 ≈ 202, y = (37-34)*24.3 = 72.9 ≈ 73
-const PESHAWAR = { cx: 202, cy: 73, label: 'Peshawar, KPK', sublabel: 'KMU — NOG Lab' }
+// Peshawar (KMU) — lon 71.5°E, lat 34.0°N → (188.4, 80.0)
+const PESHAWAR = { cx: 188.4, cy: 80.0 }
 
 export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
   return (
@@ -42,16 +60,6 @@ export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
       className="bg-bg relative overflow-hidden py-10 md:py-16"
       aria-label="Study sites map preview"
     >
-      {/* Subtle background decoration */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 50% at 75% 50%, rgba(14,110,110,0.05), transparent 70%)',
-        }}
-      />
-
       <Container>
         <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
           {/* Text side */}
@@ -110,188 +118,106 @@ export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
           {/* SVG map side */}
           <FadeUp delay={0.1}>
             <div
-              className="relative mx-auto max-w-sm"
-              aria-label={`Map of Pakistan highlighting ${siteCount} study site${siteCount !== 1 ? 's' : ''} — NOG Lab operates from Peshawar, KPK`}
+              className="relative mx-auto max-w-[300px]"
+              aria-label={`Map of Pakistan showing ${siteCount} active study site${siteCount !== 1 ? 's' : ''} in Khyber Pakhtunkhwa`}
               role="img"
             >
               <svg
-                viewBox="0 0 340 280"
+                viewBox="0 0 300 320"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-full"
+                className="w-full drop-shadow-sm"
                 aria-hidden="true"
                 focusable="false"
               >
                 <defs>
-                  {/* Province fill gradient */}
-                  <linearGradient id="mapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#0E6E6E" stopOpacity="0.18" />
-                    <stop offset="100%" stopColor="#0E6E6E" stopOpacity="0.08" />
+                  <linearGradient id="provGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#0E6E6E" stopOpacity="0.15" />
+                    <stop offset="100%" stopColor="#0E6E6E" stopOpacity="0.07" />
                   </linearGradient>
-                  {/* KPK highlight */}
                   <linearGradient id="kpkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#0E6E6E" stopOpacity="0.55" />
-                    <stop offset="100%" stopColor="#0E6E6E" stopOpacity="0.30" />
+                    <stop offset="0%" stopColor="#0E6E6E" stopOpacity="0.50" />
+                    <stop offset="100%" stopColor="#0E6E6E" stopOpacity="0.28" />
                   </linearGradient>
-                  {/* Marker glow */}
                   <radialGradient id="markerGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#E2725B" stopOpacity="0.5" />
+                    <stop offset="0%" stopColor="#E2725B" stopOpacity="0.45" />
                     <stop offset="100%" stopColor="#E2725B" stopOpacity="0" />
                   </radialGradient>
-                  {/* Drop shadow */}
-                  <filter id="mapShadow" x="-5%" y="-5%" width="110%" height="110%">
+                  <filter id="provShadow">
                     <feDropShadow
                       dx="0"
-                      dy="2"
-                      stdDeviation="3"
+                      dy="1"
+                      stdDeviation="2"
                       floodColor="#0E6E6E"
-                      floodOpacity="0.18"
+                      floodOpacity="0.12"
                     />
-                  </filter>
-                  <filter id="glowFilter">
-                    <feGaussianBlur stdDeviation="3" result="blur" />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
                   </filter>
                 </defs>
 
-                {/* Grid lines (subtle graticule) */}
-                {[0, 60, 120, 180, 240, 300].map((x) => (
-                  <line
-                    key={`vg${x}`}
-                    x1={x}
-                    y1="0"
-                    x2={x}
-                    y2="280"
+                {/* Province fills — inactive */}
+                {PROVINCES.filter((p) => !p.active).map((p) => (
+                  <path
+                    key={p.code}
+                    d={p.d}
+                    fill="url(#provGrad)"
                     stroke="#0E6E6E"
-                    strokeOpacity="0.06"
-                    strokeWidth="1"
-                  />
-                ))}
-                {[0, 56, 112, 168, 224, 280].map((y) => (
-                  <line
-                    key={`hg${y}`}
-                    x1="0"
-                    y1={y}
-                    x2="340"
-                    y2={y}
-                    stroke="#0E6E6E"
-                    strokeOpacity="0.06"
-                    strokeWidth="1"
+                    strokeWidth="1.2"
+                    strokeOpacity="0.35"
+                    strokeLinejoin="round"
                   />
                 ))}
 
-                {/* Province fills */}
-                <path
-                  d={PROVINCE_PATHS.balochistan}
-                  fill="url(#mapGrad)"
-                  stroke="#0E6E6E"
-                  strokeWidth="1"
-                  strokeOpacity="0.35"
-                  strokeLinejoin="round"
-                  filter="url(#mapShadow)"
-                />
-                <path
-                  d={PROVINCE_PATHS.punjab}
-                  fill="url(#mapGrad)"
-                  stroke="#0E6E6E"
-                  strokeWidth="1"
-                  strokeOpacity="0.35"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d={PROVINCE_PATHS.sindh}
-                  fill="url(#mapGrad)"
-                  stroke="#0E6E6E"
-                  strokeWidth="1"
-                  strokeOpacity="0.35"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d={PROVINCE_PATHS.gb}
-                  fill="url(#mapGrad)"
-                  stroke="#0E6E6E"
-                  strokeWidth="1"
-                  strokeOpacity="0.35"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d={PROVINCE_PATHS.ak}
-                  fill="url(#mapGrad)"
-                  stroke="#0E6E6E"
-                  strokeWidth="1"
-                  strokeOpacity="0.25"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d={PROVINCE_PATHS.fata}
-                  fill="url(#mapGrad)"
-                  stroke="#0E6E6E"
-                  strokeWidth="0.8"
-                  strokeOpacity="0.2"
-                  strokeLinejoin="round"
-                />
+                {/* KPK — highlighted */}
+                {PROVINCES.filter((p) => p.active).map((p) => (
+                  <path
+                    key={p.code}
+                    d={p.d}
+                    fill="url(#kpkGrad)"
+                    stroke="#0E6E6E"
+                    strokeWidth="1.8"
+                    strokeOpacity="0.75"
+                    strokeLinejoin="round"
+                    filter="url(#provShadow)"
+                  />
+                ))}
 
-                {/* KPK — highlighted as active province */}
-                <path
-                  d={PROVINCE_PATHS.kpk}
-                  fill="url(#kpkGrad)"
-                  stroke="#0E6E6E"
-                  strokeWidth="1.5"
-                  strokeOpacity="0.7"
-                  strokeLinejoin="round"
-                />
-
-                {/* Peshawar marker — pulsing glow */}
+                {/* Peshawar pulse rings */}
                 <circle
                   cx={PESHAWAR.cx}
                   cy={PESHAWAR.cy}
-                  r="20"
+                  r="18"
                   fill="url(#markerGlow)"
                   className="motion-safe:animate-ping"
-                  style={{ animationDuration: '2.8s' }}
+                  style={{
+                    animationDuration: '2.5s',
+                    transformOrigin: `${PESHAWAR.cx}px ${PESHAWAR.cy}px`,
+                  }}
                 />
-                <circle
-                  cx={PESHAWAR.cx}
-                  cy={PESHAWAR.cy}
-                  r="10"
-                  fill="#E2725B"
-                  fillOpacity="0.18"
-                />
-                <circle
-                  cx={PESHAWAR.cx}
-                  cy={PESHAWAR.cy}
-                  r="5.5"
-                  fill="#E2725B"
-                  fillOpacity="0.9"
-                />
-                <circle cx={PESHAWAR.cx} cy={PESHAWAR.cy} r="2.5" fill="white" fillOpacity="0.95" />
+                <circle cx={PESHAWAR.cx} cy={PESHAWAR.cy} r="9" fill="#E2725B" fillOpacity="0.15" />
+                <circle cx={PESHAWAR.cx} cy={PESHAWAR.cy} r="5" fill="#E2725B" fillOpacity="0.92" />
+                <circle cx={PESHAWAR.cx} cy={PESHAWAR.cy} r="2.2" fill="white" fillOpacity="0.95" />
 
-                {/* Connector line to label */}
+                {/* Callout line + label */}
                 <line
-                  x1={PESHAWAR.cx}
-                  y1={PESHAWAR.cy - 6}
-                  x2={PESHAWAR.cx + 18}
+                  x1={PESHAWAR.cx + 5}
+                  y1={PESHAWAR.cy - 5}
+                  x2={PESHAWAR.cx + 22}
                   y2={PESHAWAR.cy - 22}
                   stroke="#E2725B"
                   strokeWidth="1"
-                  strokeOpacity="0.6"
+                  strokeOpacity="0.7"
                   strokeDasharray="2 2"
                 />
-
-                {/* Label callout */}
                 <rect
-                  x={PESHAWAR.cx + 18}
+                  x={PESHAWAR.cx + 22}
                   y={PESHAWAR.cy - 38}
-                  width="90"
-                  height="30"
+                  width="88"
+                  height="28"
                   rx="5"
                   fill="#0E6E6E"
-                  fillOpacity="0.88"
+                  fillOpacity="0.92"
                 />
                 <text
-                  x={PESHAWAR.cx + 22}
+                  x={PESHAWAR.cx + 27}
                   y={PESHAWAR.cy - 24}
                   fill="white"
                   fontSize="7.5"
@@ -301,55 +227,54 @@ export function PakistanMapTeaser({ siteCount }: PakistanMapTeaserProps) {
                   Peshawar, KPK
                 </text>
                 <text
-                  x={PESHAWAR.cx + 22}
+                  x={PESHAWAR.cx + 27}
                   y={PESHAWAR.cy - 14}
                   fill="white"
                   fontSize="6"
-                  fontWeight="400"
                   fontFamily="system-ui, sans-serif"
                   opacity="0.8"
                 >
                   KMU — NOG Lab
                 </text>
 
-                {/* Map title */}
+                {/* North arrow */}
                 <text
-                  x="170"
-                  y="268"
+                  x="285"
+                  y="24"
                   textAnchor="middle"
-                  fontSize="8"
+                  fontSize="7"
+                  fontWeight="700"
                   fill="#0E6E6E"
                   fillOpacity="0.55"
                   fontFamily="system-ui, sans-serif"
-                  letterSpacing="0.08em"
-                  fontWeight="500"
-                >
-                  PAKISTAN — {siteCount} ACTIVE RESEARCH {siteCount === 1 ? 'SITE' : 'SITES'}
-                </text>
-
-                {/* North indicator */}
-                <text
-                  x="312"
-                  y="22"
-                  fontSize="8"
-                  fill="#0E6E6E"
-                  fillOpacity="0.5"
-                  fontFamily="system-ui, sans-serif"
-                  fontWeight="700"
-                  textAnchor="middle"
                 >
                   N
                 </text>
                 <line
-                  x1="312"
-                  y1="25"
-                  x2="312"
+                  x1="285"
+                  y1="27"
+                  x2="285"
                   y2="38"
                   stroke="#0E6E6E"
-                  strokeOpacity="0.35"
+                  strokeOpacity="0.3"
                   strokeWidth="1"
                 />
-                <polygon points="312,25 309,33 315,33" fill="#0E6E6E" fillOpacity="0.45" />
+                <polygon points="285,27 282.5,34 287.5,34" fill="#0E6E6E" fillOpacity="0.4" />
+
+                {/* Caption */}
+                <text
+                  x="150"
+                  y="316"
+                  textAnchor="middle"
+                  fontSize="7.5"
+                  fill="#0E6E6E"
+                  fillOpacity="0.5"
+                  fontFamily="system-ui, sans-serif"
+                  letterSpacing="0.06em"
+                  fontWeight="500"
+                >
+                  PAKISTAN — {siteCount} ACTIVE RESEARCH {siteCount === 1 ? 'SITE' : 'SITES'}
+                </text>
               </svg>
             </div>
           </FadeUp>
