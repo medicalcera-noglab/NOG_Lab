@@ -33,8 +33,8 @@ export function NavLinks({ links, mobile = false, onNavigate }: Props) {
                 'transition-colors duration-150 focus-visible:outline-none',
                 'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                 isActive
-                  ? 'text-primary bg-accent/10'
-                  : 'text-fg hover:bg-surface-raised hover:text-primary',
+                  ? 'bg-white/10 text-[#1A9090]'
+                  : 'text-white/80 hover:bg-white/10 hover:text-white',
               )}
             >
               {link.label}
@@ -61,8 +61,8 @@ export function NavLinks({ links, mobile = false, onNavigate }: Props) {
                 'transition-colors duration-150 focus-visible:outline-none',
                 'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                 isActive
-                  ? 'text-primary bg-accent/10 font-semibold'
-                  : 'text-fg/70 hover:text-fg hover:bg-surface-raised',
+                  ? 'bg-white/10 font-semibold text-[#1A9090]'
+                  : 'text-white/70 hover:bg-white/10 hover:text-white',
               )}
             >
               {link.label}

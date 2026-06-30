@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { ExternalLink, BookOpen, MapPin, Download } from 'lucide-react'
 import { getSiteSettings, getNavigation } from '@/lib/data'
 import { getLegalPages } from '@/lib/data/legal'
-import { lexicalToText } from '@/lib/richtext'
 import { Container } from './ui/Container'
 import { CookiePreferencesLink } from './CookiePreferencesLink'
 import { CellBlob } from './motifs/CellBlob'
@@ -10,10 +9,10 @@ import { buttonVariants } from './ui/Button'
 import type { Media } from '@/../../payload-types'
 
 const LINK_CLASS =
-  'text-fg/65 hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none'
+  'text-white/60 hover:text-white rounded text-sm transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50'
 
 const SOCIAL_CLASS =
-  'inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-0.5 text-xs text-muted hover:border-accent hover:text-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-2'
+  'inline-flex items-center gap-1.5 rounded-md border border-white/20 px-2 py-0.5 text-xs text-white/60 hover:border-[#1A9090] hover:text-[#1A9090] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50'
 
 export async function Footer() {
   const [settings, navData, legal] = await Promise.all([
@@ -25,11 +24,6 @@ export async function Footer() {
   const social = settings.social ?? {}
   const hasSocial = Object.values(social).some(Boolean)
 
-  const footerBodyText = lexicalToText(
-    settings.footerText as Parameters<typeof lexicalToText>[0],
-    ' ',
-  )
-
   const brochureUrl =
     settings.brochure && typeof settings.brochure === 'object'
       ? (settings.brochure as Media).url
@@ -38,19 +32,13 @@ export async function Footer() {
   const footerGroups = navData?.footerGroups ?? []
 
   return (
-    <footer className="border-border bg-surface relative mt-auto overflow-hidden border-t">
-      {/* Decorative blobs — clipped by overflow-hidden */}
-      <CellBlob
-        className="absolute -right-32 -bottom-24 h-72 w-72 opacity-30"
-        color="var(--color-teal)"
-      />
-      <CellBlob
-        className="absolute -top-12 -left-40 h-56 w-56 opacity-15"
-        color="var(--color-sand)"
-      />
+    <footer className="relative mt-auto overflow-hidden border-t border-white/10 bg-[#071918]">
+      {/* Decorative blobs */}
+      <CellBlob className="absolute -right-32 -bottom-24 h-72 w-72 opacity-10" color="#1A9090" />
+      <CellBlob className="absolute -top-12 -left-40 h-56 w-56 opacity-8" color="#E8C9A0" />
 
       <Container className="relative z-10 max-w-screen-2xl">
-        {/* ── Main row: brand | nav groups ────────────────────────────────── */}
+        {/* Main row: brand | nav groups */}
         <div className="flex flex-col gap-10 py-10 lg:flex-row lg:gap-16">
           {/* Brand block */}
           <div className="shrink-0 space-y-3 lg:w-52">
@@ -70,15 +58,10 @@ export async function Footer() {
               />
             </div>
 
-            {/* Mission */}
-            {footerBodyText && (
-              <p className="text-muted text-xs leading-relaxed">{footerBodyText}</p>
-            )}
-
             {/* Address */}
             {settings.contactAddress && (
-              <address className="text-muted flex items-start gap-1.5 text-xs not-italic">
-                <MapPin size={12} className="text-primary mt-0.5 shrink-0" aria-hidden="true" />
+              <address className="flex items-start gap-1.5 text-xs text-white/55 not-italic">
+                <MapPin size={12} className="mt-0.5 shrink-0 text-[#1A9090]" aria-hidden="true" />
                 <span className="whitespace-pre-line">{settings.contactAddress}</span>
               </address>
             )}
@@ -137,19 +120,17 @@ export async function Footer() {
             )}
           </div>
 
-          {/* CMS-driven nav groups — auto-fill remaining space */}
+          {/* CMS-driven nav groups */}
           {footerGroups.length > 0 && (
             <div
               className="grid flex-1 gap-x-6 gap-y-8 md:gap-x-8"
               style={{
-                // auto-fit collapses empty tracks, so column count = min(groups, available space).
-                // min(140px,100%) prevents overflow on narrow containers.
                 gridTemplateColumns: 'repeat(auto-fit, minmax(min(140px, 100%), 1fr))',
               }}
             >
               {footerGroups.map((group) => (
                 <nav key={group.id ?? group.title} aria-label={group.title}>
-                  <p className="text-muted mb-3 text-xs font-semibold tracking-wider uppercase">
+                  <p className="mb-3 text-xs font-semibold tracking-wider text-white/40 uppercase">
                     {group.title}
                   </p>
                   <ul role="list" className="space-y-2">
@@ -172,9 +153,9 @@ export async function Footer() {
           )}
         </div>
 
-        {/* ── Newsletter / brochure ─────────────────────────────────────────── */}
+        {/* Newsletter / brochure */}
         {(settings.newsletterEmbedUrl || brochureUrl) && (
-          <div className="border-border flex flex-col items-start gap-4 border-t py-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col items-start gap-4 border-t border-white/10 py-6 sm:flex-row sm:items-center sm:justify-between">
             {settings.newsletterEmbedUrl && (
               <iframe
                 src={settings.newsletterEmbedUrl}
@@ -197,9 +178,9 @@ export async function Footer() {
           </div>
         )}
 
-        {/* ── Bottom bar ───────────────────────────────────────────────────── */}
-        <div className="border-border flex flex-wrap items-center justify-between gap-3 border-t py-4">
-          <p className="text-muted text-xs">
+        {/* Bottom bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 py-4">
+          <p className="text-xs text-white/40">
             {settings.copyright ?? `© ${new Date().getFullYear()} ${settings.labName}`}
           </p>
           <nav aria-label="Legal" className="flex flex-wrap items-center gap-3">

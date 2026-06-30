@@ -77,7 +77,7 @@ export function HeroSection({
                 className={cn(
                   'font-heading leading-[1.06] font-bold tracking-tight',
                   'text-[#1A1A1A]',
-                  'text-[clamp(2.8rem,8vw,5.8rem)]',
+                  'text-[clamp(1.7rem,3vw,2.4rem)]',
                   'mb-5 sm:mb-6',
                 )}
               >

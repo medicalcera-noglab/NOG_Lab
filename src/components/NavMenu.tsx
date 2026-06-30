@@ -73,9 +73,9 @@ function HamburgerIcon({ open }: { open: boolean }) {
 
 const UTIL_BTN = cn(
   'flex h-[44px] w-[44px] items-center justify-center rounded-lg',
-  'text-muted hover:text-fg hover:bg-surface-raised',
+  'text-white/70 hover:text-white hover:bg-white/10',
   'transition-colors duration-150 focus-visible:outline-none',
-  'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
+  'focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071918]',
 )
 
 export function NavMenu({ links, social, contactEmail }: NavMenuProps) {
