@@ -4,7 +4,7 @@ export {
   getFeaturedProject,
   getLatestNews,
   getCollaborators,
-  getStudySiteCount,
+  getAllStudySites,
   getHomeProjects,
   getLatestPublications,
   type HomeCounts,

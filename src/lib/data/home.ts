@@ -1,7 +1,13 @@
 import { unstable_cache, unstable_noStore as noStore } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import type { Project, NewsEvent, Collaborator, Publication } from '../../../payload-types'
+import type {
+  Project,
+  NewsEvent,
+  Collaborator,
+  Publication,
+  StudySite,
+} from '../../../payload-types'
 
 export interface HomeCounts {
   publications: number
@@ -77,16 +83,19 @@ export const getCollaborators = unstable_cache(
   { revalidate: 300, tags: ['collaborators'] },
 )
 
-export const getStudySiteCount = unstable_cache(
-  async (): Promise<number> => {
+export const getAllStudySites = unstable_cache(
+  async (): Promise<StudySite[]> => {
     const payload = await getPayload({ config })
-    const result = await payload.count({
+    const result = await payload.find({
       collection: 'study_sites',
+      sort: 'name',
+      limit: 100,
+      depth: 0,
       overrideAccess: true,
     })
-    return result.totalDocs
+    return result.docs
   },
-  ['study-site-count'],
+  ['all-study-sites'],
   { revalidate: 300, tags: ['study_sites'] },
 )
 

@@ -6,7 +6,7 @@ import {
   getFeaturedProject,
   getLatestNews,
   getCollaborators,
-  getStudySiteCount,
+  getAllStudySites,
   getPageSeo,
   resolvePageSeo,
   getAllPeople,
@@ -47,7 +47,7 @@ export default async function HomePage() {
     featuredProject,
     latestNews,
     collaborators,
-    siteCount,
+    studySites,
     about,
     people,
     themes,
@@ -59,7 +59,7 @@ export default async function HomePage() {
     getFeaturedProject(),
     getLatestNews(),
     getCollaborators(),
-    getStudySiteCount(),
+    getAllStudySites(),
     getAbout(),
     getAllPeople(),
     getAllResearchThemes(),
@@ -117,7 +117,7 @@ export default async function HomePage() {
 
       <ProjectsGrid projects={homeProjects} />
 
-      <PakistanMapTeaser siteCount={siteCount} />
+      <PakistanMapTeaser sites={studySites} />
 
       <PublicationsTeaser publications={latestPublications} />
 

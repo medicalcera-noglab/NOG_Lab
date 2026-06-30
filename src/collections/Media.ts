@@ -1,9 +1,23 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, CollectionBeforeChangeHook } from 'payload'
 import { isAdminOrEditor, isOwnMediaOrAdmin } from '../access'
 import { setCreatedByHook } from '../hooks/setCreatedBy'
 import { makeValidateMimeBytes, PUBLIC_MEDIA_MIMES } from '../hooks/validateMimeBytes'
+
+// When alt text is not provided (e.g. drag-drop upload in admin), auto-derive it
+// from the filename so the required validation doesn't block the upload.
+const autoPopulateAlt: CollectionBeforeChangeHook = ({ data }) => {
+  if (!data.alt && data.filename) {
+    const basename = String(data.filename)
+      .replace(/\.[^.]+$/, '') // strip extension
+      .replace(/[-_]/g, ' ') // dashes/underscores → spaces
+      .replace(/\s+/g, ' ')
+      .trim()
+    if (basename) data.alt = basename
+  }
+  return data
+}
 
 const validateMime = makeValidateMimeBytes(PUBLIC_MEDIA_MIMES)
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -74,7 +88,7 @@ export const Media: CollectionConfig = {
   },
   hooks: {
     beforeOperation: [validateMime],
-    beforeChange: [setCreatedByHook],
+    beforeChange: [autoPopulateAlt, setCreatedByHook],
     afterRead: [
       ({ doc }) => {
         doc.url = rewriteMediaUrl(doc.url)
@@ -94,7 +108,8 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Required: describe the image for screen readers and search engines.',
+        description:
+          'Describe the image for screen readers and search engines. Auto-filled from filename if left blank — please update it with a meaningful description.',
       },
     },
     {

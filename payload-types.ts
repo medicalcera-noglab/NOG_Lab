@@ -311,7 +311,7 @@ export interface Person {
 export interface Media {
   id: number;
   /**
-   * Required: describe the image for screen readers and search engines.
+   * Describe the image for screen readers and search engines. Auto-filled from filename if left blank — please update it with a meaningful description.
    */
   alt: string;
   caption?: string | null;

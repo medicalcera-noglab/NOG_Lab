@@ -49,13 +49,13 @@ function buildCsp(nonce: string): string {
     `script-src 'self' 'nonce-${nonce}' https://www.google.com https://www.gstatic.com${isDev ? " 'unsafe-eval'" : ''}`,
     // unsafe-inline required for Tailwind utility style="" and framer-motion DOM mutations
     "style-src 'self' 'unsafe-inline'",
-    // OSM tiles (light) + CARTO tiles (dark) + Cloudinary CDN + optional R2 CDN
-    `img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://res.cloudinary.com${r2Part}`,
+    // OSM tiles + CARTO tiles + Cloudinary CDN + optional R2 CDN + Wikimedia (seed/demo images)
+    `img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://res.cloudinary.com https://upload.wikimedia.org https://images.unsplash.com https://images.pexels.com${r2Part}`,
     "font-src 'self'",
     // Google Maps embed (contact page) + reCAPTCHA v3 iframe + optional newsletter embed
     `frame-src https://www.google.com${newsletterPart}`,
-    // Crossref DOI/citation API
-    "connect-src 'self' https://api.crossref.org",
+    // Crossref DOI/citation API; ws:/wss: for Turbopack HMR WebSocket in dev
+    `connect-src 'self' https://api.crossref.org${isDev ? ' ws: wss:' : ''}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
