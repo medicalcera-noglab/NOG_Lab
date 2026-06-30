@@ -9,10 +9,10 @@ import { buttonVariants } from './ui/Button'
 import type { Media } from '@/../../payload-types'
 
 const LINK_CLASS =
-  'text-white/60 hover:text-white rounded text-sm transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50'
+  'text-white hover:text-[#1A9090] rounded text-sm transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50'
 
 const SOCIAL_CLASS =
-  'inline-flex items-center gap-1.5 rounded-md border border-white/20 px-2 py-0.5 text-xs text-white/60 hover:border-[#1A9090] hover:text-[#1A9090] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50'
+  'inline-flex items-center gap-1.5 rounded-md border border-white/40 px-2 py-0.5 text-xs text-white hover:border-[#1A9090] hover:text-[#1A9090] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50'
 
 export async function Footer() {
   const [settings, navData, legal] = await Promise.all([
@@ -60,7 +60,7 @@ export async function Footer() {
 
             {/* Address */}
             {settings.contactAddress && (
-              <address className="flex items-start gap-1.5 text-xs text-white/55 not-italic">
+              <address className="flex items-start gap-1.5 text-xs text-white/80 not-italic">
                 <MapPin size={12} className="mt-0.5 shrink-0 text-[#1A9090]" aria-hidden="true" />
                 <span className="whitespace-pre-line">{settings.contactAddress}</span>
               </address>

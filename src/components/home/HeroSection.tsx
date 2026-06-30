@@ -39,8 +39,9 @@ export function HeroSection({
         className="absolute inset-0"
         style={{
           background: [
-            'radial-gradient(ellipse 70% 55% at 78% 20%, rgba(14,110,110,0.06), transparent 60%)',
-            'radial-gradient(ellipse 50% 45% at 10% 80%, rgba(226,114,91,0.05), transparent 55%)',
+            'radial-gradient(ellipse 80% 60% at 75% 15%, rgba(14,110,110,0.13), transparent 60%)',
+            'radial-gradient(ellipse 55% 50% at 5% 90%, rgba(226,114,91,0.09), transparent 55%)',
+            'radial-gradient(ellipse 40% 40% at 50% 50%, rgba(14,110,110,0.04), transparent 70%)',
           ].join(', '),
         }}
       />
@@ -65,7 +66,7 @@ export function HeroSection({
             <div className="flex flex-col">
               {/* Eyebrow */}
               <p
-                className="mb-4 text-[10px] font-semibold tracking-[0.22em] uppercase"
+                className="mb-5 text-xs font-bold tracking-[0.28em] uppercase"
                 style={{ color: '#0E6E6E' }}
               >
                 {labName}
@@ -74,9 +75,9 @@ export function HeroSection({
               {/* H1 */}
               <h1
                 className={cn(
-                  'font-heading leading-[1.06] font-bold tracking-tight',
+                  'font-heading leading-[1.1] font-bold tracking-tight',
                   'text-[#1A1A1A]',
-                  'text-[clamp(1.7rem,3vw,2.4rem)]',
+                  'text-[clamp(2.2rem,5vw,4rem)]',
                   'mb-5 sm:mb-6',
                 )}
               >

@@ -34,7 +34,7 @@ export function NavLinks({ links, mobile = false, onNavigate }: Props) {
                 'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                 isActive
                   ? 'bg-white/10 text-[#1A9090]'
-                  : 'text-white/80 hover:bg-white/10 hover:text-white',
+                  : 'text-white hover:bg-white/10 hover:text-white',
               )}
             >
               {link.label}
@@ -62,7 +62,7 @@ export function NavLinks({ links, mobile = false, onNavigate }: Props) {
                 'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                 isActive
                   ? 'bg-white/10 font-semibold text-[#1A9090]'
-                  : 'text-white/70 hover:bg-white/10 hover:text-white',
+                  : 'text-white hover:bg-white/10 hover:text-white',
               )}
             >
               {link.label}
