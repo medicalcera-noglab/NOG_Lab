@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
+import { headers } from 'next/headers'
 import Script from 'next/script'
 import { ThemeProvider } from '@/providers/ThemeProvider'
 import { ConsentProvider } from '@/providers/ConsentProvider'
@@ -45,7 +46,8 @@ export const metadata: Metadata = {
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getSiteSettings()
+  const [settings, requestHeaders] = await Promise.all([getSiteSettings(), headers()])
+  const nonce = requestHeaders.get('x-nonce') ?? undefined
 
   return (
     <html
@@ -60,7 +62,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
           id="theme-init"
           strategy="beforeInteractive"
         >{`(function(){try{var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}})();`}</Script>
-        <ThemeProvider>
+        <ThemeProvider nonce={nonce}>
           <ConsentProvider>
             <a
               href="#main-content"
