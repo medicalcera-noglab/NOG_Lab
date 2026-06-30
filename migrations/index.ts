@@ -30,6 +30,7 @@ import * as migration_20260628_000003_inquiries_file_urls from './20260628_00000
 import * as migration_20260628_000004_inquiries_reply_text from './20260628_000004_inquiries_reply_text'
 import * as migration_20260628_000005_site_settings_founding_year from './20260628_000005_site_settings_founding_year'
 import * as migration_20260630_000001_site_settings_hero_motto from './20260630_000001_site_settings_hero_motto'
+import * as migration_20260630_000002_fix_version_columns from './20260630_000002_fix_version_columns'
 
 export const migrations = [
   {
@@ -191,5 +192,10 @@ export const migrations = [
     up: migration_20260630_000001_site_settings_hero_motto.up,
     down: migration_20260630_000001_site_settings_hero_motto.down,
     name: '20260630_000001_site_settings_hero_motto',
+  },
+  {
+    up: migration_20260630_000002_fix_version_columns.up,
+    down: migration_20260630_000002_fix_version_columns.down,
+    name: '20260630_000002_fix_version_columns',
   },
 ]
