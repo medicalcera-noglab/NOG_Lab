@@ -122,7 +122,7 @@ export default async function ResearchPage({ searchParams }: ResearchPageProps) 
             <a
               href="#themes"
               className={cn(
-                'group flex items-center gap-4 rounded-2xl border-2 border-[#0E6E6E]/30 bg-white p-6',
+                'group bg-surface flex items-center gap-4 rounded-2xl border-2 border-[#0E6E6E]/30 p-6',
                 'transition-all duration-200 hover:border-[#0E6E6E] hover:shadow-md',
                 'focus-visible:ring-2 focus-visible:ring-[#0E6E6E] focus-visible:outline-none',
               )}
@@ -138,7 +138,7 @@ export default async function ResearchPage({ searchParams }: ResearchPageProps) 
             <a
               href="#projects"
               className={cn(
-                'group flex items-center gap-4 rounded-2xl border-2 border-[#E2725B]/30 bg-white p-6',
+                'group bg-surface flex items-center gap-4 rounded-2xl border-2 border-[#E2725B]/30 p-6',
                 'transition-all duration-200 hover:border-[#E2725B] hover:shadow-md',
                 'focus-visible:ring-2 focus-visible:ring-[#E2725B] focus-visible:outline-none',
               )}
