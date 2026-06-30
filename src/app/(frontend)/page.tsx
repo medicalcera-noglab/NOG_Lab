@@ -16,7 +16,6 @@ import {
   getLatestPublications,
 } from '@/lib/data'
 import { HeroSection } from '@/components/home/HeroSection'
-import { BigQuestionsStrip } from '@/components/home/BigQuestionsStrip'
 import { AboutTeaser } from '@/components/home/AboutTeaser'
 import { FeaturedProject } from '@/components/home/FeaturedProject'
 import { ProjectsGrid } from '@/components/home/ProjectsGrid'
@@ -103,10 +102,6 @@ export default async function HomePage() {
         counts={{ publications: counts.publications, teamMembers: counts.teamMembers }}
         foundingYear={settings.foundingYear ?? null}
       />
-
-      {settings.bigQuestions?.length ? (
-        <BigQuestionsStrip questions={settings.bigQuestions} />
-      ) : null}
 
       <AboutTeaser about={about} themes={themes} />
 

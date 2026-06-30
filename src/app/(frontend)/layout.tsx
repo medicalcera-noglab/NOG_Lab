@@ -34,6 +34,14 @@ export const metadata: Metadata = {
   },
   description:
     'The NOG Lab at Khyber Medical University investigates how nutrition and microbial communities influence human health, with emphasis on the oral and gut microbiomes and malnutrition.',
+  icons: {
+    icon: [
+      { url: '/logo-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logo-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: '/logo-192.png', sizes: '192x192', type: 'image/png' }],
+    shortcut: '/logo-192.png',
+  },
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {

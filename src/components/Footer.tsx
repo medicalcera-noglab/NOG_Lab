@@ -10,7 +10,7 @@ import { buttonVariants } from './ui/Button'
 import type { Media } from '@/../../payload-types'
 
 const LINK_CLASS =
-  'text-muted hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none'
+  'text-fg/65 hover:text-fg focus-visible:ring-ring rounded text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none'
 
 const SOCIAL_CLASS =
   'inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-0.5 text-xs text-muted hover:border-accent hover:text-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-2'

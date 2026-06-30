@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/metadata'
 import Link from 'next/link'
-import { List, Map } from 'lucide-react'
+import { List, Map, Microscope, FolderOpen } from 'lucide-react'
 import {
   getSiteSettings,
   getResearchPageData,
@@ -115,10 +115,53 @@ export default async function ResearchPage({ searchParams }: ResearchPageProps) 
         tint="#0E6E6E"
       />
 
+      {/* Top navigation — choose between Research Themes and Research Projects */}
+      <section className="bg-bg border-border border-b py-8 md:py-12">
+        <Container>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+            <a
+              href="#themes"
+              className={cn(
+                'group flex items-center gap-4 rounded-2xl border-2 border-[#0E6E6E]/30 bg-white p-6',
+                'transition-all duration-200 hover:border-[#0E6E6E] hover:shadow-md',
+                'focus-visible:ring-2 focus-visible:ring-[#0E6E6E] focus-visible:outline-none',
+              )}
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0E6E6E]/10">
+                <Microscope size={24} className="text-[#0E6E6E]" aria-hidden="true" />
+              </span>
+              <div>
+                <p className="font-heading text-fg text-lg font-bold">Research Themes</p>
+                <p className="text-muted mt-0.5 text-sm">Explore our core scientific focus areas</p>
+              </div>
+            </a>
+            <a
+              href="#projects"
+              className={cn(
+                'group flex items-center gap-4 rounded-2xl border-2 border-[#E2725B]/30 bg-white p-6',
+                'transition-all duration-200 hover:border-[#E2725B] hover:shadow-md',
+                'focus-visible:ring-2 focus-visible:ring-[#E2725B] focus-visible:outline-none',
+              )}
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#E2725B]/10">
+                <FolderOpen size={24} className="text-[#E2725B]" aria-hidden="true" />
+              </span>
+              <div>
+                <p className="font-heading text-fg text-lg font-bold">Research Projects</p>
+                <p className="text-muted mt-0.5 text-sm">
+                  Browse all active and completed projects
+                </p>
+              </div>
+            </a>
+          </div>
+        </Container>
+      </section>
+
       {/* Sticky in-page nav */}
       {themes.length > 0 && <ResearchInPageNav themes={allThemes} />}
 
       {/* One section per theme */}
+      <div id="themes" className="scroll-mt-20" />
       {themes.length === 0 ? (
         <div className="bg-bg py-10 text-center">
           <p className="text-muted text-sm">No research themes found.</p>

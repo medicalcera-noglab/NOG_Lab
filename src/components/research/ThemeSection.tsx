@@ -109,44 +109,6 @@ export function ThemeSection({
                 </div>
               )}
 
-              {/* Related projects */}
-              {projects.length > 0 && (
-                <div className="mb-8">
-                  <h3 className="font-heading text-fg mb-3 text-sm font-bold tracking-wide uppercase">
-                    Projects
-                  </h3>
-                  <ul role="list" className="flex flex-col gap-3">
-                    {projects.map((project) => (
-                      <li key={project.id}>
-                        <Link
-                          href={`/projects/${project.slug ?? project.id}`}
-                          className={cn(
-                            'border-border bg-bg group flex items-center justify-between',
-                            'rounded-lg border px-4 py-3',
-                            'transition-shadow duration-150 hover:shadow-sm',
-                            'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
-                          )}
-                        >
-                          <span className="font-heading text-fg text-sm font-bold">
-                            {project.title}
-                          </span>
-                          <span
-                            className={cn(
-                              'ml-3 shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold',
-                              project.status === 'ongoing'
-                                ? 'bg-primary/10 text-primary'
-                                : 'bg-surface-raised text-muted',
-                            )}
-                          >
-                            {project.status}
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
               {/* Related publications */}
               {publications.length > 0 && (
                 <div>

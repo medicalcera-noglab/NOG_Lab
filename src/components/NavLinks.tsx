@@ -62,7 +62,7 @@ export function NavLinks({ links, mobile = false, onNavigate }: Props) {
                 'focus-visible:ring-ring focus-visible:ring-offset-bg focus-visible:ring-2 focus-visible:ring-offset-2',
                 isActive
                   ? 'text-primary bg-accent/10 font-semibold'
-                  : 'text-muted hover:text-fg hover:bg-surface-raised',
+                  : 'text-fg/70 hover:text-fg hover:bg-surface-raised',
               )}
             >
               {link.label}

@@ -46,11 +46,11 @@ export function HeroTypewriter({ text, startDelay = 1200, speed = 32 }: HeroType
   }, [text, startDelay, speed])
 
   return (
-    <p className="hero-tagline mb-0 max-w-xl text-base font-normal text-white/55 sm:text-lg">
+    <p className="hero-tagline mb-0 max-w-xl text-base font-normal text-[#1A1A1A]/55 sm:text-lg">
       {displayed}
       {!done && (
         <span
-          className="ml-0.5 inline-block h-[1.1em] w-[2px] translate-y-[2px] animate-pulse bg-white/50"
+          className="ml-0.5 inline-block h-[1.1em] w-[2px] translate-y-[2px] animate-pulse bg-[#0E6E6E]/50"
           aria-hidden="true"
         />
       )}
