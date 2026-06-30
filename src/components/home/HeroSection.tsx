@@ -32,10 +32,10 @@ export function HeroSection({
   return (
     <section
       aria-label="Lab introduction"
-      className="relative flex flex-col overflow-hidden bg-white"
+      className="bg-bg relative flex flex-col overflow-hidden"
       style={{ minHeight: 'calc(100svh - 4rem)' }}
     >
-      {/* Subtle brand gradient — very light */}
+      {/* Subtle brand gradient */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -54,10 +54,10 @@ export function HeroSection({
       {/* Subtle grain */}
       <GrainTexture className="absolute inset-0" opacity={0.025} />
 
-      {/* Bottom fade to white */}
+      {/* Bottom fade to bg */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--bg)] to-transparent"
       />
 
       {/* Hero content */}
@@ -67,10 +67,7 @@ export function HeroSection({
             {/* Left column: content */}
             <div className="flex flex-col">
               {/* Eyebrow */}
-              <p
-                className="mb-5 text-xs font-bold tracking-[0.28em] uppercase"
-                style={{ color: '#0E6E6E' }}
-              >
+              <p className="text-primary mb-5 text-xs font-bold tracking-[0.28em] uppercase">
                 {labName}
               </p>
 
@@ -78,7 +75,7 @@ export function HeroSection({
               <h1
                 className={cn(
                   'font-heading leading-[1.1] font-bold tracking-tight',
-                  'text-[#1A1A1A]',
+                  'text-fg',
                   'text-[clamp(2.2rem,5vw,4rem)]',
                   'mb-5 sm:mb-6',
                 )}
@@ -99,11 +96,9 @@ export function HeroSection({
               {/* Subtitle + motto */}
               {(heroSubline || heroMotto) && (
                 <div className="mb-1 flex flex-col gap-1">
-                  {heroSubline && (
-                    <p className="text-base text-[#1A1A1A]/55 sm:text-lg">{heroSubline}</p>
-                  )}
+                  {heroSubline && <p className="text-muted text-base sm:text-lg">{heroSubline}</p>}
                   {heroMotto && (
-                    <p className="text-sm font-semibold text-[#0E6E6E] italic sm:text-base">
+                    <p className="text-primary text-sm font-semibold italic sm:text-base">
                       {heroMotto}
                     </p>
                   )}
@@ -135,10 +130,10 @@ export function HeroSection({
                       className={cn(
                         'inline-flex items-center justify-center gap-2 rounded-xl px-7 font-medium',
                         'min-h-[48px] min-w-[44px] text-sm sm:text-base',
-                        'border border-[#1A1A1A]/20 text-[#1A1A1A]/70',
-                        'hover:scale-[1.03] hover:border-[#1A1A1A]/35 hover:bg-[#1A1A1A]/5 hover:text-[#1A1A1A]',
+                        'border-border text-muted border',
+                        'hover:border-fg/30 hover:bg-fg/5 hover:text-fg hover:scale-[1.03]',
                         'transition-all duration-200 active:scale-[0.97]',
-                        'focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/30 focus-visible:ring-offset-2 focus-visible:outline-none',
+                        'focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
                       )}
                     >
                       {ctaSecondary.label}
@@ -158,7 +153,7 @@ export function HeroSection({
 
       {/* Scroll cue */}
       <div aria-hidden="true" className="relative z-10 flex justify-center pb-7">
-        <ChevronDown size={22} className="hero-scroll-cue text-[#1A1A1A]/25" strokeWidth={1.5} />
+        <ChevronDown size={22} className="hero-scroll-cue text-fg/25" strokeWidth={1.5} />
       </div>
     </section>
   )
