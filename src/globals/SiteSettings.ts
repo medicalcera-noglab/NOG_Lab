@@ -45,7 +45,16 @@ export const SiteSettings: GlobalConfig = {
       label: 'Hero Subline',
       admin: {
         description:
-          'One-line descriptor shown below the headline — scientific, no marketing language.',
+          'One-line descriptor shown below the headline — e.g. "Institute of Basic Medical Science, KMU Peshawar".',
+      },
+    },
+    {
+      name: 'heroMotto',
+      type: 'text',
+      label: 'Hero Motto',
+      admin: {
+        description:
+          'Second line shown below the subline in teal italic — e.g. "Advancing Microbiome Science for Better Health".',
       },
     },
     {

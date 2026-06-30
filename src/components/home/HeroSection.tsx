@@ -10,6 +10,7 @@ interface HeroSectionProps {
   labName: string
   tagline: SiteSetting['tagline']
   heroSubline: SiteSetting['heroSubline']
+  heroMotto?: SiteSetting['heroMotto']
   ctaPrimary: SiteSetting['heroCtaPrimary']
   ctaSecondary: SiteSetting['heroCtaSecondary']
   heroMedia?: SiteSetting['heroMedia']
@@ -21,6 +22,7 @@ export function HeroSection({
   labName,
   tagline,
   heroSubline,
+  heroMotto,
   ctaPrimary,
   ctaSecondary,
 }: HeroSectionProps) {
@@ -94,21 +96,17 @@ export function HeroSection({
                 ))}
               </h1>
 
-              {/* Subtitle lines — split by \n so admin can enter two lines */}
-              {heroSubline && (
-                <div className="flex flex-col gap-1">
-                  {heroSubline.split('\n').map((line, i) => (
-                    <p
-                      key={i}
-                      className={
-                        i === 0
-                          ? 'text-base text-[#1A1A1A]/55 sm:text-lg'
-                          : 'text-sm font-semibold text-[#0E6E6E] italic sm:text-base'
-                      }
-                    >
-                      {line}
+              {/* Subtitle + motto */}
+              {(heroSubline || heroMotto) && (
+                <div className="mb-1 flex flex-col gap-1">
+                  {heroSubline && (
+                    <p className="text-base text-[#1A1A1A]/55 sm:text-lg">{heroSubline}</p>
+                  )}
+                  {heroMotto && (
+                    <p className="text-sm font-semibold text-[#0E6E6E] italic sm:text-base">
+                      {heroMotto}
                     </p>
-                  ))}
+                  )}
                 </div>
               )}
 

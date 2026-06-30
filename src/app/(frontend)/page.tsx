@@ -96,6 +96,7 @@ export default async function HomePage() {
         labName={settings.labName}
         tagline={settings.tagline}
         heroSubline={settings.heroSubline}
+        heroMotto={settings.heroMotto}
         ctaPrimary={settings.heroCtaPrimary}
         ctaSecondary={settings.heroCtaSecondary}
         heroMedia={settings.heroMedia}

@@ -1745,9 +1745,13 @@ export interface SiteSetting {
    */
   tagline?: string | null;
   /**
-   * One-line descriptor shown below the headline — scientific, no marketing language.
+   * One-line descriptor shown below the headline — e.g. "Institute of Basic Medical Science, KMU Peshawar".
    */
   heroSubline?: string | null;
+  /**
+   * Second line shown below the subline in teal italic — e.g. "Advancing Microbiome Science for Better Health".
+   */
+  heroMotto?: string | null;
   logo?: (number | null) | Media;
   /**
    * Upload the white/reversed logo variant. Shown automatically when the site is in dark mode.
@@ -2017,6 +2021,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   labName?: T;
   tagline?: T;
   heroSubline?: T;
+  heroMotto?: T;
   logo?: T;
   logoDark?: T;
   footerText?: T;
