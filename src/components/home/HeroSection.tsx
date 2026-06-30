@@ -3,7 +3,6 @@ import { ChevronDown } from 'lucide-react'
 import { GrainTexture } from '@/components/motifs/GrainTexture'
 import { HeroParticleCanvas } from './HeroParticleCanvas'
 import { HeroLogoVisual } from './HeroLogoVisual'
-import { HeroTypewriter } from './HeroTypewriter'
 import { cn } from '@/lib/utils'
 import type { SiteSetting } from '../../../payload-types'
 
@@ -94,8 +93,23 @@ export function HeroSection({
                 ))}
               </h1>
 
-              {/* Typewriter subtitle */}
-              {heroSubline && <HeroTypewriter text={heroSubline} startDelay={900} speed={30} />}
+              {/* Subtitle lines — split by \n so admin can enter two lines */}
+              {heroSubline && (
+                <div className="flex flex-col gap-1">
+                  {heroSubline.split('\n').map((line, i) => (
+                    <p
+                      key={i}
+                      className={
+                        i === 0
+                          ? 'text-base text-[#1A1A1A]/55 sm:text-lg'
+                          : 'text-sm font-semibold text-[#0E6E6E] italic sm:text-base'
+                      }
+                    >
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              )}
 
               {/* CTAs */}
               {(ctaPrimary?.label || ctaSecondary?.label) && (
