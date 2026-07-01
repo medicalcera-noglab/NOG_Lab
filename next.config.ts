@@ -4,6 +4,16 @@ import { withPayload } from '@payloadcms/next/withPayload'
 import { withSentryConfig } from '@sentry/nextjs'
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      // Cloudinary CDN — media images stored in Cloudinary
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      // Wikimedia / Unsplash / Pexels — demo/seed images
+      { protocol: 'https', hostname: 'upload.wikimedia.org' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'images.pexels.com' },
+    ],
+  },
   // sharp is a native module (.node binaries) — Turbopack cannot bundle it.
   // Marking it external makes Next.js require() it at runtime instead.
   serverExternalPackages: ['sharp'],
