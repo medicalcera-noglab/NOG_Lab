@@ -2,15 +2,16 @@
  * Storage adapters for Payload CMS.
  *
  * Priority (first match wins):
- *   1. R2 (Cloudflare)   — set all 5 R2_* vars           → covers media + applicant_files
- *   2. Cloudinary         — set CLOUDINARY_* vars          → covers media only
- *   3. Vercel Blob        — set BLOB_READ_WRITE_TOKEN      → covers media + applicant_files
- *   4. Local disk         — no cloud vars (dev only; not writable on Vercel serverless)
+ *   1. R2 (Cloudflare)  — set all 5 R2_* vars          → media + applicant_files
+ *   2. Cloudinary        — set CLOUDINARY_* vars         → media only
+ *   3. Vercel Blob       — set BLOB_READ_WRITE_TOKEN     → media + applicant_files
+ *   4. Local disk        — dev-only; not writable on Vercel serverless
  *
- * On Vercel without any cloud storage configured, uploads fail because the
- * serverless filesystem is read-only.  Create a Vercel Blob store in the
- * dashboard (Storage → Connect Store) and the BLOB_READ_WRITE_TOKEN env var
- * is added automatically.
+ * Cloudinary setup (recommended):
+ *   CLOUDINARY_CLOUD_NAME=your-cloud-name
+ *   CLOUDINARY_API_KEY=your-api-key
+ *   CLOUDINARY_API_SECRET=your-api-secret
+ *   Add these to Vercel → Settings → Environment Variables.
  */
 import { s3Storage } from '@payloadcms/storage-s3'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
@@ -49,6 +50,11 @@ function hasCloudinary(): boolean {
   )
 }
 
+/** Strip file extension to get the Cloudinary public_id segment. */
+function toPublicId(filename: string): string {
+  return filename.replace(/\.[^.]+$/, '')
+}
+
 function buildCloudinaryPlugin(): Plugin {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
@@ -56,46 +62,51 @@ function buildCloudinaryPlugin(): Plugin {
     api_secret: process.env.CLOUDINARY_API_SECRET!,
   })
 
-  const handleUpload: HandleUpload = async ({ data, file }) => {
-    const buffer = file.buffer
-    const result = await new Promise<{ public_id: string; secure_url: string }>(
-      (resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              folder: 'nog-lab/media',
-              public_id: file.filename.replace(/\.[^.]+$/, ''),
-              overwrite: true,
-              resource_type: 'auto',
-            },
-            (err, result) => {
-              if (err || !result) reject(err)
-              else resolve(result as { public_id: string; secure_url: string })
-            },
-          )
-          .end(buffer)
-      },
-    )
-    data.filename = result.public_id.split('/').pop() ?? file.filename
-    return data
+  // handleUpload is called once per file (original + each image size variant).
+  // We upload each file to Cloudinary and return nothing — URL generation is
+  // handled by generateURL via the beforeChange hooks injected by the plugin.
+  // Do NOT modify data.filename here: it corrupts the main filename when called
+  // for size variants (the calls run in parallel via Promise.all).
+  const handleUpload: HandleUpload = async ({ file }) => {
+    const publicId = `nog-lab/media/${toPublicId(file.filename)}`
+    await new Promise<void>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          { public_id: publicId, overwrite: true, resource_type: 'auto' },
+          (err, result) => {
+            if (err || !result) reject(err ?? new Error('Cloudinary upload failed'))
+            else resolve()
+          },
+        )
+        .end(file.buffer)
+    })
+    // Return undefined — filtered out of uploadMetadata, no unnecessary payload.update()
   }
 
-  const handleDelete: HandleDelete = async ({ doc }) => {
-    const publicId = `nog-lab/media/${doc.filename}`
+  // handleDelete is called for each file being removed (original + size variants).
+  const handleDelete: HandleDelete = async ({ filename }) => {
+    const publicId = `nog-lab/media/${toPublicId(filename)}`
     await cloudinary.uploader.destroy(publicId, { resource_type: 'auto' }).catch(() => {})
   }
 
+  // generateURL is called by the beforeChange hook on the url field (and each size
+  // variant url field) to build the CDN URL that gets stored in the database.
+  // filename in the DB always includes the extension (e.g. photo.jpg, photo-300x200.webp)
+  // so we strip it before building the Cloudinary public_id.
   const generateURL: GenerateURL = ({ filename }) => {
-    return cloudinary.url(`nog-lab/media/${filename}`, {
+    const publicId = `nog-lab/media/${toPublicId(filename)}`
+    return cloudinary.url(publicId, {
       secure: true,
       fetch_format: 'auto',
       quality: 'auto',
     })
   }
 
+  // staticHandler is a fallback redirect — only reached when
+  // disablePayloadAccessControl is false (not our case) or via clientUploadContext.
   const staticHandler: StaticHandler = (_req, { params: { filename } }) => {
-    const url = cloudinary.url(`nog-lab/media/${filename}`, { secure: true })
-    return Response.redirect(url)
+    const publicId = `nog-lab/media/${toPublicId(filename)}`
+    return Response.redirect(cloudinary.url(publicId, { secure: true }))
   }
 
   const adapter: Adapter = () => ({
@@ -110,39 +121,31 @@ function buildCloudinaryPlugin(): Plugin {
     collections: {
       media: {
         adapter,
+        // Direct Cloudinary URLs in DB — no Payload access-control proxy
         disablePayloadAccessControl: true,
+        // Files live in Cloudinary, not on local disk
         disableLocalStorage: true,
       },
     },
   })
 }
 
-// ── Vercel Blob config ───────────────────────────────────────────────────────
+// ── Vercel Blob config (fallback when Cloudinary absent) ─────────────────────
 
 function hasVercelBlob(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN)
 }
 
-/**
- * Vercel Blob for both media and applicant_files.
- * The official @payloadcms/storage-vercel-blob package disables itself when
- * BLOB_READ_WRITE_TOKEN is missing, so it's safe to always add this plugin.
- * Files are stored with `access: 'public'` (Vercel Blob hobby plan only).
- */
 function buildVercelBlobPlugin(token: string): Plugin {
   return vercelBlobStorage({
     token,
     collections: {
-      media: {
-        prefix: 'media',
-      },
-      applicant_files: {
-        prefix: 'applicant-files',
-      },
+      media: { prefix: 'media' },
+      applicant_files: { prefix: 'applicant-files' },
     },
     access: 'public',
     addRandomSuffix: false,
-    cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
+    cacheControlMaxAge: 60 * 60 * 24 * 365,
   })
 }
 
@@ -153,7 +156,7 @@ let _warnedOnce = false
 export function buildStoragePlugin(): Plugin[] {
   const plugins: Plugin[] = []
 
-  // Priority 1: R2 — handles both collections
+  // Priority 1: R2 — covers both collections
   if (hasR2()) {
     const endpoint = `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
     const publicBase = (process.env.R2_PUBLIC_URL ?? '').replace(/\/$/, '')
@@ -186,12 +189,12 @@ export function buildStoragePlugin(): Plugin[] {
     return plugins
   }
 
-  // Priority 2: Cloudinary — handles media only
+  // Priority 2: Cloudinary — covers media
   if (hasCloudinary()) {
     plugins.push(buildCloudinaryPlugin())
   }
 
-  // Priority 3: Vercel Blob — handles media (when Cloudinary absent) + applicant_files
+  // Priority 3: Vercel Blob — covers media (when Cloudinary absent) + applicant_files
   if (hasVercelBlob()) {
     const blobToken = process.env.BLOB_READ_WRITE_TOKEN!
     try {
@@ -205,11 +208,8 @@ export function buildStoragePlugin(): Plugin[] {
     _warnedOnce = true
     console.warn(
       '[NOG Lab] No cloud storage configured — media uploads use local disk.\n' +
-        '  On Vercel this will fail. To fix:\n' +
-        '  1. Go to Vercel dashboard → Storage → Create a Blob store\n' +
-        '     (BLOB_READ_WRITE_TOKEN is added to your project automatically)\n' +
-        '  OR set CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET\n' +
-        '  OR set all R2_* variables for Cloudflare R2.',
+        '  On Vercel this fails. Add to Vercel → Settings → Environment Variables:\n' +
+        '    CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET',
     )
   }
 
