@@ -64,12 +64,12 @@ function buildCsp(nonce: string): string {
   ].join('; ')
 }
 
-function applyHeaders(res: NextResponse, nonce: string): NextResponse {
+function applyHeaders(res: NextResponse, nonce: string, csp?: string): NextResponse {
   const isProd = process.env.NODE_ENV === 'production'
   if (isProd) {
     res.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
   }
-  res.headers.set('Content-Security-Policy', buildCsp(nonce))
+  res.headers.set('Content-Security-Policy', csp ?? buildCsp(nonce))
   res.headers.set('X-Content-Type-Options', 'nosniff')
   res.headers.set('X-Frame-Options', 'DENY')
   res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
@@ -98,10 +98,17 @@ export function middleware(request: NextRequest): NextResponse {
 
   // Generate a fresh nonce for this request.
   const nonce = buildNonce()
+  // Build CSP once so the same value goes on both request and response headers.
+  // Next.js reads content-security-policy from REQUEST headers (app-render.js line ~167)
+  // to extract the nonce and apply it to automatically injected <script> tags.
+  // We must set it on the request AND the response so they always match.
+  const csp = buildCsp(nonce)
 
-  // Modified request headers so Server Components can read x-nonce via headers().
+  // Modified request headers so Server Components can read x-nonce via headers(),
+  // AND so Next.js app-render can extract the nonce from content-security-policy.
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-nonce', nonce)
+  requestHeaders.set('content-security-policy', csp)
 
   // 3. Admin auth redirect (UX only — Payload owns real access control).
   // Allow /admin/login and /admin/create-first-user through without a token.
@@ -111,14 +118,14 @@ export function middleware(request: NextRequest): NextResponse {
     if (!token) {
       const loginUrl = new URL('/admin/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
-      return applyHeaders(NextResponse.redirect(loginUrl), nonce)
+      return applyHeaders(NextResponse.redirect(loginUrl), nonce, csp)
     }
   }
 
   // 4. Pass-through with nonce in request headers so Server Components can read x-nonce.
   const res = NextResponse.next({ request: { headers: requestHeaders } })
 
-  return applyHeaders(res, nonce)
+  return applyHeaders(res, nonce, csp)
 }
 
 function buildNonce(): string {
