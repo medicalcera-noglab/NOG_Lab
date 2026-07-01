@@ -11,6 +11,7 @@
  * Attach this hook to the beforeOperation array of any upload collection.
  */
 import type { CollectionBeforeOperationHook } from 'payload'
+import { APIError } from 'payload'
 import { fileTypeFromBuffer } from 'file-type'
 
 export type MimeAllowlist = ReadonlySet<string>
@@ -45,9 +46,11 @@ export function makeValidateMimeBytes(allowlist: MimeAllowlist): CollectionBefor
       // them as 'application/zip'. Fall through to declared MIME in that case.
       if (detected.mime !== 'application/zip') {
         if (!allowlist.has(detected.mime)) {
-          throw new Error(
-            `Rejected: detected file type '${detected.mime}' is not permitted. ` +
-              `Allowed types: ${[...allowlist].join(', ')}.`,
+          throw new APIError(
+            `File type '${detected.mime}' is not allowed. Accepted: ${[...allowlist].join(', ')}.`,
+            400,
+            null,
+            true,
           )
         }
         return args
@@ -56,9 +59,11 @@ export function makeValidateMimeBytes(allowlist: MimeAllowlist): CollectionBefor
       // (covers OOXML: .docx, .xlsx, .pptx)
       const declared = file.mimetype ?? ''
       if (!allowlist.has(declared)) {
-        throw new Error(
-          `Rejected: ZIP file with declared type '${declared}' is not permitted. ` +
-            `Allowed types: ${[...allowlist].join(', ')}.`,
+        throw new APIError(
+          `File type '${declared}' is not allowed. Accepted: ${[...allowlist].join(', ')}.`,
+          400,
+          null,
+          true,
         )
       }
       return args
@@ -69,8 +74,11 @@ export function makeValidateMimeBytes(allowlist: MimeAllowlist): CollectionBefor
     // allow declared MIME through only if it's already in the allowlist.
     const declared = file.mimetype ?? ''
     if (!allowlist.has(declared)) {
-      throw new Error(
-        `Rejected: could not verify file content and declared type '${declared}' is not permitted.`,
+      throw new APIError(
+        `File type '${declared}' is not allowed. Accepted: ${[...allowlist].join(', ')}.`,
+        400,
+        null,
+        true,
       )
     }
 

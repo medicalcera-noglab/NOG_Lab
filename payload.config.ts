@@ -35,6 +35,7 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   sharp,
+  debug: process.env.NODE_ENV !== 'production',
   admin: {
     user: 'users',
     importMap: {

@@ -1,12 +1,19 @@
 /**
  * Storage adapters for Payload CMS.
  *
- * media            → Cloudinary (25 GB free, CDN, image transformations)
- * applicant_files  → Vercel Blob (private documents, 500 MB free)
+ * Priority (first match wins):
+ *   1. R2 (Cloudflare)   — set all 5 R2_* vars           → covers media + applicant_files
+ *   2. Cloudinary         — set CLOUDINARY_* vars          → covers media only
+ *   3. Vercel Blob        — set BLOB_READ_WRITE_TOKEN      → covers media + applicant_files
+ *   4. Local disk         — no cloud vars (dev only; not writable on Vercel serverless)
  *
- * Falls back to local disk in dev if credentials are missing.
+ * On Vercel without any cloud storage configured, uploads fail because the
+ * serverless filesystem is read-only.  Create a Vercel Blob store in the
+ * dashboard (Storage → Connect Store) and the BLOB_READ_WRITE_TOKEN env var
+ * is added automatically.
  */
 import { s3Storage } from '@payloadcms/storage-s3'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage'
 import { v2 as cloudinary } from 'cloudinary'
 import type { Plugin } from 'payload'
@@ -17,6 +24,20 @@ import type {
   StaticHandler,
   Adapter,
 } from '@payloadcms/plugin-cloud-storage/types'
+
+// ── R2 config ────────────────────────────────────────────────────────────────
+
+const R2_VARS = [
+  'R2_ACCOUNT_ID',
+  'R2_ACCESS_KEY_ID',
+  'R2_SECRET_ACCESS_KEY',
+  'R2_BUCKET',
+  'R2_PUBLIC_URL',
+] as const
+
+function hasR2(): boolean {
+  return R2_VARS.every((v) => Boolean(process.env[v]))
+}
 
 // ── Cloudinary config ────────────────────────────────────────────────────────
 
@@ -43,7 +64,7 @@ function buildCloudinaryPlugin(): Plugin {
           .upload_stream(
             {
               folder: 'nog-lab/media',
-              public_id: file.filename.replace(/\.[^.]+$/, ''), // strip extension
+              public_id: file.filename.replace(/\.[^.]+$/, ''),
               overwrite: true,
               resource_type: 'auto',
             },
@@ -72,10 +93,7 @@ function buildCloudinaryPlugin(): Plugin {
     })
   }
 
-  const staticHandler: import('@payloadcms/plugin-cloud-storage/types').StaticHandler = (
-    _req,
-    { params: { filename } },
-  ) => {
+  const staticHandler: StaticHandler = (_req, { params: { filename } }) => {
     const url = cloudinary.url(`nog-lab/media/${filename}`, { secure: true })
     return Response.redirect(url)
   }
@@ -99,82 +117,33 @@ function buildCloudinaryPlugin(): Plugin {
   })
 }
 
-// ── Vercel Blob (private) config ─────────────────────────────────────────────
+// ── Vercel Blob config ───────────────────────────────────────────────────────
 
 function hasVercelBlob(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN)
 }
 
 /**
- * Custom adapter for applicant_files that stores blobs as `access: 'private'`.
- * The plugin's default staticHandler does a raw fetch() to the blob URL, which
- * fails for private blobs.  This adapter instead calls head() to get a signed
- * downloadUrl and redirects the authenticated user to it.
+ * Vercel Blob for both media and applicant_files.
+ * The official @payloadcms/storage-vercel-blob package disables itself when
+ * BLOB_READ_WRITE_TOKEN is missing, so it's safe to always add this plugin.
+ * Files are stored with `access: 'public'` (Vercel Blob hobby plan only).
  */
-function buildPrivateBlobPlugin(token: string): Plugin {
-  // BLOB_STORE_ID is auto-added by Vercel when you connect a Blob store.
-  // Fall back to parsing from the token if the env var is missing.
-  const storeId =
-    process.env.BLOB_STORE_ID?.toLowerCase() ??
-    token.match(/^vercel_blob_rw_([^_]+)/i)?.[1]?.toLowerCase()
-  if (!storeId) throw new Error('Cannot determine Vercel Blob store ID. Set BLOB_STORE_ID env var.')
-
-  const privateBase = `https://${storeId}.private.blob.vercel-storage.com`
-  const blobPath = (filename: string) => `applicant-files/${filename}`
-  const blobUrl = (filename: string) => `${privateBase}/${blobPath(filename)}`
-
-  const handleUpload: HandleUpload = async ({ data, file }) => {
-    const { put } = await import('@vercel/blob')
-    await put(blobPath(file.filename), file.buffer, {
-      access: 'public', // hobby plan doesn't support private blobs
-      contentType: file.mimeType,
-      token,
-    })
-    return data
-  }
-
-  const handleDelete: HandleDelete = async ({ filename }) => {
-    const { del } = await import('@vercel/blob')
-    await del(blobUrl(filename), { token }).catch(() => {})
-  }
-
-  const publicBase = `https://${storeId}.public.blob.vercel-storage.com`
-
-  const generateURL: GenerateURL = ({ filename }) => `${publicBase}/${blobPath(filename)}`
-
-  const staticHandler: StaticHandler = (_req, { params: { filename } }) =>
-    Response.redirect(`${publicBase}/${blobPath(filename)}`)
-
-  const adapter: Adapter = () => ({
-    name: 'vercel-blob-private',
-    handleUpload,
-    handleDelete,
-    generateURL,
-    staticHandler,
-  })
-
-  return cloudStoragePlugin({
+function buildVercelBlobPlugin(token: string): Plugin {
+  return vercelBlobStorage({
+    token,
     collections: {
+      media: {
+        prefix: 'media',
+      },
       applicant_files: {
-        adapter,
-        disableLocalStorage: true,
+        prefix: 'applicant-files',
       },
     },
+    access: 'public',
+    addRandomSuffix: false,
+    cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
   })
-}
-
-// ── R2 config (legacy / optional) ───────────────────────────────────────────
-
-const R2_VARS = [
-  'R2_ACCOUNT_ID',
-  'R2_ACCESS_KEY_ID',
-  'R2_SECRET_ACCESS_KEY',
-  'R2_BUCKET',
-  'R2_PUBLIC_URL',
-] as const
-
-function hasR2(): boolean {
-  return R2_VARS.every((v) => Boolean(process.env[v]))
 }
 
 // ── Main export ──────────────────────────────────────────────────────────────
@@ -184,7 +153,7 @@ let _warnedOnce = false
 export function buildStoragePlugin(): Plugin[] {
   const plugins: Plugin[] = []
 
-  // If full R2 setup exists, use it for everything (existing deployments)
+  // Priority 1: R2 — handles both collections
   if (hasR2()) {
     const endpoint = `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
     const publicBase = (process.env.R2_PUBLIC_URL ?? '').replace(/\/$/, '')
@@ -217,21 +186,17 @@ export function buildStoragePlugin(): Plugin[] {
     return plugins
   }
 
-  // Cloudinary for media (images)
+  // Priority 2: Cloudinary — handles media only
   if (hasCloudinary()) {
     plugins.push(buildCloudinaryPlugin())
   }
 
-  // Vercel Blob for applicant files only (CV/SOP uploads).
-  // Media images are handled by Cloudinary; if Cloudinary is absent they fall
-  // back to local disk. Never add vercelBlobStorage for media — its strict
-  // token-format regex throws during Payload init if the token format changes.
+  // Priority 3: Vercel Blob — handles media (when Cloudinary absent) + applicant_files
   if (hasVercelBlob()) {
     const blobToken = process.env.BLOB_READ_WRITE_TOKEN!
     try {
-      plugins.push(buildPrivateBlobPlugin(blobToken))
+      plugins.push(buildVercelBlobPlugin(blobToken))
     } catch (err) {
-      // Never let a bad token crash the whole app — log and skip
       console.error('[NOG Lab] Vercel Blob plugin failed to init:', err)
     }
   }
@@ -239,8 +204,12 @@ export function buildStoragePlugin(): Plugin[] {
   if (plugins.length === 0 && process.env.NODE_ENV !== 'test' && !_warnedOnce) {
     _warnedOnce = true
     console.warn(
-      '[NOG Lab] No cloud storage configured — using local disk. ' +
-        'Set CLOUDINARY_* + BLOB_READ_WRITE_TOKEN for production.',
+      '[NOG Lab] No cloud storage configured — media uploads use local disk.\n' +
+        '  On Vercel this will fail. To fix:\n' +
+        '  1. Go to Vercel dashboard → Storage → Create a Blob store\n' +
+        '     (BLOB_READ_WRITE_TOKEN is added to your project automatically)\n' +
+        '  OR set CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET\n' +
+        '  OR set all R2_* variables for Cloudflare R2.',
     )
   }
 
