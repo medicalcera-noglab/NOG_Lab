@@ -136,11 +136,11 @@ function hasVercelBlob(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN)
 }
 
-function buildVercelBlobPlugin(token: string): Plugin {
+function buildVercelBlobPlugin(token: string, includeMedia: boolean): Plugin {
   return vercelBlobStorage({
     token,
     collections: {
-      media: { prefix: 'media' },
+      ...(includeMedia ? { media: { prefix: 'media' } } : {}),
       applicant_files: { prefix: 'applicant-files' },
     },
     access: 'public',
@@ -194,11 +194,14 @@ export function buildStoragePlugin(): Plugin[] {
     plugins.push(buildCloudinaryPlugin())
   }
 
-  // Priority 3: Vercel Blob — covers media (when Cloudinary absent) + applicant_files
+  // Priority 3: Vercel Blob — covers applicant_files always; covers media only when Cloudinary
+  // is absent. Both plugins cannot claim media simultaneously or Vercel Blob adds a `prefix`
+  // column to the media schema that doesn't exist in the DB, breaking all media joins.
   if (hasVercelBlob()) {
     const blobToken = process.env.BLOB_READ_WRITE_TOKEN!
+    const includeMedia = !hasCloudinary() && !hasR2()
     try {
-      plugins.push(buildVercelBlobPlugin(blobToken))
+      plugins.push(buildVercelBlobPlugin(blobToken, includeMedia))
     } catch (err) {
       console.error('[NOG Lab] Vercel Blob plugin failed to init:', err)
     }
