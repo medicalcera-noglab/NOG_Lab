@@ -24,6 +24,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // Rewrite Payload's default /api/media/file/[fn] URLs to /media/[fn] so files
 // are served by Next.js static file serving from public/media/ on all hosts.
+// Cloud storage URLs (https://...) are already correct and pass through unchanged.
 function rewriteMediaUrl(url: string | null | undefined): string | null | undefined {
   if (!url) return url
   if (url.startsWith('/api/media/file/')) {
@@ -41,9 +42,16 @@ export const Media: CollectionConfig = {
     // The default string form builds /api/media/file/... which returns 404 because
     // files are served statically by Next.js from public/media/, not via Payload's API.
     adminThumbnail: ({ doc }) => {
+      // Prefer stored cloud URLs (Cloudinary / Vercel Blob / R2) when available.
+      // With disableLocalStorage:true the /media/ local path doesn't exist.
       const sizes = (doc as Record<string, unknown>).sizes as
-        | Record<string, { filename?: string }>
+        | Record<string, { url?: string; filename?: string }>
         | undefined
+      const thumbUrl = sizes?.thumbnail?.url
+      if (thumbUrl) return thumbUrl
+      const docUrl = (doc as Record<string, unknown>).url as string | undefined
+      if (docUrl) return docUrl
+      // Local disk fallback (dev without cloud storage)
       const thumbFilename = sizes?.thumbnail?.filename
       if (thumbFilename) return `/media/${encodeURIComponent(thumbFilename)}`
       const filename = (doc as Record<string, unknown>).filename as string | undefined
