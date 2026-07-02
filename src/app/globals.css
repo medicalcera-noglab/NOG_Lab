@@ -1,18 +1,20 @@
 @import 'tailwindcss';
 
 /* ─────────────────────────────────────────────
-   Dark-mode variant: triggered by [data-theme="dark"]
-   set on <html> by next-themes.
+   Dark-mode variant: triggered by [data-theme="dark"] on html.site-root.
+   Scoped to html.site-root so the Payload admin (which also sets
+   data-theme on <html>) is never affected by the frontend's CSS variables.
    ───────────────────────────────────────────── */
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where(html.site-root[data-theme=dark], html.site-root[data-theme=dark] *));
 
 /* ─────────────────────────────────────────────
-   Brand primitive tokens
+   Brand primitive tokens — safe to keep in :root.
+   These are plain color values with no dark-mode variants,
+   so they don't conflict with the Payload admin's CSS variables.
    Never reference these raw hex values in components —
    use semantic aliases below or Tailwind utilities.
    ───────────────────────────────────────────── */
 :root {
-  /* Primitives */
   --color-teal: #0e6e6e;
   --color-teal-dark: #1a9090;
   --color-sand: #e8c9a0;
@@ -21,7 +23,15 @@
   --color-coral-dark: #f08070;
   --color-ink: #1a1a1a;
   --color-paper: #f7f7f5;
+}
 
+/* ─────────────────────────────────────────────
+   Semantic aliases — scoped to html.site-root so they only apply
+   to the public-facing frontend. The Payload admin renders its own
+   <html> WITHOUT the site-root class, so these variables (and the
+   dark-mode overrides below) never bleed into /admin.
+   ───────────────────────────────────────────── */
+html.site-root {
   /* ── Light mode semantics ── */
   --bg: var(--color-paper);
   --fg: var(--color-ink);
@@ -37,8 +47,8 @@
   --ring: var(--color-teal);
 }
 
-/* ── Dark mode overrides ── */
-[data-theme='dark'] {
+/* ── Dark mode overrides — frontend only ── */
+html.site-root[data-theme='dark'] {
   --bg: #0d1117;
   --fg: #e8e6e1;
   --muted: #9a9896;
@@ -96,18 +106,19 @@
   box-sizing: border-box;
 }
 
-html {
+html.site-root {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html.site-root {
     scroll-behavior: auto;
   }
 }
 
-body {
+/* Scoped to html.site-root so background/color don't override the Payload admin. */
+html.site-root body {
   background-color: var(--bg);
   color: var(--fg);
   line-height: 1.6;
@@ -330,7 +341,7 @@ video {
    Accessible focus ring — never outline: none without replacement
    ───────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid var(--ring, var(--color-teal));
   outline-offset: 3px;
   border-radius: 3px;
 }

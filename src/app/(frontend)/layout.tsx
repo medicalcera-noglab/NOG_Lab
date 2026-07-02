@@ -52,7 +52,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
   return (
     <html
       lang="en"
-      className={`${plusJakartaSans.variable} ${inter.variable}`}
+      className={`site-root ${plusJakartaSans.variable} ${inter.variable}`}
       suppressHydrationWarning
     >
       <body className="bg-[var(--bg)] font-[family-name:var(--font-body)] text-[var(--fg)] antialiased">
