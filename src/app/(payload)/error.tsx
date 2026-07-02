@@ -1,4 +1,5 @@
 'use client'
+import { useEffect } from 'react'
 
 export default function PayloadAdminError({
   error,
@@ -7,6 +8,16 @@ export default function PayloadAdminError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  useEffect(() => {
+    console.error(
+      '[NOG Admin] Layout-level error boundary caught:',
+      error.message,
+      '\nStack:',
+      error.stack ?? 'unavailable',
+      error.digest ? `\nDigest: ${error.digest}` : '',
+    )
+  }, [error])
+
   return (
     <div
       style={{
@@ -59,7 +70,7 @@ export default function PayloadAdminError({
               color: '#1a1a1a',
             }}
           >
-            {error.message}
+            {error.stack ?? error.message}
             {error.digest ? `\n\nDigest: ${error.digest}` : ''}
           </pre>
         )}

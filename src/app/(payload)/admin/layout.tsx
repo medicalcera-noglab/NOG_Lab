@@ -5,6 +5,7 @@ import configPromise from '@payload-config'
 import React from 'react'
 import { importMap } from './importMap.js'
 import { IdleTimeout } from '@/components/admin/IdleTimeout'
+import { DiagnosticCapture } from '@/components/admin/DiagnosticCapture'
 
 const serverFunction: ServerFunctionClient = async function (args) {
   'use server'
@@ -23,6 +24,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       serverFunction={serverFunction}
       htmlProps={{ suppressHydrationWarning: true }}
     >
+      <DiagnosticCapture />
       <IdleTimeout />
       {children}
     </RootLayout>
