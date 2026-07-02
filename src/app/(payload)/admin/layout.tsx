@@ -17,7 +17,12 @@ const serverFunction: ServerFunctionClient = async function (args) {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <RootLayout config={configPromise} importMap={importMap} serverFunction={serverFunction}>
+    <RootLayout
+      config={configPromise}
+      importMap={importMap}
+      serverFunction={serverFunction}
+      htmlProps={{ suppressHydrationWarning: true }}
+    >
       <IdleTimeout />
       {children}
     </RootLayout>
