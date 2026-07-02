@@ -35,6 +35,7 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   sharp,
+  serverURL: process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://noglabkmu.org',
   debug: process.env.NODE_ENV !== 'production',
   admin: {
     user: 'users',
