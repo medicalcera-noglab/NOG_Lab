@@ -104,6 +104,67 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       serverFunction={serverFunction}
       htmlProps={{ suppressHydrationWarning: true }}
     >
+      {/*
+       * SSR BANNER — server-rendered HTML, needs ZERO JavaScript to appear.
+       * If you see this banner on screen, the server is rendering the layout.
+       * The inline script immediately changes the text when JS executes.
+       */}
+      <div
+        id="__nog_ssr_banner"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 2147483647,
+          background: '#b45309',
+          color: '#fff',
+          padding: '6px 14px',
+          fontFamily: 'ui-monospace,SFMono-Regular,monospace',
+          fontSize: '12px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
+        }}
+      >
+        <span>NOG Admin: Server-side render ✓</span>
+        <span id="__nog_js_status" style={{ opacity: 0.75 }}>
+          JavaScript: not yet running…
+        </span>
+      </div>
+      {/* This script runs the instant the browser parses it — before React */}
+      <script
+        nonce={nonce}
+        dangerouslySetInnerHTML={{
+          __html: `(function(){
+  var s=document.getElementById('__nog_js_status');
+  if(s){s.textContent='JavaScript: ✓ running';s.style.color='#86efac';s.style.opacity='1';}
+  console.log('[NOG Admin] JS executing (early script, before React)');
+  setTimeout(function(){
+    var input=document.querySelector('input[name="email"],input[type="email"]');
+    var b=document.getElementById('__nog_ssr_banner');
+    var ss=document.getElementById('__nog_js_status');
+    var cssLinks=Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(function(l){return l.href;}).join('\\n');
+    var failed=[];try{failed=performance.getEntriesByType('resource').filter(function(e){return e.responseStatus>=400||e.responseStatus===0;}).map(function(e){return e.name+' (status:'+e.responseStatus+')'});}catch(x){}
+    console.group('[NOG Admin] 10-second diagnostic');
+    console.log('JS running: YES');
+    console.log('Login form (email input):',input?'FOUND':'NOT FOUND');
+    console.log('CSS files:',cssLinks||'none');
+    console.log('Failed resources:',failed.join('\\n')||'none');
+    console.log('data-theme:',document.documentElement.getAttribute('data-theme'));
+    console.log('body bg:',getComputedStyle(document.body).backgroundColor);
+    console.log('body innerHTML:',document.body.innerHTML.substring(0,5000));
+    console.groupEnd();
+    if(input){if(b)b.style.display='none';}
+    else{
+      if(b){b.style.background='#991b1b';b.style.padding='8px 14px';}
+      if(ss){ss.style.color='#fca5a5';ss.style.opacity='1';ss.textContent='Login form NOT in DOM — check Console & Network tabs';}
+    }
+  },10000);
+})();`,
+        }}
+      />
       <script nonce={nonce} dangerouslySetInnerHTML={{ __html: earlyScript }} />
       <DiagnosticCapture />
       <IdleTimeout />
