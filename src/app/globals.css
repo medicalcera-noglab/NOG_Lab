@@ -100,12 +100,6 @@ html.site-root[data-theme='dark'] {
 /* ─────────────────────────────────────────────
    Base styles
    ───────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 html.site-root {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -338,16 +332,17 @@ video {
 }
 
 /* ─────────────────────────────────────────────
-   Accessible focus ring — never outline: none without replacement
+   Accessible focus ring — scoped to site-root so the
+   Payload admin keeps its own accessibility-outline styles.
    ───────────────────────────────────────────── */
-:focus-visible {
+html.site-root :focus-visible {
   outline: 2px solid var(--ring, var(--color-teal));
   outline-offset: 3px;
   border-radius: 3px;
 }
 
-/* Selection */
-::selection {
+/* Selection — scoped to frontend so Payload's dark-mode ::selection is not overridden */
+html.site-root ::selection {
   background-color: var(--color-teal);
   color: #fff;
 }
