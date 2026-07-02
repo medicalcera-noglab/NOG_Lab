@@ -1,43 +1,44 @@
 import Link from 'next/link'
-import { PlaceholderSvg } from '@/components/placeholders/PlaceholderSvg'
 
+/**
+ * Root-level 404 fallback — applies to ALL routes including the Payload admin.
+ * Must NOT reference frontend-only CSS variables (--bg, --fg, etc.) because
+ * globals.css is only loaded in the (frontend) route group.
+ */
 export default function NotFound() {
   return (
     <div
-      className="flex min-h-dvh flex-col items-center justify-center px-4 py-20 text-center"
-      style={{ background: 'var(--bg)', color: 'var(--fg)' }}
+      style={{
+        minHeight: '100dvh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'system-ui, sans-serif',
+        textAlign: 'center',
+        padding: '2rem',
+      }}
     >
-      <div className="mb-6 w-40 opacity-75" aria-hidden="true">
-        <PlaceholderSvg forceVariant={2} seed={404} className="h-auto w-full" />
-      </div>
-
       <p
-        className="mb-2 font-mono text-6xl font-bold"
-        style={{ color: 'var(--primary)' }}
-        aria-hidden="true"
+        style={{ fontSize: '4rem', fontWeight: 700, margin: '0 0 0.5rem', fontFamily: 'monospace' }}
       >
         404
       </p>
-
-      <h1
-        className="mb-3 text-2xl font-bold"
-        style={{ fontFamily: 'var(--font-heading)', color: 'var(--fg)' }}
-      >
-        Page not found
-      </h1>
-
-      <p className="mb-8 max-w-sm text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>
+      <h1 style={{ fontSize: '1.5rem', fontWeight: 600, margin: '0 0 1rem' }}>Page not found</h1>
+      <p style={{ margin: '0 0 2rem', maxWidth: '24rem' }}>
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
-
       <Link
         href="/"
-        className="rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
         style={{
-          background: 'var(--primary)',
-          color: 'var(--primary-fg)',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ['--tw-ring-color' as any]: 'var(--ring)',
+          display: 'inline-block',
+          padding: '0.625rem 1.25rem',
+          borderRadius: '0.5rem',
+          background: '#0e6e6e',
+          color: '#fff',
+          textDecoration: 'none',
+          fontWeight: 600,
+          fontSize: '0.875rem',
         }}
       >
         Go home
