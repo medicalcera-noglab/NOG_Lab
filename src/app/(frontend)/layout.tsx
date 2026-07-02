@@ -61,7 +61,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <Script
           id="theme-init"
           strategy="beforeInteractive"
-        >{`(function(){try{var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}})();`}</Script>
+        >{`(function(){try{var h=document.documentElement;if(!h.classList.contains('site-root'))return;var t=localStorage.getItem('theme')||'light';h.setAttribute('data-theme',t)}catch(e){}})();`}</Script>
         <ThemeProvider nonce={nonce}>
           <ConsentProvider>
             <a
