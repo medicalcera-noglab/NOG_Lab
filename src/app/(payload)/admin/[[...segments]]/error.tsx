@@ -1,6 +1,6 @@
 'use client'
 
-export default function PayloadAdminError({
+export default function AdminPageError({
   error,
   reset,
 }: {
@@ -24,26 +24,18 @@ export default function PayloadAdminError({
       <div style={{ maxWidth: '36rem', width: '100%' }}>
         <p
           style={{
-            fontSize: '2.5rem',
+            fontSize: '2rem',
             fontWeight: 700,
             margin: '0 0 0.5rem',
             fontFamily: 'monospace',
             color: '#e2725b',
           }}
         >
-          Admin Error
+          Admin Page Error
         </p>
-        <h1 style={{ fontSize: '1.125rem', fontWeight: 600, margin: '0 0 1rem', color: '#1a1a1a' }}>
-          The admin panel could not be loaded.
+        <h1 style={{ fontSize: '1rem', fontWeight: 600, margin: '0 0 1rem', color: '#1a1a1a' }}>
+          The admin page failed to load. This error is caught at the page boundary.
         </h1>
-        <p style={{ margin: '0 0 1rem', fontSize: '0.875rem', color: '#6b6b68' }}>
-          This is usually a database connection error. Check that the Neon database is active and
-          that{' '}
-          <code style={{ background: '#f0f0ee', padding: '0.1em 0.35em', borderRadius: '3px' }}>
-            DATABASE_URI
-          </code>{' '}
-          is set correctly in Vercel.
-        </p>
         {error?.message && (
           <pre
             style={{
