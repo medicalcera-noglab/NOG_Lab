@@ -38,15 +38,18 @@ const newsletterEmbedOrigin = (() => {
   }
 })()
 
-function buildCsp(nonce: string): string {
+function buildCsp(nonce: string, isAdmin = false): string {
   const isDev = process.env.NODE_ENV !== 'production'
   const r2Part = r2PublicHost ? ` ${r2PublicHost}` : ''
   const newsletterPart = newsletterEmbedOrigin ? ` ${newsletterEmbedOrigin}` : ''
   return [
     "default-src 'self'",
-    // nonce covers Next.js hydration scripts + any inline <script>; no unsafe-inline.
-    // unsafe-eval is needed in dev mode: React uses eval() for stack-trace reconstruction.
-    `script-src 'self' 'nonce-${nonce}' https://www.google.com https://www.gstatic.com${isDev ? " 'unsafe-eval'" : ''}`,
+    // Admin uses unsafe-inline because Payload/Next.js hydration scripts don't receive
+    // the nonce in the custom admin layout and the admin is already behind auth.
+    // Public routes keep the strict nonce-based policy.
+    isAdmin
+      ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com`
+      : `script-src 'self' 'nonce-${nonce}' https://www.google.com https://www.gstatic.com${isDev ? " 'unsafe-eval'" : ''}`,
     // unsafe-inline required for Tailwind utility style="" and framer-motion DOM mutations
     "style-src 'self' 'unsafe-inline'",
     // OSM tiles + CARTO tiles + Cloudinary CDN + optional R2 CDN + Wikimedia (seed/demo images)
@@ -98,11 +101,10 @@ export function middleware(request: NextRequest): NextResponse {
 
   // Generate a fresh nonce for this request.
   const nonce = buildNonce()
-  // Build CSP once so the same value goes on both request and response headers.
-  // Next.js reads content-security-policy from REQUEST headers (app-render.js line ~167)
-  // to extract the nonce and apply it to automatically injected <script> tags.
-  // We must set it on the request AND the response so they always match.
-  const csp = buildCsp(nonce)
+  // Admin routes use unsafe-inline so Next.js hydration scripts aren't blocked by CSP.
+  // Public routes keep the strict nonce-based policy.
+  const isAdmin = pathname.startsWith('/admin')
+  const csp = buildCsp(nonce, isAdmin)
 
   // Modified request headers so Server Components can read x-nonce via headers(),
   // AND so Next.js app-render can extract the nonce from content-security-policy.
