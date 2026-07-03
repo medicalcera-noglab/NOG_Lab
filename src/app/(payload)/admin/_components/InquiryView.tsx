@@ -33,8 +33,6 @@ export function InquiryView({ doc, returnPath }: { doc: InquiryDoc; returnPath: 
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
       })
     : '—'
 
@@ -91,7 +89,7 @@ export function InquiryView({ doc, returnPath }: { doc: InquiryDoc; returnPath: 
   }
 
   function handlePrintLetter() {
-    const w = window.open('', '_blank', 'width=800,height=900')
+    const w = window.open('', '_blank', 'width=900,height=1100')
     if (!w) return
 
     const today = new Date().toLocaleDateString('en-US', {
@@ -100,38 +98,47 @@ export function InquiryView({ doc, returnPath }: { doc: InquiryDoc; returnPath: 
       day: 'numeric',
     })
 
+    const logoUrl = `${window.location.origin}/NOG_LAB.png`
+    const safeReply = (replyText || '(No reply text entered yet.)')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+
     w.document.write(`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <title>Reply Letter — ${doc.name ?? 'Applicant'}</title>
 <style>
-  @page { margin: 2cm 2.5cm; }
-  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #1a1a1a; line-height: 1.7; }
-  .header { border-bottom: 2px solid #0e6e6e; padding-bottom: 1rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; }
-  .lab-name { font-size: 18pt; font-weight: bold; color: #0e6e6e; margin: 0; }
-  .lab-sub { font-size: 10pt; color: #555; margin: 0; }
-  .date { text-align: right; margin-bottom: 2rem; }
+  @page { size: A4; margin: 2.5cm 2.8cm; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #1a1a1a; line-height: 1.7; margin: 0; }
+  .header { border-bottom: 2px solid #0e6e6e; padding-bottom: 0.875rem; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem; }
+  .header img { height: 52px; width: auto; display: block; }
+  .lab-sub { font-size: 9.5pt; color: #555; margin: 0.25rem 0 0; }
+  .date { text-align: right; margin-bottom: 2.25rem; color: #333; }
   .salutation { margin-bottom: 1.5rem; }
   .body { white-space: pre-wrap; margin-bottom: 2rem; }
   .closing { margin-top: 2rem; }
-  .sig-line { margin-top: 2.5rem; border-top: 1px solid #999; padding-top: 0.5rem; display: inline-block; min-width: 200px; }
+  .sig-line { margin-top: 3rem; border-top: 1px solid #999; padding-top: 0.5rem; display: inline-block; min-width: 220px; }
+  .sig-name { font-weight: bold; margin-bottom: 0.15rem; }
   @media print { body { margin: 0; } }
 </style>
 </head>
 <body>
 <div class="header">
-  <div>
-    <p class="lab-name">NOG Lab — KMU</p>
-    <p class="lab-sub">Neglected & Orphan Disease Research Group · Khyber Medical University</p>
-  </div>
+  <img src="${logoUrl}" alt="NOG Lab" onerror="this.style.display='none'" />
+  <p class="lab-sub">Neglected &amp; Orphan Disease Research Group · Khyber Medical University</p>
 </div>
 <div class="date">${today}</div>
 <div class="salutation">Dear ${doc.name ?? 'Applicant'},</div>
-<div class="body">${(replyText || '(No reply text entered yet.)').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+<div class="body">${safeReply}</div>
 <div class="closing">
   <p>Sincerely,</p>
-  <div class="sig-line">PI / Lab Director<br />NOG Lab, KMU</div>
+  <div class="sig-line">
+    <div class="sig-name">Mohammad Shahzad</div>
+    PI / Lab Director<br />NOG Lab, KMU
+  </div>
 </div>
 <script>window.onload = () => { window.print(); }<\/script>
 </body>
