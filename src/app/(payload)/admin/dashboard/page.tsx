@@ -58,44 +58,31 @@ export default async function AdminDashboard() {
   )
 
   return (
-    <AdminShell>
+    <AdminShell title="Dashboard">
       <style>{`
         .nog-quick-card {
-          display: block;
+          display: flex;
+          align-items: center;
+          gap: 0.625rem;
           background: #fff;
           border: 1px solid #e8edf2;
           border-radius: 10px;
-          padding: 1rem 1.125rem;
+          padding: 0.875rem 1rem;
           text-decoration: none;
-          transition: transform 0.13s ease, box-shadow 0.13s ease, border-color 0.13s;
+          transition: box-shadow 0.13s, border-color 0.13s, transform 0.13s;
         }
         .nog-quick-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.07);
-          border-color: #c8d4dc;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+          border-color: #c0d4dc;
+          transform: translateY(-1px);
+        }
+        .nog-stat-card:hover {
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+          border-color: #c0d4dc !important;
         }
       `}</style>
 
-      <div style={{ padding: '2rem 2.25rem', maxWidth: '980px' }}>
-        {/* Page header */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h1
-            style={{
-              fontSize: '1.375rem',
-              fontWeight: 700,
-              color: '#0f172a',
-              margin: '0 0 0.25rem',
-              letterSpacing: '-0.03em',
-              fontFamily: 'var(--admin-font-heading, system-ui)',
-            }}
-          >
-            Dashboard
-          </h1>
-          <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>
-            Neurological Outcomes Group Lab content overview
-          </p>
-        </div>
-
+      <div style={{ padding: '2rem 2.25rem', maxWidth: '1000px' }}>
         {/* Stat cards */}
         <div
           style={{
@@ -109,14 +96,16 @@ export default async function AdminDashboard() {
             <a
               key={slug}
               href={`/admin/collections/${slug}`}
+              className="nog-stat-card"
               style={{
                 display: 'block',
                 background: '#fff',
                 border: '1px solid #e8edf2',
-                borderRadius: '12px',
-                padding: '1.25rem 1.375rem',
+                borderRadius: '14px',
+                padding: '1.375rem 1.5rem',
                 textDecoration: 'none',
                 transition: 'box-shadow 0.13s, border-color 0.13s',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
               }}
             >
               <div
@@ -124,14 +113,14 @@ export default async function AdminDashboard() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '8px',
+                  width: '34px',
+                  height: '34px',
+                  borderRadius: '9px',
                   background: bg,
-                  marginBottom: '0.75rem',
+                  marginBottom: '1rem',
                 }}
               >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <rect
                     x="2.5"
                     y="1.5"
@@ -151,18 +140,20 @@ export default async function AdminDashboard() {
               </div>
               <div
                 style={{
-                  fontSize: '1.75rem',
+                  fontSize: '2rem',
                   fontWeight: 700,
                   color: '#0f172a',
                   lineHeight: 1,
-                  letterSpacing: '-0.04em',
+                  letterSpacing: '-0.05em',
                   fontFamily: 'var(--admin-font-heading, system-ui)',
-                  marginBottom: '0.3rem',
+                  marginBottom: '0.375rem',
                 }}
               >
                 {counts[i]}
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>{label}</div>
+              <div style={{ fontSize: '0.8125rem', color: '#64748b', fontWeight: 500 }}>
+                {label}
+              </div>
             </a>
           ))}
         </div>
@@ -185,48 +176,46 @@ export default async function AdminDashboard() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(185px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))',
               gap: '0.625rem',
             }}
           >
             {COLLECTIONS.map(({ label, slug }) => (
               <a key={slug} href={`/admin/collections/${slug}`} className="nog-quick-card">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    aria-hidden="true"
-                    style={{ flexShrink: 0 }}
-                  >
-                    <rect
-                      x="2.5"
-                      y="1.5"
-                      width="8"
-                      height="11"
-                      rx="1.25"
-                      stroke="#0e6e6e"
-                      strokeWidth="1.3"
-                    />
-                    <path
-                      d="M5 5.5h4M5 7.5h4M5 9.5h2.5"
-                      stroke="#0e6e6e"
-                      strokeWidth="1"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span
-                    style={{
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      color: '#1e293b',
-                      fontFamily: 'var(--admin-font-heading, system-ui)',
-                    }}
-                  >
-                    {label}
-                  </span>
-                </div>
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                  style={{ flexShrink: 0 }}
+                >
+                  <rect
+                    x="2.5"
+                    y="1.5"
+                    width="8"
+                    height="11"
+                    rx="1.25"
+                    stroke="#0e6e6e"
+                    strokeWidth="1.3"
+                  />
+                  <path
+                    d="M5 5.5h4M5 7.5h4M5 9.5h2.5"
+                    stroke="#0e6e6e"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    color: '#1e293b',
+                    fontFamily: 'var(--admin-font-heading, system-ui)',
+                  }}
+                >
+                  {label}
+                </span>
               </a>
             ))}
           </div>
@@ -250,40 +239,38 @@ export default async function AdminDashboard() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(185px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))',
               gap: '0.625rem',
             }}
           >
             {GLOBALS.map(({ label, slug }) => (
               <a key={slug} href={`/admin/globals/${slug}`} className="nog-quick-card">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    aria-hidden="true"
-                    style={{ flexShrink: 0 }}
-                  >
-                    <circle cx="8" cy="8" r="5.5" stroke="#e2725b" strokeWidth="1.3" />
-                    <path
-                      d="M8 2.5c0 0-2 2-2 5.5s2 5.5 2 5.5M8 2.5c0 0 2 2 2 5.5s-2 5.5-2 5.5M2.5 8h11"
-                      stroke="#e2725b"
-                      strokeWidth="1"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span
-                    style={{
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      color: '#1e293b',
-                      fontFamily: 'var(--admin-font-heading, system-ui)',
-                    }}
-                  >
-                    {label}
-                  </span>
-                </div>
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                  style={{ flexShrink: 0 }}
+                >
+                  <circle cx="8" cy="8" r="5.5" stroke="#e2725b" strokeWidth="1.3" />
+                  <path
+                    d="M8 2.5c0 0-2 2-2 5.5s2 5.5 2 5.5M8 2.5c0 0 2 2 2 5.5s-2 5.5-2 5.5M2.5 8h11"
+                    stroke="#e2725b"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    color: '#1e293b',
+                    fontFamily: 'var(--admin-font-heading, system-ui)',
+                  }}
+                >
+                  {label}
+                </span>
               </a>
             ))}
           </div>

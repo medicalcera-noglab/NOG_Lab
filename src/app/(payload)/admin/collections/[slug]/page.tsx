@@ -46,87 +46,86 @@ export default async function CollectionListPage({ params }: Props) {
   }
 
   return (
-    <AdminShell>
+    <AdminShell
+      title={label}
+      breadcrumbs={[{ label: 'Collections' }]}
+      action={{ label: '+ New', href: `/admin/collections/${slug}/new` }}
+    >
       <style>{`
         .nog-tr:hover { background: #f8fafc; }
         .nog-tr td:first-child a { color: #0e6e6e; font-weight: 500; text-decoration: none; }
         .nog-tr td:first-child a:hover { text-decoration: underline; }
-        .nog-edit-btn:hover { background: #e0f2f2 !important; border-color: #b0d8d8 !important; }
+        .nog-edit-btn:hover { background: #e0f2f2 !important; border-color: #a0d0d0 !important; }
       `}</style>
 
-      <div style={{ padding: '2rem 2.25rem' }}>
-        {/* Page header */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            marginBottom: '1.75rem',
-            gap: '1rem',
-          }}
-        >
-          <div>
-            <h1
-              style={{
-                fontSize: '1.375rem',
-                fontWeight: 700,
-                color: '#0f172a',
-                margin: '0 0 0.25rem',
-                letterSpacing: '-0.03em',
-                fontFamily: 'var(--admin-font-heading, system-ui)',
-              }}
-            >
-              {label}
-            </h1>
-            <p style={{ color: '#64748b', fontSize: '0.8125rem', margin: 0 }}>
-              {totalDocs} document{totalDocs !== 1 ? 's' : ''}
-            </p>
-          </div>
-          <a
-            href={`/admin/collections/${slug}/new`}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.375rem',
-              padding: '0.5625rem 1.125rem',
-              background: '#0e6e6e',
-              color: '#fff',
-              borderRadius: '8px',
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              textDecoration: 'none',
-              whiteSpace: 'nowrap',
-              flexShrink: 0,
-            }}
-          >
-            + New
-          </a>
-        </div>
+      <div style={{ padding: '1.75rem 2.25rem' }}>
+        {/* Sub-header */}
+        <p style={{ color: '#64748b', fontSize: '0.8125rem', margin: '0 0 1.5rem' }}>
+          {totalDocs} document{totalDocs !== 1 ? 's' : ''}
+        </p>
 
         {/* Table */}
         <div
           style={{
             background: '#fff',
             border: '1px solid #e2e8f0',
-            borderRadius: '12px',
+            borderRadius: '14px',
             overflow: 'hidden',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
           }}
         >
           {docs.length === 0 ? (
-            <div style={{ padding: '3rem', textAlign: 'center' }}>
-              <div style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                No documents yet
+            <div style={{ padding: '3.5rem', textAlign: 'center' }}>
+              <div
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: 'rgba(14,110,110,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1rem',
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <rect
+                    x="2.5"
+                    y="1.5"
+                    width="8"
+                    height="11"
+                    rx="1.25"
+                    stroke="#0e6e6e"
+                    strokeWidth="1.3"
+                  />
+                  <path
+                    d="M5 5.5h4M5 7.5h4M5 9.5h2.5"
+                    stroke="#0e6e6e"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </div>
+              <p
+                style={{
+                  color: '#64748b',
+                  fontSize: '0.9375rem',
+                  fontWeight: 500,
+                  margin: '0 0 1rem',
+                }}
+              >
+                No {label.toLowerCase()} yet
+              </p>
               <a
                 href={`/admin/collections/${slug}/new`}
                 style={{
                   display: 'inline-flex',
-                  padding: '0.5rem 1rem',
+                  padding: '0.5rem 1.125rem',
                   background: '#0e6e6e',
                   color: '#fff',
                   borderRadius: '7px',
                   fontSize: '0.875rem',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   textDecoration: 'none',
                 }}
               >
@@ -137,17 +136,17 @@ export default async function CollectionListPage({ params }: Props) {
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+                  <tr style={{ borderBottom: '1px solid #e8edf4', background: '#f8fafc' }}>
                     {listFields.map((col) => (
                       <th
                         key={col}
                         style={{
-                          padding: '0.6875rem 1rem',
+                          padding: '0.75rem 1.125rem',
                           textAlign: 'left',
                           fontWeight: 600,
-                          color: '#475569',
+                          color: '#64748b',
                           fontSize: '0.75rem',
-                          letterSpacing: '0.04em',
+                          letterSpacing: '0.05em',
                           textTransform: 'uppercase',
                           whiteSpace: 'nowrap',
                         }}
@@ -160,12 +159,12 @@ export default async function CollectionListPage({ params }: Props) {
                     ))}
                     <th
                       style={{
-                        padding: '0.6875rem 1rem',
+                        padding: '0.75rem 1.125rem',
                         textAlign: 'right',
                         fontWeight: 600,
-                        color: '#475569',
+                        color: '#64748b',
                         fontSize: '0.75rem',
-                        letterSpacing: '0.04em',
+                        letterSpacing: '0.05em',
                         textTransform: 'uppercase',
                       }}
                     >
@@ -184,7 +183,7 @@ export default async function CollectionListPage({ params }: Props) {
                         <td
                           key={col}
                           style={{
-                            padding: '0.6875rem 1rem',
+                            padding: '0.75rem 1.125rem',
                             color: '#374151',
                             maxWidth: '280px',
                             overflow: 'hidden',
@@ -203,7 +202,7 @@ export default async function CollectionListPage({ params }: Props) {
                       ))}
                       <td
                         style={{
-                          padding: '0.6875rem 1rem',
+                          padding: '0.75rem 1.125rem',
                           textAlign: 'right',
                           whiteSpace: 'nowrap',
                         }}
@@ -216,8 +215,8 @@ export default async function CollectionListPage({ params }: Props) {
                             color: '#0e6e6e',
                             textDecoration: 'none',
                             fontWeight: 500,
-                            padding: '0.3rem 0.75rem',
-                            border: '1px solid #d1e7e7',
+                            padding: '0.3125rem 0.75rem',
+                            border: '1px solid #cde8e8',
                             borderRadius: '6px',
                             background: '#f0fafa',
                             transition: 'background 0.1s, border-color 0.1s',

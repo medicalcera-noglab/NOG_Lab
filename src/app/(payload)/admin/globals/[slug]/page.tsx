@@ -24,36 +24,11 @@ export default async function GlobalEditorPage({ params }: Props) {
   const doc = res.ok ? ((await res.json()) as Record<string, unknown>) : {}
 
   return (
-    <AdminShell>
-      <div style={{ padding: '2rem 2.25rem', maxWidth: '860px' }}>
-        {/* Header */}
-        <div style={{ marginBottom: '1.75rem' }}>
-          <div
-            style={{
-              fontSize: '0.8rem',
-              color: '#94a3b8',
-              marginBottom: '0.5rem',
-            }}
-          >
-            Global
-          </div>
-          <h1
-            style={{
-              fontSize: '1.25rem',
-              fontWeight: 700,
-              color: '#0f172a',
-              margin: '0 0 0.375rem',
-              letterSpacing: '-0.025em',
-              fontFamily: 'var(--admin-font-heading, system-ui)',
-            }}
-          >
-            {schema.label}
-          </h1>
-          <p style={{ color: '#64748b', fontSize: '0.8125rem', margin: 0 }}>
-            Changes affect the live site immediately.
-          </p>
-        </div>
-
+    <AdminShell title={schema.label} breadcrumbs={[{ label: 'Globals' }]}>
+      <div style={{ padding: '1.75rem 2.25rem', maxWidth: '860px' }}>
+        <p style={{ color: '#64748b', fontSize: '0.8125rem', margin: '0 0 1.5rem' }}>
+          Changes affect the live site immediately.
+        </p>
         <DocForm
           apiSlug={schema.apiSlug}
           initialData={doc}
