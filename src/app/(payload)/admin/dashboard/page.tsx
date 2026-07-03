@@ -5,25 +5,25 @@ const COLLECTIONS = [
   { label: 'Publications', slug: 'publications' },
   { label: 'People', slug: 'people' },
   { label: 'Projects', slug: 'projects' },
-  { label: 'Blog Posts', slug: 'blog-posts' },
-  { label: 'News & Events', slug: 'news-events' },
-  { label: 'Research Themes', slug: 'research-themes' },
-  { label: 'Study Sites', slug: 'study-sites' },
+  { label: 'Blog Posts', slug: 'blog_posts' },
+  { label: 'News & Events', slug: 'news_events' },
+  { label: 'Research Themes', slug: 'research_themes' },
+  { label: 'Study Sites', slug: 'study_sites' },
   { label: 'Collaborators', slug: 'collaborators' },
-  { label: 'Impact Stories', slug: 'impact-stories' },
-  { label: 'Media Coverage', slug: 'media-coverage' },
-  { label: 'Open Positions', slug: 'open-positions' },
+  { label: 'Impact Stories', slug: 'impact_stories' },
+  { label: 'Media Coverage', slug: 'media_coverage' },
+  { label: 'Open Positions', slug: 'open_positions' },
   { label: 'Inquiries', slug: 'inquiries' },
-  { label: 'Applicant Files', slug: 'applicant-files' },
+  { label: 'Applicant Files', slug: 'applicant_files' },
   { label: 'Users', slug: 'users' },
 ]
 
 const GLOBALS = [
-  { label: 'Site Settings', slug: 'site-settings' },
+  { label: 'Site Settings', slug: 'site_settings' },
   { label: 'Navigation', slug: 'navigation' },
   { label: 'About Page', slug: 'about' },
-  { label: 'SEO Defaults', slug: 'page-seo' },
-  { label: 'Legal Pages', slug: 'legal-pages' },
+  { label: 'Page SEO', slug: 'page_seo' },
+  { label: 'Legal Pages', slug: 'legal_pages' },
 ]
 
 export default async function AdminDashboard() {
