@@ -1,16 +1,20 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+
+type Step = 'credentials' | 'totp'
 
 export default function AdminLogin() {
   const router = useRouter()
+  const [step, setStep] = useState<Step>('credentials')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [totpCode, setTotpCode] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleCredentials(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError('')
@@ -23,12 +27,54 @@ export default function AdminLogin() {
         credentials: 'include',
       })
 
-      if (res.ok) {
-        router.push('/admin/dashboard')
-      } else {
-        const json = await res.json().catch(() => ({}))
-        setError(json.errors?.[0]?.message ?? 'Invalid email or password')
+      const json = (await res.json().catch(() => ({}))) as Record<string, unknown>
+
+      if (!res.ok) {
+        const errs = json.errors as { message: string }[] | undefined
+        setError(errs?.[0]?.message ?? 'Invalid email or password')
+        return
       }
+
+      // Check if TOTP second factor is required
+      const requiresTOTP =
+        (json.user as Record<string, unknown> | undefined)?.requiresTOTP === true ||
+        res.headers.get('X-Requires-TOTP') === '1'
+
+      if (requiresTOTP) {
+        setStep('totp')
+        return
+      }
+
+      // No TOTP — login complete
+      router.push('/admin/dashboard')
+    } catch {
+      setError('Network error — please try again')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleTotp(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    try {
+      const res = await fetch('/api/totp/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: totpCode.replace(/\s/g, '') }),
+        credentials: 'include',
+      })
+
+      const json = (await res.json().catch(() => ({}))) as Record<string, unknown>
+
+      if (!res.ok) {
+        setError(String(json.error ?? 'Invalid code — please try again'))
+        return
+      }
+
+      router.push('/admin/dashboard')
     } catch {
       setError('Network error — please try again')
     } finally {
@@ -94,6 +140,22 @@ export default function AdminLogin() {
         }
         .nog-btn:active:not(:disabled) { transform: scale(0.985); }
         .nog-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+        .nog-back {
+          background: none;
+          border: none;
+          color: #94a3b8;
+          font-size: 0.8125rem;
+          cursor: pointer;
+          padding: 0;
+          text-decoration: underline;
+          text-underline-offset: 2px;
+          margin-top: 1rem;
+          display: block;
+          width: 100%;
+          text-align: center;
+        }
+        .nog-back:hover { color: #64748b; }
       `}</style>
 
       <div
@@ -156,11 +218,11 @@ export default function AdminLogin() {
               NOG Lab Admin
             </h1>
             <p style={{ color: '#5a7080', fontSize: '0.8125rem', margin: 0 }}>
-              Content management portal
+              {step === 'credentials' ? 'Content management portal' : 'Two-factor authentication'}
             </p>
           </div>
 
-          {/* Login card */}
+          {/* Card */}
           <div
             style={{
               background: '#ffffff',
@@ -170,110 +232,222 @@ export default function AdminLogin() {
                 '0 0 0 1px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.08), 0 20px 48px rgba(0,0,0,0.28)',
             }}
           >
-            <p
-              style={{
-                fontSize: '0.8125rem',
-                fontWeight: 500,
-                color: '#94a3b8',
-                margin: '0 0 1.5rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-              }}
-            >
-              Administrator sign in
-            </p>
-
-            <form onSubmit={handleSubmit} noValidate>
-              <div style={{ marginBottom: '1rem' }}>
-                <label
-                  htmlFor="nog-email"
+            {step === 'credentials' ? (
+              <>
+                <p
                   style={{
-                    display: 'block',
                     fontSize: '0.8125rem',
                     fontWeight: 500,
-                    color: '#334155',
-                    marginBottom: '0.4rem',
+                    color: '#94a3b8',
+                    margin: '0 0 1.5rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
                   }}
                 >
-                  Email address
-                </label>
-                <input
-                  id="nog-email"
-                  className="nog-input"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  autoFocus
-                  placeholder="you@example.com"
-                  disabled={loading}
-                />
-              </div>
+                  Administrator sign in
+                </p>
 
-              <div style={{ marginBottom: '1.625rem' }}>
-                <label
-                  htmlFor="nog-password"
+                <form onSubmit={handleCredentials} noValidate>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label
+                      htmlFor="nog-email"
+                      style={{
+                        display: 'block',
+                        fontSize: '0.8125rem',
+                        fontWeight: 500,
+                        color: '#334155',
+                        marginBottom: '0.4rem',
+                      }}
+                    >
+                      Email address
+                    </label>
+                    <input
+                      id="nog-email"
+                      className="nog-input"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                      autoFocus
+                      placeholder="you@example.com"
+                      disabled={loading}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: '1.625rem' }}>
+                    <label
+                      htmlFor="nog-password"
+                      style={{
+                        display: 'block',
+                        fontSize: '0.8125rem',
+                        fontWeight: 500,
+                        color: '#334155',
+                        marginBottom: '0.4rem',
+                      }}
+                    >
+                      Password
+                    </label>
+                    <input
+                      id="nog-password"
+                      className="nog-input"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      autoComplete="current-password"
+                      placeholder="••••••••"
+                      disabled={loading}
+                    />
+                  </div>
+
+                  {error && (
+                    <div
+                      role="alert"
+                      style={{
+                        marginBottom: '1.25rem',
+                        padding: '0.6875rem 0.875rem',
+                        background: '#fff5f4',
+                        border: '1px solid #fccaca',
+                        borderRadius: '8px',
+                        color: '#c0392b',
+                        fontSize: '0.8125rem',
+                        lineHeight: 1.55,
+                      }}
+                    >
+                      {error}
+                    </div>
+                  )}
+
+                  <button type="submit" className="nog-btn" disabled={loading}>
+                    {loading && (
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          width: '15px',
+                          height: '15px',
+                          border: '2.25px solid rgba(255,255,255,0.28)',
+                          borderTopColor: '#fff',
+                          borderRadius: '50%',
+                          animation: 'nog-spin 0.65s linear infinite',
+                          display: 'inline-block',
+                          flexShrink: 0,
+                        }}
+                      />
+                    )}
+                    {loading ? 'Signing in…' : 'Sign In'}
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <p
                   style={{
-                    display: 'block',
                     fontSize: '0.8125rem',
                     fontWeight: 500,
-                    color: '#334155',
-                    marginBottom: '0.4rem',
+                    color: '#94a3b8',
+                    margin: '0 0 0.75rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
                   }}
                 >
-                  Password
-                </label>
-                <input
-                  id="nog-password"
-                  className="nog-input"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  disabled={loading}
-                />
-              </div>
-
-              {error && (
-                <div
-                  role="alert"
+                  Enter 6-digit code
+                </p>
+                <p
                   style={{
-                    marginBottom: '1.25rem',
-                    padding: '0.6875rem 0.875rem',
-                    background: '#fff5f4',
-                    border: '1px solid #fccaca',
-                    borderRadius: '8px',
-                    color: '#c0392b',
-                    fontSize: '0.8125rem',
-                    lineHeight: 1.55,
+                    fontSize: '0.875rem',
+                    color: '#64748b',
+                    margin: '0 0 1.5rem',
+                    lineHeight: 1.5,
                   }}
                 >
-                  {error}
-                </div>
-              )}
+                  Open your authenticator app and enter the 6-digit code for{' '}
+                  <strong style={{ color: '#1e293b' }}>{email}</strong>.
+                </p>
 
-              <button type="submit" className="nog-btn" disabled={loading}>
-                {loading && (
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      width: '15px',
-                      height: '15px',
-                      border: '2.25px solid rgba(255,255,255,0.28)',
-                      borderTopColor: '#fff',
-                      borderRadius: '50%',
-                      animation: 'nog-spin 0.65s linear infinite',
-                      display: 'inline-block',
-                      flexShrink: 0,
+                <form onSubmit={handleTotp} noValidate>
+                  <div style={{ marginBottom: '1.625rem' }}>
+                    <label
+                      htmlFor="nog-totp"
+                      style={{
+                        display: 'block',
+                        fontSize: '0.8125rem',
+                        fontWeight: 500,
+                        color: '#334155',
+                        marginBottom: '0.4rem',
+                      }}
+                    >
+                      Authenticator code
+                    </label>
+                    <input
+                      id="nog-totp"
+                      className="nog-input"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9 ]*"
+                      maxLength={7}
+                      value={totpCode}
+                      onChange={(e) => setTotpCode(e.target.value)}
+                      required
+                      autoComplete="one-time-code"
+                      autoFocus
+                      placeholder="000 000"
+                      disabled={loading}
+                      style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.2em' }}
+                    />
+                  </div>
+
+                  {error && (
+                    <div
+                      role="alert"
+                      style={{
+                        marginBottom: '1.25rem',
+                        padding: '0.6875rem 0.875rem',
+                        background: '#fff5f4',
+                        border: '1px solid #fccaca',
+                        borderRadius: '8px',
+                        color: '#c0392b',
+                        fontSize: '0.8125rem',
+                        lineHeight: 1.55,
+                      }}
+                    >
+                      {error}
+                    </div>
+                  )}
+
+                  <button type="submit" className="nog-btn" disabled={loading}>
+                    {loading && (
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          width: '15px',
+                          height: '15px',
+                          border: '2.25px solid rgba(255,255,255,0.28)',
+                          borderTopColor: '#fff',
+                          borderRadius: '50%',
+                          animation: 'nog-spin 0.65s linear infinite',
+                          display: 'inline-block',
+                          flexShrink: 0,
+                        }}
+                      />
+                    )}
+                    {loading ? 'Verifying…' : 'Verify & Sign In'}
+                  </button>
+
+                  <button
+                    type="button"
+                    className="nog-back"
+                    onClick={() => {
+                      setStep('credentials')
+                      setTotpCode('')
+                      setError('')
                     }}
-                  />
-                )}
-                {loading ? 'Signing in…' : 'Sign In'}
-              </button>
-            </form>
+                  >
+                    ← Back to sign in
+                  </button>
+                </form>
+              </>
+            )}
           </div>
 
           <p
