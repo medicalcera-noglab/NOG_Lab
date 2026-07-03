@@ -1,27 +1,40 @@
-import type { ServerFunctionClient } from 'payload'
-import { RootLayout, handleServerFunctions } from '@payloadcms/next/layouts'
-import '@payloadcms/next/css'
-import configPromise from '@payload-config'
-import { importMap } from './importMap.js'
+import type { ReactNode } from 'react'
+import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
 
-const serverFunction: ServerFunctionClient = async function (args) {
-  'use server'
-  return handleServerFunctions({
-    ...args,
-    config: configPromise,
-    importMap,
-  })
+const heading = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['600', '700'],
+  variable: '--admin-font-heading',
+  display: 'swap',
+})
+
+const body = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--admin-font-body',
+  display: 'swap',
+})
+
+export const metadata = {
+  title: 'Admin · NOG Lab',
+  robots: { index: false, follow: false },
 }
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <RootLayout
-      config={configPromise}
-      importMap={importMap}
-      serverFunction={serverFunction}
-      htmlProps={{ suppressHydrationWarning: true }}
-    >
-      {children}
-    </RootLayout>
+    <html lang="en" className={`${heading.variable} ${body.variable}`}>
+      <head />
+      <body
+        style={{
+          margin: 0,
+          padding: 0,
+          fontFamily: "var(--admin-font-body, 'Inter', system-ui, sans-serif)",
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+        }}
+      >
+        {children}
+      </body>
+    </html>
   )
 }
