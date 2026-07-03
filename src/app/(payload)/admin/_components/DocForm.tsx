@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import type { FieldDef } from '@/lib/admin-collections'
 
@@ -78,6 +78,19 @@ function extractRelIds(val: unknown): string[] {
   return val.map(extractRelId)
 }
 
+// ── Upload value type ────────────────────────────────────────────
+
+type UploadValue = { id: string; url: string; alt: string } | null
+
+function extractUploadValue(raw: unknown): UploadValue {
+  if (!raw) return null
+  if (typeof raw === 'object' && 'id' in (raw as Record<string, unknown>)) {
+    const doc = raw as Record<string, unknown>
+    return { id: String(doc.id), url: String(doc.url ?? ''), alt: String(doc.alt ?? '') }
+  }
+  return { id: String(raw), url: '', alt: '' }
+}
+
 // ── Init helpers ─────────────────────────────────────────────────
 
 type FormState = Record<string, unknown>
@@ -91,6 +104,8 @@ function initState(data: FormState, fields: FieldDef[]): FormState {
       state[field.name] = lexicalToText(raw)
     } else if (field.type === 'relationship') {
       state[field.name] = field.hasMany ? extractRelIds(raw) : extractRelId(raw)
+    } else if (field.type === 'upload') {
+      state[field.name] = extractUploadValue(raw)
     } else if (field.type === 'date' && raw) {
       state[field.name] = String(raw).substring(0, 10)
     } else if (field.type === 'array') {
@@ -117,6 +132,9 @@ function buildPayload(state: FormState, fields: FieldDef[]): FormState {
       result[field.name] = typeof val === 'string' ? textToLexical(val as string) : val
     } else if (field.type === 'number') {
       result[field.name] = val === '' || val === null || val === undefined ? null : Number(val)
+    } else if (field.type === 'upload') {
+      const uv = val as UploadValue
+      result[field.name] = uv?.id ?? null
     } else if (field.type === 'group') {
       result[field.name] = buildPayload((val as FormState) ?? {}, field.fields ?? [])
     } else {
@@ -161,6 +179,242 @@ const S = {
 
 import type React from 'react'
 
+// ── Media upload field ───────────────────────────────────────────
+
+function MediaUploadField({
+  field,
+  value,
+  onChange,
+}: {
+  field: FieldDef
+  value: unknown
+  onChange: (v: UploadValue) => void
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const uv = (value as UploadValue) ?? null
+
+  const isImage = uv?.url
+    ? /\.(jpe?g|png|gif|webp|svg|avif)(\?|$)/i.test(uv.url) || uv.url.startsWith('data:image')
+    : false
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    setUploadError(null)
+
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('alt', file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '))
+
+      const res = await fetch('/api/media', {
+        method: 'POST',
+        body: fd,
+        credentials: 'include',
+      })
+
+      if (!res.ok) {
+        const j = (await res.json().catch(() => ({}))) as Record<string, unknown>
+        const errs = j.errors as { message: string }[] | undefined
+        throw new Error(errs?.[0]?.message ?? `Upload failed (${res.status})`)
+      }
+
+      const j = (await res.json()) as { doc?: Record<string, unknown> }
+      const doc = j.doc ?? {}
+      onChange({
+        id: String(doc.id),
+        url: String(doc.url ?? ''),
+        alt: String(doc.alt ?? file.name),
+      })
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setUploading(false)
+      if (inputRef.current) inputRef.current.value = ''
+    }
+  }
+
+  return (
+    <div
+      style={{
+        border: '1.5px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '0.875rem',
+        background: '#f8fafc',
+      }}
+    >
+      {uv ? (
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.875rem' }}>
+          {isImage && (
+            <div
+              style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '6px',
+                overflow: 'hidden',
+                border: '1px solid #e2e8f0',
+                background: '#fff',
+                flexShrink: 0,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={uv.url}
+                alt={uv.alt}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          )}
+          {!isImage && uv.url && (
+            <div
+              style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '6px',
+                border: '1px solid #e2e8f0',
+                background: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"
+                  stroke="#94a3b8"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+                <polyline
+                  points="13 2 13 9 20 9"
+                  stroke="#94a3b8"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          )}
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p
+              style={{
+                margin: '0 0 0.25rem',
+                fontSize: '0.8125rem',
+                fontWeight: 500,
+                color: '#1e293b',
+                wordBreak: 'break-all',
+              }}
+            >
+              {uv.alt || 'Media file'}
+            </p>
+            {uv.url && (
+              <a
+                href={uv.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: '0.75rem', color: '#0e6e6e', wordBreak: 'break-all' }}
+              >
+                View file ↗
+              </a>
+            )}
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.625rem' }}>
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                disabled={uploading}
+                style={{
+                  padding: '0.3rem 0.75rem',
+                  background: '#0e6e6e',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '5px',
+                  fontSize: '0.8rem',
+                  fontWeight: 500,
+                  cursor: uploading ? 'not-allowed' : 'pointer',
+                  opacity: uploading ? 0.6 : 1,
+                }}
+              >
+                {uploading ? 'Uploading…' : 'Replace'}
+              </button>
+              <button
+                type="button"
+                onClick={() => onChange(null)}
+                style={{
+                  padding: '0.3rem 0.75rem',
+                  background: 'none',
+                  color: '#dc2626',
+                  border: '1px solid #fca5a5',
+                  borderRadius: '5px',
+                  fontSize: '0.8rem',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div style={{ textAlign: 'center', padding: '1.25rem 0.5rem' }}>
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+            style={{ margin: '0 auto 0.625rem', display: 'block', opacity: 0.35 }}
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke="#64748b" strokeWidth="1.5" />
+            <circle cx="8.5" cy="8.5" r="1.5" stroke="#64748b" strokeWidth="1.5" />
+            <path d="M21 15l-5-5L5 21" stroke="#64748b" strokeWidth="1.5" strokeLinejoin="round" />
+          </svg>
+          <p style={{ margin: '0 0 0.75rem', fontSize: '0.8125rem', color: '#64748b' }}>
+            No file selected
+          </p>
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            style={{
+              padding: '0.4rem 1rem',
+              background: '#0e6e6e',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              fontSize: '0.8125rem',
+              fontWeight: 500,
+              cursor: uploading ? 'not-allowed' : 'pointer',
+              opacity: uploading ? 0.6 : 1,
+            }}
+          >
+            {uploading ? 'Uploading…' : 'Upload file'}
+          </button>
+        </div>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept={field.accept}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+        aria-label={`Upload ${field.label}`}
+      />
+
+      {uploadError && (
+        <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#dc2626' }}>{uploadError}</p>
+      )}
+    </div>
+  )
+}
+
+// ── FieldInput ───────────────────────────────────────────────────
+
 function FieldInput({
   field,
   value,
@@ -175,6 +429,16 @@ function FieldInput({
   const disabled = field.readOnly
 
   const focusStyle = { borderColor: '#0e6e6e', boxShadow: '0 0 0 3px rgba(14,110,110,0.12)' }
+
+  if (field.type === 'upload') {
+    return (
+      <MediaUploadField
+        field={field}
+        value={value}
+        onChange={onChange as (v: UploadValue) => void}
+      />
+    )
+  }
 
   if (field.type === 'checkbox') {
     return (
@@ -377,7 +641,9 @@ function ArrayField({
   function addRow() {
     const empty: FormState = {}
     for (const f of subFields) {
-      empty[f.name] = f.type === 'checkbox' ? false : ''
+      if (f.type === 'upload') empty[f.name] = null
+      else if (f.type === 'checkbox') empty[f.name] = false
+      else empty[f.name] = ''
     }
     onChange([...rows, empty])
   }
@@ -537,14 +803,12 @@ export function DocForm({
 
   // Fetch options for all relationship fields
   useEffect(() => {
-    const relFields = fields.filter((f) => f.type === 'relationship' && f.relationTo)
-    // Also scan array sub-fields and group sub-fields
     const scan = (fs: FieldDef[]): FieldDef[] =>
       fs.flatMap((f) => {
         const nested = scan(f.fields ?? [])
         return f.type === 'relationship' && f.relationTo ? [f, ...nested] : nested
       })
-    const allRelFields = [...relFields, ...scan(fields.flatMap((f) => f.fields ?? []))]
+    const allRelFields = scan(fields)
     const slugs = [...new Set(allRelFields.map((f) => f.relationTo!))]
     if (!slugs.length) return
 
@@ -644,6 +908,7 @@ export function DocForm({
 
   return (
     <form onSubmit={handleSave} noValidate>
+      <style>{`@keyframes nog-spin{to{transform:rotate(360deg)}}`}</style>
       <div
         style={{
           background: '#fff',

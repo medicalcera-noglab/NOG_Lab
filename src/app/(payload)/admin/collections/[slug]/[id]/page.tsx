@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { COLLECTION_SCHEMAS } from '@/lib/admin-collections'
 import { DocForm } from '../../../_components/DocForm'
 import { AdminShell } from '../../../_components/AdminShell'
+import { InquiryView } from '../../../_components/InquiryView'
 
 type Props = { params: Promise<{ slug: string; id: string }> }
 
@@ -24,6 +25,23 @@ export default async function EditDocPage({ params }: Props) {
   if (!res.ok) redirect(`/admin/collections/${slug}`)
   const doc = (await res.json()) as Record<string, unknown>
   const title = String(doc[schema.titleField] ?? 'Untitled')
+
+  // Inquiries get a dedicated email-style view
+  if (slug === 'inquiries') {
+    return (
+      <AdminShell
+        title={title}
+        breadcrumbs={[{ label: 'Inquiries', href: '/admin/collections/inquiries' }]}
+      >
+        <div style={{ padding: '1.75rem 2.25rem' }}>
+          <InquiryView
+            doc={doc as Parameters<typeof InquiryView>[0]['doc']}
+            returnPath="/admin/collections/inquiries"
+          />
+        </div>
+      </AdminShell>
+    )
+  }
 
   return (
     <AdminShell

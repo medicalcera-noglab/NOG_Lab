@@ -15,6 +15,7 @@ export type FieldType =
   | 'array'
   | 'relationship'
   | 'group'
+  | 'upload'
 
 export type FieldDef = {
   name: string
@@ -24,9 +25,10 @@ export type FieldDef = {
   readOnly?: boolean
   options?: SelectOption[]
   fields?: FieldDef[] // for array and group
-  relationTo?: string // for relationship
+  relationTo?: string // for relationship and upload
   hasMany?: boolean
   hint?: string
+  accept?: string // for upload — MIME types hint e.g. 'image/*'
 }
 
 export type CollectionDef = {
@@ -91,6 +93,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
       { name: 'abstract', label: 'Abstract', type: 'richtext' },
       { name: 'isOpenAccess', label: 'Open Access', type: 'checkbox' },
       { name: 'citationCount', label: 'Citation Count', type: 'number' },
+      {
+        name: 'pdf',
+        label: 'PDF Upload',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'application/pdf',
+      },
     ],
   },
 
@@ -123,6 +132,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
       { name: 'linkedin', label: 'LinkedIn URL', type: 'text' },
       { name: 'researchgate', label: 'ResearchGate URL', type: 'text' },
       { name: 'scopus', label: 'Scopus Profile URL', type: 'text' },
+      {
+        name: 'photo',
+        label: 'Profile Photo',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
       { name: 'bio', label: 'Biography', type: 'richtext' },
       {
         name: 'interests',
@@ -190,6 +206,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
           { label: 'Published', value: 'published' },
         ],
       },
+      {
+        name: 'coverImage',
+        label: 'Cover Image',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
       { name: 'body', label: 'Body', type: 'richtext', required: true },
       { name: 'author', label: 'Author', type: 'relationship', relationTo: 'people' },
       {
@@ -238,6 +261,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
       { name: 'body', label: 'Body', type: 'richtext', required: true },
       { name: 'venue', label: 'Venue', type: 'text' },
       { name: 'registerUrl', label: 'Registration URL', type: 'text' },
+      {
+        name: 'coverImage',
+        label: 'Cover Image',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
       { name: 'isFeaturedHome', label: 'Featured on Home Page', type: 'checkbox' },
     ],
   },
@@ -278,6 +308,22 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
         label: 'Methods',
         type: 'array',
         fields: [{ name: 'method', label: 'Method', type: 'text', required: true }],
+      },
+      {
+        name: 'coverImage',
+        label: 'Cover Image',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
+      {
+        name: 'gallery',
+        label: 'Gallery',
+        type: 'array',
+        fields: [
+          { name: 'image', label: 'Image', type: 'upload', relationTo: 'media', accept: 'image/*' },
+          { name: 'caption', label: 'Caption', type: 'text' },
+        ],
       },
       { name: 'funder', label: 'Funder', type: 'text' },
       { name: 'funderAmount', label: 'Funding Amount', type: 'text' },
@@ -331,6 +377,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
         type: 'array',
         fields: [{ name: 'method', label: 'Method', type: 'text', required: true }],
       },
+      {
+        name: 'themeImage',
+        label: 'Theme Image',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
       { name: 'displayOrder', label: 'Display Order', type: 'number' },
     ],
   },
@@ -373,6 +426,7 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
         ],
       },
       { name: 'country', label: 'Country', type: 'text', required: true },
+      { name: 'logo', label: 'Logo', type: 'upload', relationTo: 'media', accept: 'image/*' },
       { name: 'website', label: 'Website URL', type: 'text' },
       { name: 'displayOrder', label: 'Display Order', type: 'number' },
     ],
@@ -396,6 +450,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
           { label: 'Published', value: 'published' },
         ],
       },
+      {
+        name: 'cover',
+        label: 'Cover Image',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
       { name: 'body', label: 'Body', type: 'richtext', required: true },
       {
         name: 'relatedProjects',
@@ -417,6 +478,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
       { name: 'title', label: 'Article Title', type: 'text', required: true },
       { name: 'url', label: 'Article URL', type: 'text', required: true },
       { name: 'date', label: 'Date', type: 'date', required: true },
+      {
+        name: 'logo',
+        label: 'Outlet Logo',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
     ],
   },
 
@@ -503,6 +571,37 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
           { label: 'Contributor', value: 'contributor' },
         ],
       },
+    ],
+  },
+
+  media: {
+    apiSlug: 'media',
+    label: 'Media Library',
+    titleField: 'alt',
+    listFields: ['alt', 'mimeType', 'filesize', 'createdAt'],
+    fields: [
+      { name: 'alt', label: 'Alt Text', type: 'text', required: true },
+      { name: 'caption', label: 'Caption', type: 'text' },
+      { name: 'sourceUrl', label: 'Source URL', type: 'text' },
+      { name: 'sourceAuthor', label: 'Photographer / Author', type: 'text' },
+      { name: 'sourceLicense', label: 'License', type: 'text', hint: 'e.g. CC BY 4.0' },
+      { name: 'filename', label: 'Filename', type: 'text', readOnly: true },
+      { name: 'mimeType', label: 'MIME Type', type: 'text', readOnly: true },
+      { name: 'filesize', label: 'File Size (bytes)', type: 'number', readOnly: true },
+    ],
+  },
+
+  audit_log: {
+    apiSlug: 'audit_log',
+    label: 'Audit Log',
+    titleField: 'action',
+    listFields: ['user', 'action', 'entityType', 'entityId', 'createdAt'],
+    fields: [
+      { name: 'user', label: 'User', type: 'relationship', relationTo: 'users', readOnly: true },
+      { name: 'action', label: 'Action', type: 'text', readOnly: true },
+      { name: 'entityType', label: 'Collection', type: 'text', readOnly: true },
+      { name: 'entityId', label: 'Document ID', type: 'text', readOnly: true },
+      { name: 'createdAt', label: 'When', type: 'date', readOnly: true },
     ],
   },
 }
