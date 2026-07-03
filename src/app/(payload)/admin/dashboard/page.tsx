@@ -153,7 +153,7 @@ export default async function AdminDashboard() {
         }
       `}</style>
 
-      <div style={{ padding: '2rem 2.25rem', maxWidth: '1060px' }}>
+      <div style={{ padding: '2rem 2.25rem', maxWidth: '1060px', margin: '0 auto' }}>
         {/* Unread inquiry alert */}
         {unreadCount > 0 && (
           <Link
