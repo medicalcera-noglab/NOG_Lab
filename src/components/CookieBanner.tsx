@@ -4,10 +4,25 @@ import Link from 'next/link'
 import { useConsent } from '@/providers/ConsentProvider'
 import { cn } from '@/lib/utils'
 
-export function CookieBanner() {
+const DEFAULT_DESCRIPTION =
+  'We use Plausible Analytics — a privacy-first tool that collects no personal data, uses no cookies, and is fully GDPR compliant. You can decline and the site works exactly the same.'
+
+interface CookieBannerProps {
+  enabled?: boolean
+  description?: string | null
+  acceptLabel?: string | null
+  declineLabel?: string | null
+}
+
+export function CookieBanner({
+  enabled = true,
+  description,
+  acceptLabel,
+  declineLabel,
+}: CookieBannerProps) {
   const { consent, ready, grant, deny } = useConsent()
 
-  if (!ready || consent !== null) return null
+  if (!ready || consent !== null || !enabled) return null
 
   return (
     <>
@@ -43,9 +58,7 @@ export function CookieBanner() {
           <div>
             <h2 className="font-heading text-fg text-base font-bold">We respect your privacy</h2>
             <p className="text-muted mt-1 text-sm leading-relaxed">
-              We use <strong className="text-fg font-semibold">Plausible Analytics</strong> — a
-              privacy-first tool that collects no personal data, uses no cookies, and is fully GDPR
-              compliant. You can decline and the site works exactly the same.{' '}
+              {description || DEFAULT_DESCRIPTION}{' '}
               <Link
                 href="/privacy"
                 className="text-primary focus-visible:ring-ring rounded underline underline-offset-2 focus-visible:ring-2 focus-visible:outline-none"
@@ -67,7 +80,7 @@ export function CookieBanner() {
               'order-2 sm:order-1',
             )}
           >
-            Decline — no tracking
+            {declineLabel || 'Decline — no tracking'}
           </button>
           <button
             onClick={grant}
@@ -78,7 +91,7 @@ export function CookieBanner() {
               'order-1 sm:order-2',
             )}
           >
-            Accept analytics
+            {acceptLabel || 'Accept analytics'}
           </button>
         </div>
       </div>

@@ -117,7 +117,10 @@ function initState(data: FormState, fields: FieldDef[]): FormState {
     } else if (field.type === 'date' && raw) {
       state[field.name] = String(raw).substring(0, 10)
     } else if (field.type === 'array') {
-      state[field.name] = Array.isArray(raw) ? raw : []
+      const rows = Array.isArray(raw) ? (raw as FormState[]) : []
+      state[field.name] = field.fields?.length
+        ? rows.map((row) => initState(row as FormState, field.fields!))
+        : rows
     } else if (field.type === 'group') {
       const groupData = raw && typeof raw === 'object' ? (raw as FormState) : {}
       state[field.name] = initState(groupData, field.fields ?? [])
@@ -159,6 +162,11 @@ function buildPayload(state: FormState, fields: FieldDef[]): FormState {
       result[field.name] = buildPayload((val as FormState) ?? {}, field.fields ?? [])
     } else if (field.type === 'point') {
       result[field.name] = Array.isArray(val) && val.length === 2 ? val : null
+    } else if (field.type === 'array') {
+      const rows = Array.isArray(val) ? (val as FormState[]) : []
+      result[field.name] = field.fields?.length
+        ? rows.map((row) => buildPayload(row as FormState, field.fields!))
+        : rows
     } else if (field.type === 'password') {
       // Only send password if the user actually typed something
       if (typeof val === 'string' && val.trim() !== '') {
@@ -998,7 +1006,16 @@ function ArrayField({
     for (const f of subFields) {
       if (f.type === 'upload') empty[f.name] = null
       else if (f.type === 'checkbox') empty[f.name] = false
-      else empty[f.name] = ''
+      else if (f.type === 'array') empty[f.name] = []
+      else if (f.type === 'group') {
+        const grp: FormState = {}
+        for (const sf of f.fields ?? []) {
+          if (sf.type === 'upload') grp[sf.name] = null
+          else if (sf.type === 'checkbox') grp[sf.name] = false
+          else grp[sf.name] = ''
+        }
+        empty[f.name] = grp
+      } else empty[f.name] = ''
     }
     onChange([...rows, empty])
   }
@@ -1046,26 +1063,36 @@ function ArrayField({
             ×
           </button>
 
-          {subFields.length === 1 ? (
-            <FieldInput
-              field={subFields[0]}
-              value={row[subFields[0].name] ?? ''}
-              onChange={(v) => updateRow(i, subFields[0].name, v)}
-              relOptions={relOptions}
-            />
-          ) : (
-            subFields.map((sf) => (
-              <div key={sf.name} style={{ marginBottom: '0.5rem' }}>
-                <label style={S.label}>{sf.label}</label>
-                <FieldInput
+          {subFields.map((sf) => (
+            <div key={sf.name} style={{ marginBottom: subFields.length > 1 ? '0.5rem' : 0 }}>
+              {subFields.length > 1 && <label style={S.label}>{sf.label}</label>}
+              {sf.type === 'array' ? (
+                <ArrayField
                   field={sf}
-                  value={row[sf.name] ?? ''}
+                  value={row[sf.name] ?? []}
                   onChange={(v) => updateRow(i, sf.name, v)}
                   relOptions={relOptions}
                 />
-              </div>
-            ))
-          )}
+              ) : sf.type === 'group' ? (
+                <GroupField
+                  field={sf}
+                  value={row[sf.name]}
+                  onChange={(v) => updateRow(i, sf.name, v)}
+                  relOptions={relOptions}
+                />
+              ) : (
+                <FieldInput
+                  field={sf}
+                  value={
+                    row[sf.name] ??
+                    (sf.type === 'upload' ? null : sf.type === 'checkbox' ? false : '')
+                  }
+                  onChange={(v) => updateRow(i, sf.name, v)}
+                  relOptions={relOptions}
+                />
+              )}
+            </div>
+          ))}
         </div>
       ))}
       <button
@@ -1118,7 +1145,10 @@ function GroupField({
           <label style={S.label}>{sf.label}</label>
           <FieldInput
             field={sf}
-            value={groupData[sf.name] ?? ''}
+            value={
+              groupData[sf.name] ??
+              (sf.type === 'upload' ? null : sf.type === 'checkbox' ? false : '')
+            }
             onChange={(v) => onChange({ ...groupData, [sf.name]: v })}
             relOptions={relOptions}
           />
@@ -1196,6 +1226,10 @@ export function DocForm({
     setFeedback(null)
 
     const body = buildPayload(state, fields)
+    if (isGlobal) {
+      // Globals with drafts enabled save as draft by default; force publish.
+      body._status = 'published'
+    }
 
     try {
       let url: string

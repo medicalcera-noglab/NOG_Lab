@@ -47,6 +47,14 @@ export const metadata: Metadata = {
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
   const [settings, requestHeaders] = await Promise.all([getSiteSettings(), headers()])
+  // cookieConsent is a new field not yet in generated types — access via unknown
+  type CookieConsentGroup = {
+    enabled?: boolean
+    description?: string | null
+    acceptLabel?: string | null
+    declineLabel?: string | null
+  }
+  const cc = (settings as unknown as { cookieConsent?: CookieConsentGroup }).cookieConsent ?? {}
   const nonce = requestHeaders.get('x-nonce') ?? undefined
 
   return (
@@ -85,7 +93,12 @@ export default async function FrontendLayout({ children }: { children: React.Rea
 
             <Footer />
 
-            <CookieBanner />
+            <CookieBanner
+              enabled={cc.enabled !== false}
+              description={cc.description}
+              acceptLabel={cc.acceptLabel}
+              declineLabel={cc.declineLabel}
+            />
 
             <Analytics analyticsId={settings.analyticsId} />
             <WebVitals />

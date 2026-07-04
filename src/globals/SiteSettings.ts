@@ -272,5 +272,39 @@ export const SiteSettings: GlobalConfig = {
         description: 'Used to compute "Years Active" in the hero stat counters (e.g. 2019).',
       },
     },
+    {
+      name: 'cookieConsent',
+      type: 'group',
+      label: 'Cookie Consent Banner',
+      admin: {
+        description: 'Configure the cookie consent banner shown to new visitors.',
+      },
+      fields: [
+        {
+          name: 'enabled',
+          type: 'checkbox',
+          label: 'Show cookie consent banner',
+          defaultValue: true,
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+          label: 'Banner description text',
+          admin: { description: 'Leave blank to use the default privacy-first analytics text.' },
+        },
+        {
+          name: 'acceptLabel',
+          type: 'text',
+          label: 'Accept button label',
+          admin: { placeholder: 'Accept analytics' },
+        },
+        {
+          name: 'declineLabel',
+          type: 'text',
+          label: 'Decline button label',
+          admin: { placeholder: 'Decline — no tracking' },
+        },
+      ],
+    },
   ],
 }

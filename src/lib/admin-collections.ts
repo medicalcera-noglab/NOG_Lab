@@ -659,6 +659,10 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
       { name: 'tagline', label: 'Hero Headline', type: 'text' },
       { name: 'heroSubline', label: 'Hero Subline', type: 'text' },
       { name: 'heroMotto', label: 'Hero Motto', type: 'text' },
+      { name: 'logo', label: 'Logo (light mode)', type: 'upload' },
+      { name: 'logoDark', label: 'Logo — dark mode (white/reversed)', type: 'upload' },
+      { name: 'brochure', label: 'Lab Brochure (PDF)', type: 'upload' },
+      { name: 'footerText', label: 'Footer Text', type: 'richtext' },
       { name: 'copyright', label: 'Copyright Line', type: 'text' },
       { name: 'contactEmail', label: 'Public Contact Email', type: 'email' },
       { name: 'contactAddress', label: 'Contact Address', type: 'textarea' },
@@ -666,7 +670,32 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
       { name: 'noOpenPositionsMessage', label: 'No Open Positions Message', type: 'text' },
       { name: 'googleMapsEmbedUrl', label: 'Google Maps Embed URL', type: 'text' },
       { name: 'newsletterEmbedUrl', label: 'Newsletter Embed URL', type: 'text' },
-      { name: 'analyticsId', label: 'Analytics ID', type: 'text', hint: 'e.g. G-XXXXXXXXXX' },
+      {
+        name: 'analyticsId',
+        label: 'Analytics ID (GA4 / Plausible)',
+        type: 'text',
+        hint: 'e.g. G-XXXXXXXXXX',
+      },
+      { name: 'recaptchaSiteKey', label: 'reCAPTCHA Site Key', type: 'text' },
+      {
+        name: 'heroMedia',
+        label: 'Hero Background',
+        type: 'group',
+        fields: [
+          {
+            name: 'style',
+            label: 'Style',
+            type: 'select',
+            options: [
+              { label: 'Animated Particles (default)', value: 'particles' },
+              { label: 'Looping Video', value: 'video' },
+              { label: 'Static Image', value: 'image' },
+            ],
+          },
+          { name: 'video', label: 'Hero Video (MP4)', type: 'upload' },
+          { name: 'image', label: 'Hero Image', type: 'upload' },
+        ],
+      },
       {
         name: 'heroCtaPrimary',
         label: 'Hero CTA — Primary',
@@ -702,6 +731,60 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
           { name: 'github', label: 'GitHub URL', type: 'text' },
         ],
       },
+      {
+        name: 'seoDefaults',
+        label: 'SEO Defaults',
+        type: 'group',
+        fields: [
+          {
+            name: 'titleSuffix',
+            label: 'Title Suffix',
+            type: 'text',
+            hint: 'Appended to every page title — e.g. "| NOG Lab".',
+          },
+          { name: 'ogImage', label: 'Default OG Image', type: 'upload' },
+        ],
+      },
+      {
+        name: 'roleLabels',
+        label: 'People Role Labels',
+        type: 'group',
+        fields: [
+          { name: 'all', label: 'All (tab label)', type: 'text' },
+          { name: 'pi', label: 'PI', type: 'text' },
+          { name: 'postdoc', label: 'Postdoc', type: 'text' },
+          { name: 'phd', label: 'PhD', type: 'text' },
+          { name: 'ms', label: 'MS', type: 'text' },
+          { name: 'staff', label: 'Staff', type: 'text' },
+          { name: 'alumni', label: 'Alumni', type: 'text' },
+        ],
+      },
+      {
+        name: 'cookieConsent',
+        label: 'Cookie Consent Banner',
+        type: 'group',
+        fields: [
+          { name: 'enabled', label: 'Show cookie banner', type: 'checkbox' },
+          {
+            name: 'description',
+            label: 'Banner description text',
+            type: 'textarea',
+            hint: 'Leave blank to use the default text.',
+          },
+          {
+            name: 'acceptLabel',
+            label: 'Accept button label',
+            type: 'text',
+            hint: 'Default: "Accept analytics"',
+          },
+          {
+            name: 'declineLabel',
+            label: 'Decline button label',
+            type: 'text',
+            hint: 'Default: "Decline — no tracking"',
+          },
+        ],
+      },
     ],
   },
 
@@ -720,6 +803,25 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
           { name: 'isVisible', label: 'Visible', type: 'checkbox' },
         ],
       },
+      {
+        name: 'footerGroups',
+        label: 'Footer Link Groups',
+        type: 'array',
+        hint: 'Each group appears as a labelled column in the footer.',
+        fields: [
+          { name: 'title', label: 'Group Title', type: 'text', required: true },
+          {
+            name: 'links',
+            label: 'Links',
+            type: 'array',
+            fields: [
+              { name: 'label', label: 'Label', type: 'text', required: true },
+              { name: 'href', label: 'Path / URL', type: 'text', required: true },
+              { name: 'isExternal', label: 'Opens in new tab', type: 'checkbox' },
+            ],
+          },
+        ],
+      },
     ],
   },
 
@@ -729,7 +831,17 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
     fields: [
       { name: 'mission', label: 'Mission Statement', type: 'richtext' },
       { name: 'directorMessage', label: "Director's Message", type: 'richtext' },
+      { name: 'directorPortrait', label: "Director's Portrait", type: 'upload' },
       { name: 'kmuAffiliation', label: 'KMU Affiliation Block', type: 'richtext' },
+      {
+        name: 'facilities',
+        label: 'Facilities Gallery',
+        type: 'array',
+        fields: [
+          { name: 'image', label: 'Image', type: 'upload', required: true },
+          { name: 'caption', label: 'Caption', type: 'text' },
+        ],
+      },
       {
         name: 'testimonials',
         label: 'Testimonials',
@@ -738,6 +850,7 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
           { name: 'quote', label: 'Quote', type: 'textarea', required: true },
           { name: 'name', label: 'Name', type: 'text', required: true },
           { name: 'role', label: 'Role / Title', type: 'text', required: true },
+          { name: 'photo', label: 'Photo', type: 'upload' },
         ],
       },
     ],
@@ -753,7 +866,8 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         type: 'group',
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
-          { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'description', label: 'Meta Description (150–160 chars)', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image (1200×630)', type: 'upload' },
         ],
       },
       {
@@ -763,6 +877,7 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
           { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
         ],
       },
       {
@@ -772,6 +887,7 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
           { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
         ],
       },
       {
@@ -781,6 +897,7 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
           { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
         ],
       },
       {
@@ -790,15 +907,27 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
           { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
         ],
       },
       {
-        name: 'blog',
-        label: 'Blog (/blog)',
+        name: 'collaborations',
+        label: 'Collaborations (/collaborations)',
         type: 'group',
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
           { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
+        ],
+      },
+      {
+        name: 'impact',
+        label: 'Impact (/impact)',
+        type: 'group',
+        fields: [
+          { name: 'title', label: 'Page Title', type: 'text' },
+          { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
         ],
       },
       {
@@ -808,6 +937,17 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
           { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
+        ],
+      },
+      {
+        name: 'blog',
+        label: 'Blog (/blog)',
+        type: 'group',
+        fields: [
+          { name: 'title', label: 'Page Title', type: 'text' },
+          { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
         ],
       },
       {
@@ -817,6 +957,7 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
           { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
         ],
       },
       {
@@ -826,6 +967,7 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         fields: [
           { name: 'title', label: 'Page Title', type: 'text' },
           { name: 'description', label: 'Meta Description', type: 'textarea' },
+          { name: 'ogImage', label: 'OG Image', type: 'upload' },
         ],
       },
     ],
