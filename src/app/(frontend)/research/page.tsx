@@ -116,41 +116,39 @@ export default async function ResearchPage({ searchParams }: ResearchPageProps) 
       />
 
       {/* Top navigation — choose between Research Themes and Research Projects */}
-      <section className="bg-bg border-border border-b py-8 md:py-12">
+      <section className="bg-bg border-border border-b py-5">
         <Container>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+          <div className="flex flex-wrap justify-center gap-3">
             <a
               href="#themes"
               className={cn(
-                'group bg-surface flex items-center gap-4 rounded-2xl border-2 border-[#0E6E6E]/30 p-6',
-                'transition-all duration-200 hover:border-[#0E6E6E] hover:shadow-md',
+                'group bg-surface flex items-center gap-3 rounded-xl border border-[#0E6E6E]/30 px-4 py-3',
+                'transition-all duration-200 hover:border-[#0E6E6E] hover:shadow-sm',
                 'focus-visible:ring-2 focus-visible:ring-[#0E6E6E] focus-visible:outline-none',
               )}
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0E6E6E]/10">
-                <Microscope size={24} className="text-[#0E6E6E]" aria-hidden="true" />
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0E6E6E]/10">
+                <Microscope size={16} className="text-[#0E6E6E]" aria-hidden="true" />
               </span>
               <div>
-                <p className="font-heading text-fg text-lg font-bold">Research Themes</p>
-                <p className="text-muted mt-0.5 text-sm">Explore our core scientific focus areas</p>
+                <p className="font-heading text-fg text-sm font-semibold">Research Themes</p>
+                <p className="text-muted text-xs">Explore our core scientific focus areas</p>
               </div>
             </a>
             <a
               href="#projects"
               className={cn(
-                'group bg-surface flex items-center gap-4 rounded-2xl border-2 border-[#E2725B]/30 p-6',
-                'transition-all duration-200 hover:border-[#E2725B] hover:shadow-md',
+                'group bg-surface flex items-center gap-3 rounded-xl border border-[#E2725B]/30 px-4 py-3',
+                'transition-all duration-200 hover:border-[#E2725B] hover:shadow-sm',
                 'focus-visible:ring-2 focus-visible:ring-[#E2725B] focus-visible:outline-none',
               )}
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#E2725B]/10">
-                <FolderOpen size={24} className="text-[#E2725B]" aria-hidden="true" />
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#E2725B]/10">
+                <FolderOpen size={16} className="text-[#E2725B]" aria-hidden="true" />
               </span>
               <div>
-                <p className="font-heading text-fg text-lg font-bold">Research Projects</p>
-                <p className="text-muted mt-0.5 text-sm">
-                  Browse all active and completed projects
-                </p>
+                <p className="font-heading text-fg text-sm font-semibold">Research Projects</p>
+                <p className="text-muted text-xs">Browse all active and completed projects</p>
               </div>
             </a>
           </div>
