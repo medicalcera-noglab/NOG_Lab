@@ -3,6 +3,40 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { ImpactStory, MediaCoverage } from '../../../payload-types'
 
+export const getImpactStoryBySlug = unstable_cache(
+  async (slug: string): Promise<ImpactStory | null> => {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'impact_stories',
+      where: {
+        and: [{ slug: { equals: slug } }, { status: { equals: 'published' } }],
+      },
+      limit: 1,
+      depth: 2,
+      overrideAccess: true,
+    })
+    return result.docs[0] ?? null
+  },
+  ['impact-story-by-slug'],
+  { revalidate: 120, tags: ['impact_stories'] },
+)
+
+export const getAllImpactStorySlugs = unstable_cache(
+  async (): Promise<string[]> => {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'impact_stories',
+      where: { status: { equals: 'published' } },
+      limit: 500,
+      select: { slug: true },
+      overrideAccess: true,
+    })
+    return result.docs.map((d) => d.slug).filter((s): s is string => Boolean(s))
+  },
+  ['impact-story-slugs'],
+  { revalidate: 300, tags: ['impact_stories'] },
+)
+
 export const getImpactStories = unstable_cache(
   async (): Promise<ImpactStory[]> => {
     const payload = await getPayload({ config })

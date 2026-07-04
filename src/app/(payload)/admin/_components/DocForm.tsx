@@ -159,6 +159,11 @@ function buildPayload(state: FormState, fields: FieldDef[]): FormState {
       result[field.name] = buildPayload((val as FormState) ?? {}, field.fields ?? [])
     } else if (field.type === 'point') {
       result[field.name] = Array.isArray(val) && val.length === 2 ? val : null
+    } else if (field.type === 'password') {
+      // Only send password if the user actually typed something
+      if (typeof val === 'string' && val.trim() !== '') {
+        result[field.name] = val
+      }
     } else {
       result[field.name] = val
     }
@@ -937,7 +942,7 @@ function FieldInput({
     )
   }
 
-  // text / email / number / date
+  // text / email / number / date / password
   const inputType =
     field.type === 'email'
       ? 'email'
@@ -945,7 +950,9 @@ function FieldInput({
         ? 'number'
         : field.type === 'date'
           ? 'date'
-          : 'text'
+          : field.type === 'password'
+            ? 'password'
+            : 'text'
 
   return (
     <input

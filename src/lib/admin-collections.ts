@@ -17,6 +17,7 @@ export type FieldType =
   | 'group'
   | 'upload'
   | 'point'
+  | 'password'
 
 export type FieldDef = {
   name: string
@@ -447,7 +448,12 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
     listFields: ['title', 'status', 'publishedAt', 'updatedAt'],
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true },
-      { name: 'slug', label: 'Slug', type: 'text' },
+      {
+        name: 'slug',
+        label: 'Slug',
+        type: 'text',
+        hint: 'Auto-generated from title if left blank.',
+      },
       {
         name: 'status',
         label: 'Status',
@@ -457,6 +463,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },
         ],
+      },
+      {
+        name: 'publishedAt',
+        label: 'Published At',
+        type: 'date',
+        readOnly: true,
+        hint: 'Auto-set on first publish.',
       },
       {
         name: 'cover',
@@ -556,9 +569,16 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
     listFields: ['filename', 'mimeType', 'filesize', 'createdAt'],
     fields: [
       { name: 'filename', label: 'Filename', type: 'text', readOnly: true },
+      { name: 'submittedBy', label: 'Submitted By (Email)', type: 'email', readOnly: true },
       { name: 'mimeType', label: 'MIME Type', type: 'text', readOnly: true },
       { name: 'filesize', label: 'File Size (bytes)', type: 'number', readOnly: true },
-      { name: 'submittedBy', label: 'Submitted By', type: 'email', readOnly: true },
+      {
+        name: 'url',
+        label: 'Download URL',
+        type: 'text',
+        readOnly: true,
+        hint: 'Right-click → Open in new tab to download the file.',
+      },
     ],
   },
 
@@ -566,18 +586,32 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
     apiSlug: 'users',
     label: 'Users',
     titleField: 'email',
-    listFields: ['email', 'role', 'updatedAt'],
+    listFields: ['email', 'role', 'totpEnabled', 'updatedAt'],
     fields: [
-      { name: 'email', label: 'Email', type: 'email' },
+      { name: 'email', label: 'Email Address', type: 'email', required: true },
       {
         name: 'role',
         label: 'Role',
         type: 'select',
+        required: true,
         options: [
           { label: 'Super Admin', value: 'super_admin' },
           { label: 'Editor', value: 'editor' },
           { label: 'Contributor', value: 'contributor' },
         ],
+      },
+      {
+        name: 'password',
+        label: 'Password',
+        type: 'password',
+        hint: 'Required when creating a new user. Leave blank when editing to keep the current password.',
+      },
+      {
+        name: 'totpEnabled',
+        label: '2FA Status',
+        type: 'checkbox',
+        readOnly: true,
+        hint: 'Two-factor authentication status. Managed via TOTP setup flow.',
       },
     ],
   },
