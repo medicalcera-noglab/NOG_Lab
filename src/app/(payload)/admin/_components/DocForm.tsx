@@ -1181,9 +1181,16 @@ export function DocForm({
 }: Props) {
   const router = useRouter()
   const [state, setState] = useState<FormState>(() => initState(initialData, fields))
+  // Always-current reference so handleSave never closes over stale state.
+  // Synced in an effect (not during render) to satisfy react-hooks/refs.
+  const stateRef = useRef<FormState>(state)
+  useEffect(() => {
+    stateRef.current = state
+  })
   const [relOptions, setRelOptions] = useState<Record<string, { id: string; label: string }[]>>({})
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
 
   // Fetch options for all relationship fields
@@ -1225,7 +1232,9 @@ export function DocForm({
     setSaving(true)
     setFeedback(null)
 
-    const body = buildPayload(state, fields)
+    // Use the ref so we always serialize the latest state, even if a re-render
+    // (e.g. from setRelOptions or a file upload onChange) fired just before the click.
+    const body = buildPayload(stateRef.current, fields)
     if (isGlobal) {
       // Globals with drafts enabled save as draft by default; force publish.
       body._status = 'published'
@@ -1275,8 +1284,8 @@ export function DocForm({
 
   async function handleDelete() {
     if (!docId || isGlobal) return
-    if (!confirm(`Delete this ${collectionLabel} document? This cannot be undone.`)) return
     setDeleting(true)
+    setConfirmDelete(false)
 
     try {
       const res = await fetch(`/api/${apiSlug}/${docId}`, {
@@ -1412,27 +1421,69 @@ export function DocForm({
         }}
       >
         <div>
-          {docId && !isGlobal && (
-            <button
-              type="button"
-              onClick={handleDelete}
-              disabled={deleting || saving}
-              style={{
-                padding: '0.6rem 1.125rem',
-                background: 'none',
-                color: deleting ? '#94a3b8' : '#dc2626',
-                border: '1.5px solid',
-                borderColor: deleting ? '#e2e8f0' : '#fca5a5',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                cursor: deleting ? 'not-allowed' : 'pointer',
-                transition: 'all 0.15s',
-              }}
-            >
-              {deleting ? 'Deleting…' : 'Delete'}
-            </button>
-          )}
+          {docId &&
+            !isGlobal &&
+            (confirmDelete ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '0.8125rem', color: '#64748b', fontWeight: 500 }}>
+                  Delete this {collectionLabel}?
+                </span>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  style={{
+                    padding: '0.45rem 0.875rem',
+                    background: '#dc2626',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '7px',
+                    fontSize: '0.8125rem',
+                    fontWeight: 600,
+                    cursor: deleting ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {deleting ? 'Deleting…' : 'Yes, delete'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  disabled={deleting}
+                  style={{
+                    padding: '0.45rem 0.875rem',
+                    background: 'none',
+                    color: '#64748b',
+                    border: '1.5px solid #e2e8f0',
+                    borderRadius: '7px',
+                    fontSize: '0.8125rem',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                disabled={deleting || saving}
+                style={{
+                  padding: '0.6rem 1.125rem',
+                  background: 'none',
+                  color: deleting ? '#94a3b8' : '#dc2626',
+                  border: '1.5px solid',
+                  borderColor: deleting ? '#e2e8f0' : '#fca5a5',
+                  borderRadius: '8px',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  cursor: deleting ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {deleting ? 'Deleting…' : 'Delete'}
+              </button>
+            ))}
         </div>
 
         <div style={{ display: 'flex', gap: '0.625rem' }}>
