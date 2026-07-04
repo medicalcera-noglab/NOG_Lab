@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { isSuperAdmin } from '../access'
+import { isAdminOrEditor } from '../access'
 import { revalidateSiteSettings } from '../hooks/revalidateCache'
 import { makeGlobalAuditChangeHook } from '../hooks/auditLog'
 
@@ -10,18 +10,14 @@ export const SiteSettings: GlobalConfig = {
     hideAPIURL: true,
     group: 'Site Config',
     description: 'Global site configuration — lab name, branding, footer, SEO, CTAs.',
-    hidden: ({ user }) => {
-      const role = (user as { role?: string } | null)?.role
-      return role !== 'super_admin'
-    },
   },
   versions: {
     drafts: true,
     max: 20,
   },
   access: {
-    read: isSuperAdmin,
-    update: isSuperAdmin,
+    read: isAdminOrEditor,
+    update: isAdminOrEditor,
   },
   hooks: {
     afterChange: [revalidateSiteSettings, makeGlobalAuditChangeHook('site_settings')],
