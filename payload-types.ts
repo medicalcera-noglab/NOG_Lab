@@ -1847,6 +1847,18 @@ export interface SiteSetting {
    * Used to compute "Years Active" in the hero stat counters (e.g. 2019).
    */
   foundingYear?: number | null;
+  /**
+   * Configure the cookie consent banner shown to new visitors.
+   */
+  cookieConsent?: {
+    enabled?: boolean | null;
+    /**
+     * Leave blank to use the default privacy-first analytics text.
+     */
+    description?: string | null;
+    acceptLabel?: string | null;
+    declineLabel?: string | null;
+  };
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2085,6 +2097,14 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   noOpenPositionsMessage?: T;
   contactEmail?: T;
   foundingYear?: T;
+  cookieConsent?:
+    | T
+    | {
+        enabled?: T;
+        description?: T;
+        acceptLabel?: T;
+        declineLabel?: T;
+      };
   _status?: T;
   updatedAt?: T;
   createdAt?: T;
