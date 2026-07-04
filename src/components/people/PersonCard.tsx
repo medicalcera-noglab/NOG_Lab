@@ -24,7 +24,7 @@ export function PersonCard({ person, roleLabel }: PersonCardProps) {
         href={`/people/${slug}`}
         tabIndex={-1}
         aria-hidden="true"
-        className="bg-surface-raised block aspect-[4/5] overflow-hidden"
+        className="bg-surface-raised block aspect-[3/4] max-h-64 overflow-hidden sm:max-h-72"
       >
         <div className="relative h-full w-full">
           <MediaImage

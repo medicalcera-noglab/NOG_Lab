@@ -269,6 +269,57 @@ export const SiteSettings: GlobalConfig = {
       },
     },
     {
+      name: 'homeSections',
+      type: 'group',
+      label: 'Home Page — Section Visibility',
+      admin: {
+        description: 'Toggle which sections appear on the home page.',
+      },
+      fields: [
+        { name: 'showAboutTeaser', type: 'checkbox', label: 'About Teaser', defaultValue: true },
+        { name: 'showAboutFull', type: 'checkbox', label: 'About Full', defaultValue: true },
+        {
+          name: 'showFeaturedProject',
+          type: 'checkbox',
+          label: 'Featured Project',
+          defaultValue: true,
+        },
+        { name: 'showProjectsGrid', type: 'checkbox', label: 'Projects Grid', defaultValue: true },
+        { name: 'showMap', type: 'checkbox', label: 'Pakistan Map', defaultValue: true },
+        {
+          name: 'showPublications',
+          type: 'checkbox',
+          label: 'Publications Teaser',
+          defaultValue: true,
+        },
+        { name: 'showTeam', type: 'checkbox', label: 'Team Teaser', defaultValue: true },
+        { name: 'showNews', type: 'checkbox', label: 'Latest News', defaultValue: true },
+        { name: 'showPartners', type: 'checkbox', label: 'Partner Strip', defaultValue: true },
+      ],
+    },
+    {
+      name: 'blogSettings',
+      type: 'group',
+      label: 'Blog / News Page',
+      admin: {
+        description: 'Control which tabs appear on the /blog page.',
+      },
+      fields: [
+        {
+          name: 'showArticles',
+          type: 'checkbox',
+          label: 'Show Articles tab',
+          defaultValue: true,
+        },
+        {
+          name: 'showNewsEvents',
+          type: 'checkbox',
+          label: 'Show News & Events tab',
+          defaultValue: true,
+        },
+      ],
+    },
+    {
       name: 'cookieConsent',
       type: 'group',
       label: 'Cookie Consent Banner',

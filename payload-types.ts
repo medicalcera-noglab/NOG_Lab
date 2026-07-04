@@ -1848,6 +1848,27 @@ export interface SiteSetting {
    */
   foundingYear?: number | null;
   /**
+   * Toggle which sections appear on the home page.
+   */
+  homeSections?: {
+    showAboutTeaser?: boolean | null;
+    showAboutFull?: boolean | null;
+    showFeaturedProject?: boolean | null;
+    showProjectsGrid?: boolean | null;
+    showMap?: boolean | null;
+    showPublications?: boolean | null;
+    showTeam?: boolean | null;
+    showNews?: boolean | null;
+    showPartners?: boolean | null;
+  };
+  /**
+   * Control which tabs appear on the /blog page.
+   */
+  blogSettings?: {
+    showArticles?: boolean | null;
+    showNewsEvents?: boolean | null;
+  };
+  /**
    * Configure the cookie consent banner shown to new visitors.
    */
   cookieConsent?: {
@@ -2097,6 +2118,25 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   noOpenPositionsMessage?: T;
   contactEmail?: T;
   foundingYear?: T;
+  homeSections?:
+    | T
+    | {
+        showAboutTeaser?: T;
+        showAboutFull?: T;
+        showFeaturedProject?: T;
+        showProjectsGrid?: T;
+        showMap?: T;
+        showPublications?: T;
+        showTeam?: T;
+        showNews?: T;
+        showPartners?: T;
+      };
+  blogSettings?:
+    | T
+    | {
+        showArticles?: T;
+        showNewsEvents?: T;
+      };
   cookieConsent?:
     | T
     | {

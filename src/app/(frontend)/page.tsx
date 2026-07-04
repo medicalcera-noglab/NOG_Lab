@@ -104,28 +104,40 @@ export default async function HomePage() {
         foundingYear={settings.foundingYear ?? null}
       />
 
-      <AboutTeaser about={about} themes={themes} />
+      {settings.homeSections?.showAboutTeaser !== false && (
+        <AboutTeaser about={about} themes={themes} />
+      )}
 
-      <AboutFull
-        about={about}
-        settings={settings}
-        piPerson={people.find((p) => p.role === 'pi') ?? null}
-        counts={counts}
-      />
+      {settings.homeSections?.showAboutFull !== false && (
+        <AboutFull
+          about={about}
+          settings={settings}
+          piPerson={people.find((p) => p.role === 'pi') ?? null}
+          counts={counts}
+        />
+      )}
 
-      <FeaturedProject project={featuredProject} />
+      {settings.homeSections?.showFeaturedProject !== false && (
+        <FeaturedProject project={featuredProject} />
+      )}
 
-      <ProjectsGrid projects={homeProjects} />
+      {settings.homeSections?.showProjectsGrid !== false && (
+        <ProjectsGrid projects={homeProjects} />
+      )}
 
-      <PakistanMapTeaser sites={studySites} />
+      {settings.homeSections?.showMap !== false && <PakistanMapTeaser sites={studySites} />}
 
-      <PublicationsTeaser publications={latestPublications} />
+      {settings.homeSections?.showPublications !== false && (
+        <PublicationsTeaser publications={latestPublications} />
+      )}
 
-      <TeamTeaser people={people} />
+      {settings.homeSections?.showTeam !== false && <TeamTeaser people={people} />}
 
-      <LatestNews items={latestNews} />
+      {settings.homeSections?.showNews !== false && <LatestNews items={latestNews} />}
 
-      <PartnerStrip collaborators={collaborators} />
+      {settings.homeSections?.showPartners !== false && (
+        <PartnerStrip collaborators={collaborators} />
+      )}
     </>
   )
 }

@@ -760,6 +760,31 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
         ],
       },
       {
+        name: 'homeSections',
+        label: 'Home Page — Section Visibility',
+        type: 'group',
+        fields: [
+          { name: 'showAboutTeaser', label: 'About Teaser', type: 'checkbox' },
+          { name: 'showAboutFull', label: 'About Full', type: 'checkbox' },
+          { name: 'showFeaturedProject', label: 'Featured Project', type: 'checkbox' },
+          { name: 'showProjectsGrid', label: 'Projects Grid', type: 'checkbox' },
+          { name: 'showMap', label: 'Pakistan Map', type: 'checkbox' },
+          { name: 'showPublications', label: 'Publications Teaser', type: 'checkbox' },
+          { name: 'showTeam', label: 'Team Teaser', type: 'checkbox' },
+          { name: 'showNews', label: 'Latest News', type: 'checkbox' },
+          { name: 'showPartners', label: 'Partner Strip', type: 'checkbox' },
+        ],
+      },
+      {
+        name: 'blogSettings',
+        label: 'Blog / News Page',
+        type: 'group',
+        fields: [
+          { name: 'showArticles', label: 'Show Articles tab', type: 'checkbox' },
+          { name: 'showNewsEvents', label: 'Show News & Events tab', type: 'checkbox' },
+        ],
+      },
+      {
         name: 'cookieConsent',
         label: 'Cookie Consent Banner',
         type: 'group',

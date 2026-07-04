@@ -48,8 +48,20 @@ interface PageProps {
 export default async function BlogPage({ searchParams }: PageProps) {
   const params = await searchParams
 
-  // Tab: "articles" (default) or "news"
-  const tab = params.tab === 'news' ? 'news' : 'articles'
+  const settings = await getSiteSettings()
+  const showArticles = settings.blogSettings?.showArticles !== false
+  const showNews = settings.blogSettings?.showNewsEvents !== false
+
+  // Tab: "articles" (default) or "news" — fall back to first visible tab
+  const requestedTab = params.tab === 'news' ? 'news' : 'articles'
+  const tab: 'articles' | 'news' =
+    requestedTab === 'news' && !showNews
+      ? 'articles'
+      : requestedTab === 'articles' && !showArticles
+        ? showNews
+          ? 'news'
+          : 'articles'
+        : requestedTab
 
   // Articles tab state
   const tag = tab === 'articles' && typeof params.tag === 'string' ? params.tag : undefined
@@ -62,8 +74,8 @@ export default async function BlogPage({ searchParams }: PageProps) {
 
   // Fetch only the active tab data
   const [posts, newsItems] = await Promise.all([
-    tab === 'articles' ? getBlogList(tag) : Promise.resolve([]),
-    tab === 'news' ? getNewsList(category || undefined) : Promise.resolve([]),
+    tab === 'articles' && showArticles ? getBlogList(tag) : Promise.resolve([]),
+    tab === 'news' && showNews ? getNewsList(category || undefined) : Promise.resolve([]),
   ])
 
   // Collect tags from blog posts (fetch all to show in filter even when tag-filtered)
@@ -76,41 +88,47 @@ export default async function BlogPage({ searchParams }: PageProps) {
     <>
       <PageBanner eyebrow="Lab updates" title="Blog & News" tint="#0E6E6E" />
 
-      {/* Tab switcher */}
-      <Section className="bg-surface border-border border-b py-0!" id="tabs">
-        <Container>
-          <nav aria-label="Content type" className="-mb-px flex gap-1">
-            <Link
-              href="/blog"
-              aria-current={tab === 'articles' ? 'page' : undefined}
-              className={cn(
-                'inline-flex items-center gap-2 border-b-2 px-5 py-4 text-sm font-semibold transition-colors duration-150',
-                'focus-visible:ring-ring rounded-t focus-visible:ring-2 focus-visible:outline-none',
-                tab === 'articles'
-                  ? 'border-primary text-primary'
-                  : 'text-muted hover:text-fg hover:border-border border-transparent',
+      {/* Tab switcher — only rendered when at least one tab is visible */}
+      {(showArticles || showNews) && (
+        <Section className="bg-surface border-border border-b py-0!" id="tabs">
+          <Container>
+            <nav aria-label="Content type" className="-mb-px flex gap-1">
+              {showArticles && (
+                <Link
+                  href="/blog"
+                  aria-current={tab === 'articles' ? 'page' : undefined}
+                  className={cn(
+                    'inline-flex items-center gap-2 border-b-2 px-5 py-4 text-sm font-semibold transition-colors duration-150',
+                    'focus-visible:ring-ring rounded-t focus-visible:ring-2 focus-visible:outline-none',
+                    tab === 'articles'
+                      ? 'border-primary text-primary'
+                      : 'text-muted hover:text-fg hover:border-border border-transparent',
+                  )}
+                >
+                  <BookOpen size={16} aria-hidden="true" />
+                  Articles
+                </Link>
               )}
-            >
-              <BookOpen size={16} aria-hidden="true" />
-              Articles
-            </Link>
-            <Link
-              href="/blog?tab=news"
-              aria-current={tab === 'news' ? 'page' : undefined}
-              className={cn(
-                'inline-flex items-center gap-2 border-b-2 px-5 py-4 text-sm font-semibold transition-colors duration-150',
-                'focus-visible:ring-ring rounded-t focus-visible:ring-2 focus-visible:outline-none',
-                tab === 'news'
-                  ? 'border-primary text-primary'
-                  : 'text-muted hover:text-fg hover:border-border border-transparent',
+              {showNews && (
+                <Link
+                  href="/blog?tab=news"
+                  aria-current={tab === 'news' ? 'page' : undefined}
+                  className={cn(
+                    'inline-flex items-center gap-2 border-b-2 px-5 py-4 text-sm font-semibold transition-colors duration-150',
+                    'focus-visible:ring-ring rounded-t focus-visible:ring-2 focus-visible:outline-none',
+                    tab === 'news'
+                      ? 'border-primary text-primary'
+                      : 'text-muted hover:text-fg hover:border-border border-transparent',
+                  )}
+                >
+                  <Newspaper size={16} aria-hidden="true" />
+                  News &amp; Events
+                </Link>
               )}
-            >
-              <Newspaper size={16} aria-hidden="true" />
-              News &amp; Events
-            </Link>
-          </nav>
-        </Container>
-      </Section>
+            </nav>
+          </Container>
+        </Section>
+      )}
 
       {/* ── Articles tab ── */}
       {tab === 'articles' && (

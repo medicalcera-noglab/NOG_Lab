@@ -18,7 +18,7 @@ export function BlogCard({ post }: Props) {
       {/* Image area — always rendered for consistent card height */}
       <Link
         href={`/blog/${post.slug ?? post.id}`}
-        className="relative block aspect-video max-h-44 overflow-hidden sm:max-h-none"
+        className="relative block aspect-video max-h-44 overflow-hidden"
         tabIndex={-1}
         aria-hidden
       >

@@ -247,28 +247,15 @@ export default function AdminLogin() {
 
           {/* Logo / brand */}
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '50px',
-                height: '50px',
-                borderRadius: '14px',
-                background: 'linear-gradient(145deg, #0e6e6e 0%, #10c8a0 100%)',
-                boxShadow: '0 4px 20px rgba(14,200,160,0.4), inset 0 1px 0 rgba(255,255,255,0.15)',
-                marginBottom: '1rem',
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                <path
-                  d="M7 21V7l14 14V7"
-                  stroke="#fff"
-                  strokeWidth="2.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+            <div style={{ marginBottom: '1rem' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.svg"
+                alt="NOG Lab logo"
+                width={50}
+                height={50}
+                style={{ display: 'block' }}
+              />
             </div>
             <div
               style={{
