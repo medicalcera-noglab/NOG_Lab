@@ -1246,7 +1246,7 @@ export function DocForm({
 
       if (isGlobal) {
         url = `/api/globals/${apiSlug}`
-        method = 'PUT'
+        method = 'POST'
       } else {
         url = docId ? `/api/${apiSlug}/${docId}` : `/api/${apiSlug}`
         method = docId ? 'PATCH' : 'POST'
