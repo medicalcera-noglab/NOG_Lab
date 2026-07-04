@@ -167,6 +167,9 @@ function buildPayload(state: FormState, fields: FieldDef[]): FormState {
       result[field.name] = field.fields?.length
         ? rows.map((row) => buildPayload(row as FormState, field.fields!))
         : rows
+    } else if (field.type === 'select') {
+      // Empty string is not a valid option value — send null so Payload validation passes
+      result[field.name] = val === '' || val === null || val === undefined ? null : val
     } else if (field.type === 'password') {
       // Only send password if the user actually typed something
       if (typeof val === 'string' && val.trim() !== '') {
