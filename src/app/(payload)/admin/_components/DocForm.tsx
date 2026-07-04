@@ -69,13 +69,20 @@ function textToLexical(text: string) {
 function extractRelId(val: unknown): string {
   if (!val) return ''
   if (typeof val === 'object' && 'id' in (val as Record<string, unknown>))
-    return String((val as Record<string, string>).id)
+    return String((val as Record<string, unknown>).id)
   return String(val)
 }
 
 function extractRelIds(val: unknown): string[] {
   if (!Array.isArray(val)) return []
-  return val.map(extractRelId)
+  return val.map(extractRelId).filter(Boolean)
+}
+
+// Payload PostgreSQL uses integer IDs. Convert "7" → 7 for API payloads;
+// keep non-numeric IDs (e.g. hex sub-row ids) as strings.
+function toPayloadId(v: string): number | string {
+  const n = Number(v)
+  return Number.isFinite(n) && v.trim() !== '' ? n : v
 }
 
 // ── Upload value type ────────────────────────────────────────────
@@ -132,9 +139,19 @@ function buildPayload(state: FormState, fields: FieldDef[]): FormState {
       result[field.name] = typeof val === 'string' ? textToLexical(val as string) : val
     } else if (field.type === 'number') {
       result[field.name] = val === '' || val === null || val === undefined ? null : Number(val)
+    } else if (field.type === 'date') {
+      result[field.name] = val === '' || val === null || val === undefined ? null : val
     } else if (field.type === 'upload') {
       const uv = val as UploadValue
-      result[field.name] = uv?.id ?? null
+      result[field.name] = uv?.id ? toPayloadId(uv.id) : null
+    } else if (field.type === 'relationship') {
+      if (field.hasMany) {
+        const ids = (Array.isArray(val) ? (val as string[]) : []).filter(Boolean)
+        result[field.name] = ids.map(toPayloadId)
+      } else {
+        const id = typeof val === 'string' ? val.trim() : ''
+        result[field.name] = id ? toPayloadId(id) : null
+      }
     } else if (field.type === 'group') {
       result[field.name] = buildPayload((val as FormState) ?? {}, field.fields ?? [])
     } else {
