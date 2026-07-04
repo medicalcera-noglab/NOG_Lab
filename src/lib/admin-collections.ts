@@ -16,6 +16,7 @@ export type FieldType =
   | 'relationship'
   | 'group'
   | 'upload'
+  | 'point'
 
 export type FieldDef = {
   name: string
@@ -403,6 +404,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
         type: 'relationship',
         relationTo: 'projects',
         required: true,
+      },
+      {
+        name: 'location',
+        label: 'Location on Map',
+        type: 'point',
+        required: true,
+        hint: 'Search a city or click on the map to pin the site. Coordinates are stored as [longitude, latitude].',
       },
     ],
   },

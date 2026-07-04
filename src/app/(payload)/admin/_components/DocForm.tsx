@@ -1,5 +1,6 @@
 'use client'
 
+import 'leaflet/dist/leaflet.css'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import type { FieldDef } from '@/lib/admin-collections'
@@ -122,6 +123,8 @@ function initState(data: FormState, fields: FieldDef[]): FormState {
       state[field.name] = initState(groupData, field.fields ?? [])
     } else if (field.type === 'checkbox') {
       state[field.name] = Boolean(raw)
+    } else if (field.type === 'point') {
+      state[field.name] = Array.isArray(raw) && raw.length === 2 ? raw : null
     } else {
       state[field.name] = raw ?? ''
     }
@@ -154,6 +157,8 @@ function buildPayload(state: FormState, fields: FieldDef[]): FormState {
       }
     } else if (field.type === 'group') {
       result[field.name] = buildPayload((val as FormState) ?? {}, field.fields ?? [])
+    } else if (field.type === 'point') {
+      result[field.name] = Array.isArray(val) && val.length === 2 ? val : null
     } else {
       result[field.name] = val
     }
@@ -430,6 +435,323 @@ function MediaUploadField({
   )
 }
 
+// ── Map Picker Field (PostGIS point coordinates) ─────────────────
+
+interface _LL {
+  map: (el: HTMLElement, opts?: object) => _LMap
+  tileLayer: (url: string, opts?: object) => _LLayer
+  marker: (latlng: [number, number], opts?: object) => _LMarker
+}
+interface _LMap {
+  on: (event: string, handler: (e: _LClickEvent) => void) => _LMap
+  setView: (latlng: [number, number], zoom: number) => void
+  remove: () => void
+}
+interface _LLayer {
+  addTo: (map: _LMap) => _LLayer
+}
+interface _LMarker {
+  addTo: (map: _LMap) => _LMarker
+  setLatLng: (latlng: [number, number]) => _LMarker
+}
+interface _LClickEvent {
+  latlng: { lat: number; lng: number }
+}
+
+const PAKISTAN_CITIES = [
+  { label: 'Peshawar, KPK', lat: 34.0151, lng: 71.5249 },
+  { label: 'Mardan, KPK', lat: 34.1986, lng: 72.0404 },
+  { label: 'Abbottabad, KPK', lat: 34.1463, lng: 73.2117 },
+  { label: 'Mingora (Swat), KPK', lat: 34.7717, lng: 72.36 },
+  { label: 'Bannu, KPK', lat: 32.9857, lng: 70.5986 },
+  { label: 'D.I. Khan, KPK', lat: 31.8311, lng: 70.9014 },
+  { label: 'Islamabad, ICT', lat: 33.7294, lng: 73.0931 },
+  { label: 'Rawalpindi, Punjab', lat: 33.5651, lng: 73.0169 },
+  { label: 'Lahore, Punjab', lat: 31.5204, lng: 74.3587 },
+  { label: 'Faisalabad, Punjab', lat: 31.418, lng: 73.079 },
+  { label: 'Multan, Punjab', lat: 30.1575, lng: 71.5249 },
+  { label: 'Gujranwala, Punjab', lat: 32.1877, lng: 74.1945 },
+  { label: 'Sialkot, Punjab', lat: 32.4945, lng: 74.5229 },
+  { label: 'Sargodha, Punjab', lat: 32.0836, lng: 72.6711 },
+  { label: 'Bahawalpur, Punjab', lat: 29.3956, lng: 71.6836 },
+  { label: 'Karachi, Sindh', lat: 24.8607, lng: 67.0011 },
+  { label: 'Hyderabad, Sindh', lat: 25.396, lng: 68.3578 },
+  { label: 'Sukkur, Sindh', lat: 27.7052, lng: 68.8676 },
+  { label: 'Larkana, Sindh', lat: 27.56, lng: 68.2126 },
+  { label: 'Quetta, Balochistan', lat: 30.1798, lng: 66.975 },
+  { label: 'Turbat, Balochistan', lat: 26.0025, lng: 63.0438 },
+  { label: 'Khuzdar, Balochistan', lat: 27.8, lng: 66.6167 },
+  { label: 'Gilgit, GB', lat: 35.9218, lng: 74.3081 },
+  { label: 'Skardu, GB', lat: 35.2971, lng: 75.634 },
+  { label: 'Muzaffarabad, AJK', lat: 34.3702, lng: 73.4711 },
+]
+
+function MapPickerField({
+  value,
+  onChange,
+}: {
+  value: [number, number] | null
+  onChange: (v: [number, number] | null) => void
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<_LMap | null>(null)
+  const markerRef = useRef<_LMarker | null>(null)
+
+  const initialCoords =
+    Array.isArray(value) && value.length === 2
+      ? { lng: value[0] as number, lat: value[1] as number }
+      : null
+
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(initialCoords)
+  const [latInput, setLatInput] = useState(initialCoords ? String(initialCoords.lat) : '')
+  const [lngInput, setLngInput] = useState(initialCoords ? String(initialCoords.lng) : '')
+  const [citySearch, setCitySearch] = useState('')
+
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return
+    let cancelled = false
+
+    import('leaflet').then(({ default: L }) => {
+      if (cancelled || !containerRef.current) return
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (L.Icon.Default.prototype as any)._getIconUrl
+
+      const map = (L as unknown as _LL).map(containerRef.current, {
+        center: [30.3753, 69.3451] as [number, number],
+        zoom: 5,
+      })
+
+      ;(L as unknown as _LL)
+        .tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 18,
+        })
+        .addTo(map)
+
+      if (Array.isArray(value) && value.length === 2) {
+        const [lng, lat] = value as [number, number]
+        const m = (L as unknown as _LL).marker([lat, lng]).addTo(map)
+        markerRef.current = m
+        map.setView([lat, lng], 9)
+      }
+
+      map.on('click', (e: _LClickEvent) => {
+        const { lat, lng } = e.latlng
+        const rounded = { lat: +lat.toFixed(6), lng: +lng.toFixed(6) }
+
+        if (markerRef.current) {
+          markerRef.current.setLatLng([rounded.lat, rounded.lng])
+        } else {
+          const m = (L as unknown as _LL).marker([rounded.lat, rounded.lng]).addTo(map)
+          markerRef.current = m
+        }
+
+        onChange([rounded.lng, rounded.lat])
+        setCoords(rounded)
+        setLatInput(String(rounded.lat))
+        setLngInput(String(rounded.lng))
+      })
+
+      mapRef.current = map
+    })
+
+    return () => {
+      cancelled = true
+      mapRef.current?.remove()
+      mapRef.current = null
+      markerRef.current = null
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  function applyCity(lat: number, lng: number) {
+    const rounded = { lat: +lat.toFixed(6), lng: +lng.toFixed(6) }
+    onChange([rounded.lng, rounded.lat])
+    setCoords(rounded)
+    setLatInput(String(rounded.lat))
+    setLngInput(String(rounded.lng))
+    setCitySearch('')
+    if (mapRef.current) {
+      if (markerRef.current) {
+        markerRef.current.setLatLng([rounded.lat, rounded.lng])
+      }
+      mapRef.current.setView([rounded.lat, rounded.lng], 11)
+    }
+  }
+
+  function applyManualInput() {
+    const lat = parseFloat(latInput)
+    const lng = parseFloat(lngInput)
+    if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) return
+    const rounded = { lat: +lat.toFixed(6), lng: +lng.toFixed(6) }
+    onChange([rounded.lng, rounded.lat])
+    setCoords(rounded)
+    if (mapRef.current) {
+      if (markerRef.current) {
+        markerRef.current.setLatLng([rounded.lat, rounded.lng])
+      }
+      mapRef.current.setView([rounded.lat, rounded.lng], 9)
+    }
+  }
+
+  const filteredCities = citySearch.trim()
+    ? PAKISTAN_CITIES.filter((c) => c.label.toLowerCase().includes(citySearch.toLowerCase()))
+    : PAKISTAN_CITIES
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      {/* City quick-search */}
+      <div style={{ position: 'relative' }}>
+        <input
+          type="text"
+          placeholder="Search city (e.g. Peshawar, Karachi)…"
+          value={citySearch}
+          onChange={(e) => setCitySearch(e.target.value)}
+          style={{ ...S.input }}
+        />
+        {citySearch.trim() && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              zIndex: 9999,
+              maxHeight: '180px',
+              overflowY: 'auto',
+              background: '#fff',
+              border: '1.5px solid #e2e8f0',
+              borderTop: 'none',
+              borderRadius: '0 0 7px 7px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+            }}
+          >
+            {filteredCities.length === 0 ? (
+              <p
+                style={{ padding: '8px 12px', fontSize: '0.8125rem', color: '#94a3b8', margin: 0 }}
+              >
+                No cities found
+              </p>
+            ) : (
+              filteredCities.map((city) => (
+                <button
+                  key={city.label}
+                  type="button"
+                  onClick={() => applyCity(city.lat, city.lng)}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '7px 12px',
+                    textAlign: 'left',
+                    fontSize: '0.8125rem',
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: '1px solid #f1f5f9',
+                    cursor: 'pointer',
+                    color: '#0f172a',
+                  }}
+                >
+                  {city.label}
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Manual coordinate inputs */}
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+        <label
+          style={{
+            fontSize: '0.8rem',
+            color: '#374151',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3px',
+          }}
+        >
+          Latitude
+          <input
+            type="number"
+            step="0.000001"
+            min={-90}
+            max={90}
+            value={latInput}
+            onChange={(e) => setLatInput(e.target.value)}
+            placeholder="e.g. 34.0151"
+            style={{ ...S.input, width: '140px' }}
+          />
+        </label>
+        <label
+          style={{
+            fontSize: '0.8rem',
+            color: '#374151',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3px',
+          }}
+        >
+          Longitude
+          <input
+            type="number"
+            step="0.000001"
+            min={-180}
+            max={180}
+            value={lngInput}
+            onChange={(e) => setLngInput(e.target.value)}
+            placeholder="e.g. 71.5249"
+            style={{ ...S.input, width: '140px' }}
+          />
+        </label>
+        <button
+          type="button"
+          onClick={applyManualInput}
+          style={{
+            padding: '0.55rem 1rem',
+            fontSize: '0.8125rem',
+            fontWeight: 600,
+            border: '1.5px solid #e2e8f0',
+            borderRadius: '7px',
+            background: '#f8fafc',
+            color: '#374151',
+            cursor: 'pointer',
+          }}
+        >
+          Apply
+        </button>
+      </div>
+
+      {/* Leaflet map */}
+      <div
+        ref={containerRef}
+        style={{
+          height: '300px',
+          width: '100%',
+          borderRadius: '8px',
+          overflow: 'hidden',
+          border: '1.5px solid #e2e8f0',
+        }}
+        role="application"
+        aria-label="Click on the map to set the study site location"
+      />
+
+      <p
+        style={{
+          fontSize: '0.75rem',
+          margin: 0,
+          color: coords ? '#64748b' : '#d97706',
+          fontWeight: coords ? 400 : 500,
+        }}
+      >
+        {coords
+          ? `Selected: ${coords.lat.toFixed(6)}°N, ${coords.lng.toFixed(6)}°E`
+          : 'No location set — click the map or search a city above'}
+      </p>
+    </div>
+  )
+}
+
 // ── FieldInput ───────────────────────────────────────────────────
 
 function FieldInput({
@@ -453,6 +775,15 @@ function FieldInput({
         field={field}
         value={value}
         onChange={onChange as (v: UploadValue) => void}
+      />
+    )
+  }
+
+  if (field.type === 'point') {
+    return (
+      <MapPickerField
+        value={value as [number, number] | null}
+        onChange={onChange as (v: [number, number] | null) => void}
       />
     )
   }
@@ -852,7 +1183,7 @@ export function DocForm({
     setState((prev) => ({ ...prev, [name]: val }))
   }, [])
 
-  async function handleSave(e: React.FormEvent) {
+  async function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSaving(true)
     setFeedback(null)
