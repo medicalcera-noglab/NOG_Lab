@@ -98,7 +98,7 @@ export async function Dashboard(props: AdminViewProps) {
       roles: ['super_admin', 'editor'],
     },
     {
-      label: 'Collaborators',
+      label: 'Partner Institutions',
       value: counts.collaborators,
       href: '/admin/collections/collaborators',
       roles: ['super_admin', 'editor'],

@@ -18,7 +18,7 @@ const COLLECTIONS = [
   { label: 'News & Events', slug: 'news_events' },
   { label: 'Research Themes', slug: 'research_themes' },
   { label: 'Study Sites', slug: 'study_sites' },
-  { label: 'Collaborators', slug: 'collaborators' },
+  { label: 'Partner Institutions', slug: 'collaborators' },
   { label: 'Outreach Activities', slug: 'outreach_activities' },
   { label: 'Impact Stories', slug: 'impact_stories' },
   { label: 'Media Coverage', slug: 'media_coverage' },

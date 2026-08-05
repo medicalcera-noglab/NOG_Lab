@@ -418,7 +418,7 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
 
   collaborators: {
     apiSlug: 'collaborators',
-    label: 'Collaborators',
+    label: 'Partner Institutions',
     titleField: 'name',
     listFields: ['name', 'type', 'country', 'displayOrder'],
     fields: [

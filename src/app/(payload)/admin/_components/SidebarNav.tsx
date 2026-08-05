@@ -85,7 +85,7 @@ const COLLECTIONS = [
   { slug: 'news_events', label: 'News & Events', icon: 'news_events' },
   { slug: 'research_themes', label: 'Research Themes', icon: 'research_themes' },
   { slug: 'study_sites', label: 'Study Sites', icon: 'study_sites' },
-  { slug: 'collaborators', label: 'Collaborators', icon: 'collaborators' },
+  { slug: 'collaborators', label: 'Partner Institutions', icon: 'collaborators' },
   { slug: 'outreach_activities', label: 'Outreach Activities', icon: 'outreach_activities' },
   { slug: 'impact_stories', label: 'Impact Stories', icon: 'impact_stories' },
   { slug: 'media_coverage', label: 'Media Coverage', icon: 'media_coverage' },

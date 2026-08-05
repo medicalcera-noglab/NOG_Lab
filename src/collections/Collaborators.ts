@@ -5,6 +5,10 @@ import { makeAuditChangeHook, makeAuditDeleteHook } from '../hooks/auditLog'
 
 export const Collaborators: CollectionConfig = {
   slug: 'collaborators',
+  labels: {
+    singular: 'Partner Institution',
+    plural: 'Partner Institutions',
+  },
   admin: {
     hideAPIURL: true,
     useAsTitle: 'name',
