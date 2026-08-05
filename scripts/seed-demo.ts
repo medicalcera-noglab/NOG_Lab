@@ -625,6 +625,7 @@ async function main() {
           { label: 'Research', href: '/research', isExternal: false, isVisible: true },
           { label: 'Projects', href: '/projects', isExternal: false, isVisible: true },
           { label: 'Publications', href: '/publications', isExternal: false, isVisible: true },
+          { label: 'Outreach', href: '/outreach', isExternal: false, isVisible: true },
           { label: 'People', href: '/people', isExternal: false, isVisible: true },
           { label: 'News', href: '/news', isExternal: false, isVisible: true },
           { label: 'Blog', href: '/blog', isExternal: false, isVisible: true },

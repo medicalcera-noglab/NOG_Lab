@@ -71,6 +71,7 @@ async function main() {
           isExternal: false,
           isVisible: true,
         },
+        { label: 'Outreach', href: '/outreach', isExternal: false, isVisible: true },
         { label: 'Publication', href: '/publications', isExternal: false, isVisible: true },
         { label: 'News and Events', href: '/news', isExternal: false, isVisible: true },
         { label: 'Blogs', href: '/blog', isExternal: false, isVisible: true },
