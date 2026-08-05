@@ -33,6 +33,7 @@ import * as migration_20260630_000001_site_settings_hero_motto from './20260630_
 import * as migration_20260630_000002_fix_version_columns from './20260630_000002_fix_version_columns'
 import * as migration_20260704_000001_site_settings_cookie_consent from './20260704_000001_site_settings_cookie_consent'
 import * as migration_20260705_000001_site_settings_section_visibility from './20260705_000001_site_settings_section_visibility'
+import * as migration_20260805_203741 from './20260805_203741'
 
 export const migrations = [
   {
@@ -209,5 +210,10 @@ export const migrations = [
     up: migration_20260705_000001_site_settings_section_visibility.up,
     down: migration_20260705_000001_site_settings_section_visibility.down,
     name: '20260705_000001_site_settings_section_visibility',
+  },
+  {
+    up: migration_20260805_203741.up,
+    down: migration_20260805_203741.down,
+    name: '20260805_203741',
   },
 ]

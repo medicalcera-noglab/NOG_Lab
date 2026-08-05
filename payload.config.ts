@@ -24,9 +24,11 @@ import { Inquiries } from './src/collections/Inquiries'
 import { AuditLog } from './src/collections/AuditLog'
 import { ImpactStories } from './src/collections/ImpactStories'
 import { MediaCoverage } from './src/collections/MediaCoverage'
+import { OutreachActivities } from './src/collections/OutreachActivities'
 import { SiteSettings } from './src/globals/SiteSettings'
 import { About } from './src/globals/About'
 import { LegalPages } from './src/globals/LegalPages'
+import { OutreachPage } from './src/globals/OutreachPage'
 import { Navigation } from './src/globals/Navigation'
 import { PageSeo } from './src/globals/PageSeo'
 
@@ -69,6 +71,7 @@ export default buildConfig({
     OpenPositions,
     ImpactStories,
     MediaCoverage,
+    OutreachActivities,
     // Research
     Publications,
     Projects,
@@ -91,6 +94,7 @@ export default buildConfig({
     // Pages — static site content
     About,
     LegalPages,
+    OutreachPage,
     // Site Config — nav, SEO, branding
     Navigation,
     PageSeo,

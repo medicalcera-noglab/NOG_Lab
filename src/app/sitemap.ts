@@ -40,6 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry('/impact', 0.6, 'monthly'),
     entry('/contact', 0.5, 'yearly'),
     entry('/join', 0.6, 'monthly'),
+    entry('/outreach', 0.6, 'monthly'),
   ]
 
   const peoplePages = peopleSlugs.map((slug) => entry(`/people/${slug}`, 0.7))

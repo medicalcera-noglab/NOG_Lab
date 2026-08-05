@@ -72,6 +72,7 @@ export interface Config {
     open_positions: OpenPosition;
     impact_stories: ImpactStory;
     media_coverage: MediaCoverage;
+    outreach_activities: OutreachActivity;
     publications: Publication;
     projects: Project;
     research_themes: ResearchTheme;
@@ -95,6 +96,7 @@ export interface Config {
     open_positions: OpenPositionsSelect<false> | OpenPositionsSelect<true>;
     impact_stories: ImpactStoriesSelect<false> | ImpactStoriesSelect<true>;
     media_coverage: MediaCoverageSelect<false> | MediaCoverageSelect<true>;
+    outreach_activities: OutreachActivitiesSelect<false> | OutreachActivitiesSelect<true>;
     publications: PublicationsSelect<false> | PublicationsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     research_themes: ResearchThemesSelect<false> | ResearchThemesSelect<true>;
@@ -118,6 +120,7 @@ export interface Config {
   globals: {
     about: About;
     legal_pages: LegalPage;
+    outreach_page: OutreachPage;
     navigation: Navigation;
     page_seo: PageSeo;
     site_settings: SiteSetting;
@@ -125,6 +128,7 @@ export interface Config {
   globalsSelect: {
     about: AboutSelect<false> | AboutSelect<true>;
     legal_pages: LegalPagesSelect<false> | LegalPagesSelect<true>;
+    outreach_page: OutreachPageSelect<false> | OutreachPageSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     page_seo: PageSeoSelect<false> | PageSeoSelect<true>;
     site_settings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -722,6 +726,69 @@ export interface MediaCoverage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "outreach_activities".
+ */
+export interface OutreachActivity {
+  id: number;
+  title: string;
+  slug?: string | null;
+  /**
+   * Date of the outreach activity.
+   */
+  date: string;
+  /**
+   * e.g. Peshawar, KP
+   */
+  location: string;
+  /**
+   * Brief summary shown on the card.
+   */
+  shortDescription: string;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  coverImage?: (number | null) | Media;
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional link to a related research project.
+   */
+  relatedProject?: (number | null) | Project;
+  partnerOrgs?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  status: 'draft' | 'published';
+  /**
+   * Auto-set on first publish.
+   */
+  publishedAt?: string | null;
+  isDemo?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "study_sites".
  */
 export interface StudySite {
@@ -868,6 +935,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media_coverage';
         value: number | MediaCoverage;
+      } | null)
+    | ({
+        relationTo: 'outreach_activities';
+        value: number | OutreachActivity;
       } | null)
     | ({
         relationTo: 'publications';
@@ -1051,6 +1122,39 @@ export interface MediaCoverageSelect<T extends boolean = true> {
   logo?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "outreach_activities_select".
+ */
+export interface OutreachActivitiesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  date?: T;
+  location?: T;
+  shortDescription?: T;
+  body?: T;
+  coverImage?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  relatedProject?: T;
+  partnerOrgs?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  status?: T;
+  publishedAt?: T;
+  isDemo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1524,6 +1628,40 @@ export interface LegalPage {
   createdAt?: string | null;
 }
 /**
+ * Content for /outreach — introductory text and section heading.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "outreach_page".
+ */
+export interface OutreachPage {
+  id: number;
+  /**
+   * Introductory paragraph displayed at the top of the Outreach page.
+   */
+  introText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Heading above the activity list.
+   */
+  sectionTitle?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Header navigation links and footer link groups. Changes take effect on the next page view.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1715,6 +1853,20 @@ export interface PageSeo {
     ogImage?: (number | null) | Media;
   };
   contact?: {
+    /**
+     * Overrides the default page title. Leave blank to use the hardcoded page title.
+     */
+    title?: string | null;
+    /**
+     * Overrides the meta description. Aim for 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Overrides the default OG image for social sharing (1200×630 recommended).
+     */
+    ogImage?: (number | null) | Media;
+  };
+  outreach?: {
     /**
      * Overrides the default page title. Leave blank to use the hardcoded page title.
      */
@@ -1930,6 +2082,18 @@ export interface LegalPagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "outreach_page_select".
+ */
+export interface OutreachPageSelect<T extends boolean = true> {
+  introText?: T;
+  sectionTitle?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navigation_select".
  */
 export interface NavigationSelect<T extends boolean = true> {
@@ -2036,6 +2200,13 @@ export interface PageSeoSelect<T extends boolean = true> {
         ogImage?: T;
       };
   contact?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
+  outreach?:
     | T
     | {
         title?: T;

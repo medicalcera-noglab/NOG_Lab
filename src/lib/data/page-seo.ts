@@ -28,6 +28,7 @@ export type PageSeoKey =
   | 'blog'
   | 'join'
   | 'contact'
+  | 'outreach'
 
 /** Extract title, description, and ogImage URL for a specific page key. */
 export function resolvePageSeo(

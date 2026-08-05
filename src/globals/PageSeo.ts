@@ -67,5 +67,6 @@ export const PageSeo: GlobalConfig = {
     pageGroup('blog', 'Blog (/blog)'),
     pageGroup('join', 'Join (/join)'),
     pageGroup('contact', 'Contact (/contact)'),
+    pageGroup('outreach', 'Outreach (/outreach)'),
   ],
 }

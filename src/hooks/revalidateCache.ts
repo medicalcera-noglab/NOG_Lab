@@ -59,6 +59,8 @@ export const revalidateStudySitesOnDelete = makeDeleteRevalidateHook(['study_sit
 export const revalidateImpactStoriesOnDelete = makeDeleteRevalidateHook(['impact_stories'])
 export const revalidateMediaCoverageOnDelete = makeDeleteRevalidateHook(['media_coverage'])
 export const revalidateOpenPositionsOnDelete = makeDeleteRevalidateHook(['open_positions'])
+export const revalidateOutreach = makeRevalidateHook(['outreach_activities'])
+export const revalidateOutreachOnDelete = makeDeleteRevalidateHook(['outreach_activities'])
 
 export const revalidateSiteSettings = makeGlobalRevalidateHook(['site_settings'])
 
@@ -69,3 +71,5 @@ export const revalidateLegalPages = makeGlobalRevalidateHook(['legal_pages'])
 export const revalidateNavigation = makeGlobalRevalidateHook(['navigation'])
 
 export const revalidatePageSeo = makeGlobalRevalidateHook(['page_seo'])
+
+export const revalidateOutreachPage = makeGlobalRevalidateHook(['outreach_page'])
