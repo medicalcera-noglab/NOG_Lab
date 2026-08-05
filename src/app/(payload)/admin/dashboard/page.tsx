@@ -19,6 +19,7 @@ const COLLECTIONS = [
   { label: 'Research Themes', slug: 'research_themes' },
   { label: 'Study Sites', slug: 'study_sites' },
   { label: 'Collaborators', slug: 'collaborators' },
+  { label: 'Outreach Activities', slug: 'outreach_activities' },
   { label: 'Impact Stories', slug: 'impact_stories' },
   { label: 'Media Coverage', slug: 'media_coverage' },
   { label: 'Open Positions', slug: 'open_positions' },
@@ -33,6 +34,8 @@ const GLOBALS = [
   { label: 'Site Settings', slug: 'site_settings' },
   { label: 'Navigation', slug: 'navigation' },
   { label: 'About Page', slug: 'about' },
+  { label: 'Outreach Page', slug: 'outreach_page' },
+  { label: 'Partnerships Page', slug: 'partnerships_page' },
   { label: 'Page SEO', slug: 'page_seo' },
   { label: 'Legal Pages', slug: 'legal_pages' },
 ]

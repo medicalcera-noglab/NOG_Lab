@@ -41,6 +41,11 @@ const ICONS: Record<string, string> = {
   about: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
   page_seo: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.35-4.35',
   legal_pages: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M9 12l2 2 4-4',
+  outreach_activities:
+    'M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z',
+  outreach_page: 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-6h2zm0-8h-2V7h2z',
+  partnerships_page:
+    'M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17',
   account: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
   view_site: 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6 M15 3h6v6 M10 14L21 3',
   sign_out: 'M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9',
@@ -81,6 +86,7 @@ const COLLECTIONS = [
   { slug: 'research_themes', label: 'Research Themes', icon: 'research_themes' },
   { slug: 'study_sites', label: 'Study Sites', icon: 'study_sites' },
   { slug: 'collaborators', label: 'Collaborators', icon: 'collaborators' },
+  { slug: 'outreach_activities', label: 'Outreach Activities', icon: 'outreach_activities' },
   { slug: 'impact_stories', label: 'Impact Stories', icon: 'impact_stories' },
   { slug: 'media_coverage', label: 'Media Coverage', icon: 'media_coverage' },
   { slug: 'open_positions', label: 'Open Positions', icon: 'open_positions' },
@@ -98,6 +104,8 @@ const GLOBALS = [
   { slug: 'site_settings', label: 'Site Settings', icon: 'site_settings' },
   { slug: 'navigation', label: 'Navigation', icon: 'navigation' },
   { slug: 'about', label: 'About Page', icon: 'about' },
+  { slug: 'outreach_page', label: 'Outreach Page', icon: 'outreach_page' },
+  { slug: 'partnerships_page', label: 'Partnerships Page', icon: 'partnerships_page' },
   { slug: 'page_seo', label: 'Page SEO', icon: 'page_seo' },
   { slug: 'legal_pages', label: 'Legal Pages', icon: 'legal_pages' },
 ]

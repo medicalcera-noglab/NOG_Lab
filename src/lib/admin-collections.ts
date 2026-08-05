@@ -441,6 +441,33 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
     ],
   },
 
+  outreach_activities: {
+    apiSlug: 'outreach_activities',
+    label: 'Outreach Activities',
+    titleField: 'title',
+    listFields: ['title', 'date', 'location', 'updatedAt'],
+    fields: [
+      { name: 'title', label: 'Title', type: 'text', required: true },
+      { name: 'date', label: 'Activity Date', type: 'date', required: true },
+      { name: 'location', label: 'Location', type: 'text' },
+      { name: 'shortDescription', label: 'Short Description', type: 'textarea', required: true },
+      {
+        name: 'coverImage',
+        label: 'Cover Image',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
+      { name: 'body', label: 'Full Description', type: 'richtext' },
+      {
+        name: 'partners',
+        label: 'Partner Organizations',
+        type: 'array',
+        fields: [{ name: 'name', label: 'Partner Name', type: 'text' }],
+      },
+    ],
+  },
+
   impact_stories: {
     apiSlug: 'impact_stories',
     label: 'Impact Stories',
@@ -544,7 +571,16 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
         options: [
           { label: 'Contact', value: 'contact' },
           { label: 'Join the Lab', value: 'join' },
+          { label: 'Partnership', value: 'partnership' },
         ],
+      },
+      { name: 'organization', label: 'Organization Name', type: 'text', readOnly: true },
+      { name: 'organizationType', label: 'Organization Type', type: 'text', readOnly: true },
+      {
+        name: 'researchInterest',
+        label: 'Primary Research Interest',
+        type: 'text',
+        readOnly: true,
       },
       { name: 'message', label: 'Message', type: 'textarea', readOnly: true },
       { name: 'positionTitle', label: 'Position Applied For', type: 'text', readOnly: true },
@@ -878,6 +914,99 @@ export const GLOBAL_SCHEMAS: Record<string, GlobalDef> = {
           { name: 'photo', label: 'Photo', type: 'upload' },
         ],
       },
+    ],
+  },
+
+  outreach_page: {
+    apiSlug: 'outreach_page',
+    label: 'Outreach Page',
+    fields: [
+      { name: 'introText', label: 'Introduction Text', type: 'richtext' },
+      { name: 'sectionTitle', label: 'Section Title', type: 'text' },
+    ],
+  },
+
+  partnerships_page: {
+    apiSlug: 'partnerships_page',
+    label: 'Partnerships Page',
+    fields: [
+      { name: 'heroEyebrow', label: 'Hero Eyebrow', type: 'text' },
+      { name: 'heroTitle', label: 'Hero Title', type: 'text' },
+      { name: 'heroDescription', label: 'Hero Description', type: 'textarea' },
+      { name: 'whyPartnerTitle', label: 'Why Partner Title', type: 'text' },
+      { name: 'whyPartnerSubtitle', label: 'Why Partner Subtitle', type: 'textarea' },
+      {
+        name: 'strengths',
+        label: 'Key Strengths',
+        type: 'array',
+        fields: [
+          { name: 'title', label: 'Title', type: 'text' },
+          { name: 'desc', label: 'Description', type: 'textarea' },
+        ],
+      },
+      { name: 'whatWeOfferTitle', label: 'What We Offer Title', type: 'text' },
+      { name: 'whatWeOfferSubtitle', label: 'What We Offer Subtitle', type: 'textarea' },
+      {
+        name: 'offerings',
+        label: 'Service Offerings',
+        type: 'array',
+        fields: [
+          { name: 'title', label: 'Title', type: 'text' },
+          { name: 'text', label: 'Description', type: 'textarea' },
+        ],
+      },
+      { name: 'infrastructureTitle', label: 'Infrastructure Title', type: 'text' },
+      { name: 'infrastructureTagline', label: 'Infrastructure Tagline', type: 'text' },
+      { name: 'infrastructureOverview', label: 'Infrastructure Overview', type: 'textarea' },
+      {
+        name: 'infrastructurePillars',
+        label: 'Infrastructure Pillars',
+        type: 'array',
+        fields: [
+          { name: 'title', label: 'Title', type: 'text' },
+          { name: 'text', label: 'Description', type: 'textarea' },
+        ],
+      },
+      { name: 'whoWeWorkWithTitle', label: 'Who We Work With Title', type: 'text' },
+      { name: 'whoWeWorkWithSubtitle', label: 'Who We Work With Subtitle', type: 'textarea' },
+      {
+        name: 'sectors',
+        label: 'Target Partner Sectors',
+        type: 'array',
+        fields: [
+          { name: 'title', label: 'Sector Name', type: 'text' },
+          {
+            name: 'items',
+            label: 'Sector Items',
+            type: 'array',
+            fields: [{ name: 'name', label: 'Item Name', type: 'text' }],
+          },
+        ],
+      },
+      { name: 'projectsTitle', label: 'Example Projects Title', type: 'text' },
+      { name: 'projectsSubtitle', label: 'Example Projects Subtitle', type: 'textarea' },
+      {
+        name: 'exampleProjects',
+        label: 'Example Projects',
+        type: 'array',
+        fields: [{ name: 'title', label: 'Project Title', type: 'text' }],
+      },
+      { name: 'modelsTitle', label: 'Partnership Models Title', type: 'text' },
+      { name: 'modelsSubtitle', label: 'Partnership Models Subtitle', type: 'textarea' },
+      {
+        name: 'models',
+        label: 'Partnership Models',
+        type: 'array',
+        fields: [
+          { name: 'title', label: 'Model Title', type: 'text' },
+          { name: 'desc', label: 'Description', type: 'textarea' },
+        ],
+      },
+      { name: 'collaboratorsTitle', label: 'Partner Institutions Title', type: 'text' },
+      { name: 'collaboratorsSubtitle', label: 'Partner Institutions Subtitle', type: 'textarea' },
+      { name: 'ctaTitle', label: 'CTA Title', type: 'text' },
+      { name: 'ctaDescription', label: 'CTA Description', type: 'textarea' },
+      { name: 'ctaEmail', label: 'Contact Email', type: 'text' },
     ],
   },
 
