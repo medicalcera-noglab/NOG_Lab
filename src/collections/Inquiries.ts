@@ -56,8 +56,41 @@ export const Inquiries: CollectionConfig = {
       options: [
         { label: 'Contact', value: 'contact' },
         { label: 'Join the Lab', value: 'join' },
+        { label: 'Partnership', value: 'partnership' },
       ],
       admin: { position: 'sidebar' },
+    },
+    {
+      name: 'organization',
+      type: 'text',
+      label: 'Organization Name',
+      admin: {
+        condition: (data) => data?.formType === 'partnership',
+      },
+    },
+    {
+      name: 'organizationType',
+      type: 'select',
+      label: 'Organization Type',
+      options: [
+        { label: 'Industry (Nutrition / Pharma / Biotech)', value: 'industry' },
+        { label: 'Academic & Research Institution', value: 'academic' },
+        { label: 'NGO / Development Organisation', value: 'ngo' },
+        { label: 'Government / Public Health Agency', value: 'government' },
+        { label: 'Other', value: 'other' },
+      ],
+      admin: {
+        position: 'sidebar',
+        condition: (data) => data?.formType === 'partnership',
+      },
+    },
+    {
+      name: 'researchInterest',
+      type: 'text',
+      label: 'Primary Research Interest / Area',
+      admin: {
+        condition: (data) => data?.formType === 'partnership',
+      },
     },
     {
       name: 'name',

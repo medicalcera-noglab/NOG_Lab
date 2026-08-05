@@ -6,6 +6,7 @@ const TABS = [
   { label: 'All', value: undefined },
   { label: 'Contact Messages', value: 'contact' },
   { label: 'Join Applications', value: 'join' },
+  { label: 'Partnership Inquiries', value: 'partnership' },
 ] as const
 
 export function InquiriesFilterTabs() {
@@ -15,6 +16,7 @@ export function InquiriesFilterTabs() {
   const currentFilter = (searchParams.get('where[formType][equals]') ?? undefined) as
     | 'contact'
     | 'join'
+    | 'partnership'
     | undefined
 
   return (

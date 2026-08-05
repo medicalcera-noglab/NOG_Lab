@@ -816,7 +816,10 @@ export interface StudySite {
  */
 export interface Inquiry {
   id: number;
-  formType: 'contact' | 'join';
+  formType: 'contact' | 'join' | 'partnership';
+  organization?: string | null;
+  organizationType?: ('industry' | 'academic' | 'ngo' | 'government' | 'other') | null;
+  researchInterest?: string | null;
   name: string;
   email: string;
   message: string;
@@ -1398,6 +1401,9 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface InquiriesSelect<T extends boolean = true> {
   formType?: T;
+  organization?: T;
+  organizationType?: T;
+  researchInterest?: T;
   name?: T;
   email?: T;
   message?: T;
