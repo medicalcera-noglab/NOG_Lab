@@ -29,6 +29,7 @@ import { SiteSettings } from './src/globals/SiteSettings'
 import { About } from './src/globals/About'
 import { LegalPages } from './src/globals/LegalPages'
 import { OutreachPage } from './src/globals/OutreachPage'
+import { PartnershipsPage } from './src/globals/PartnershipsPage'
 import { Navigation } from './src/globals/Navigation'
 import { PageSeo } from './src/globals/PageSeo'
 
@@ -95,6 +96,7 @@ export default buildConfig({
     About,
     LegalPages,
     OutreachPage,
+    PartnershipsPage,
     // Site Config — nav, SEO, branding
     Navigation,
     PageSeo,

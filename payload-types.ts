@@ -121,6 +121,7 @@ export interface Config {
     about: About;
     legal_pages: LegalPage;
     outreach_page: OutreachPage;
+    partnerships_page: PartnershipsPage;
     navigation: Navigation;
     page_seo: PageSeo;
     site_settings: SiteSetting;
@@ -129,6 +130,7 @@ export interface Config {
     about: AboutSelect<false> | AboutSelect<true>;
     legal_pages: LegalPagesSelect<false> | LegalPagesSelect<true>;
     outreach_page: OutreachPageSelect<false> | OutreachPageSelect<true>;
+    partnerships_page: PartnershipsPageSelect<false> | PartnershipsPageSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     page_seo: PageSeoSelect<false> | PageSeoSelect<true>;
     site_settings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -1668,6 +1670,85 @@ export interface OutreachPage {
   createdAt?: string | null;
 }
 /**
+ * Content for /collaborations (Partnerships page) — hero, why partner with us, offerings, infrastructure, who we work with, example projects, partnership models, and CTA.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partnerships_page".
+ */
+export interface PartnershipsPage {
+  id: number;
+  heroEyebrow?: string | null;
+  heroTitle?: string | null;
+  heroDescription?: string | null;
+  whyPartnerTitle?: string | null;
+  whyPartnerSubtitle?: string | null;
+  strengths?:
+    | {
+        title: string;
+        desc: string;
+        id?: string | null;
+      }[]
+    | null;
+  whatWeOfferTitle?: string | null;
+  whatWeOfferSubtitle?: string | null;
+  offerings?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  infrastructureTitle?: string | null;
+  infrastructureTagline?: string | null;
+  infrastructureOverview?: string | null;
+  infrastructurePillars?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  whoWeWorkWithTitle?: string | null;
+  whoWeWorkWithSubtitle?: string | null;
+  sectors?:
+    | {
+        title: string;
+        items?:
+          | {
+              name: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  projectsTitle?: string | null;
+  projectsSubtitle?: string | null;
+  exampleProjects?:
+    | {
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
+  modelsTitle?: string | null;
+  modelsSubtitle?: string | null;
+  models?:
+    | {
+        title: string;
+        desc: string;
+        id?: string | null;
+      }[]
+    | null;
+  collaboratorsTitle?: string | null;
+  collaboratorsSubtitle?: string | null;
+  ctaTitle?: string | null;
+  ctaDescription?: string | null;
+  ctaEmail?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Header navigation links and footer link groups. Changes take effect on the next page view.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2093,6 +2174,83 @@ export interface LegalPagesSelect<T extends boolean = true> {
 export interface OutreachPageSelect<T extends boolean = true> {
   introText?: T;
   sectionTitle?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partnerships_page_select".
+ */
+export interface PartnershipsPageSelect<T extends boolean = true> {
+  heroEyebrow?: T;
+  heroTitle?: T;
+  heroDescription?: T;
+  whyPartnerTitle?: T;
+  whyPartnerSubtitle?: T;
+  strengths?:
+    | T
+    | {
+        title?: T;
+        desc?: T;
+        id?: T;
+      };
+  whatWeOfferTitle?: T;
+  whatWeOfferSubtitle?: T;
+  offerings?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  infrastructureTitle?: T;
+  infrastructureTagline?: T;
+  infrastructureOverview?: T;
+  infrastructurePillars?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  whoWeWorkWithTitle?: T;
+  whoWeWorkWithSubtitle?: T;
+  sectors?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              name?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  projectsTitle?: T;
+  projectsSubtitle?: T;
+  exampleProjects?:
+    | T
+    | {
+        title?: T;
+        id?: T;
+      };
+  modelsTitle?: T;
+  modelsSubtitle?: T;
+  models?:
+    | T
+    | {
+        title?: T;
+        desc?: T;
+        id?: T;
+      };
+  collaboratorsTitle?: T;
+  collaboratorsSubtitle?: T;
+  ctaTitle?: T;
+  ctaDescription?: T;
+  ctaEmail?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;

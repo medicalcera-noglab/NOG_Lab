@@ -73,3 +73,5 @@ export const revalidateNavigation = makeGlobalRevalidateHook(['navigation'])
 export const revalidatePageSeo = makeGlobalRevalidateHook(['page_seo'])
 
 export const revalidateOutreachPage = makeGlobalRevalidateHook(['outreach_page'])
+
+export const revalidatePartnershipsPage = makeGlobalRevalidateHook(['partnerships_page'])
