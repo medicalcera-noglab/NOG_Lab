@@ -7,7 +7,10 @@ type InquiryDoc = {
   id: string
   name?: string
   email?: string
-  formType?: 'contact' | 'join'
+  formType?: 'contact' | 'join' | 'partnership'
+  organization?: string
+  organizationType?: string
+  researchInterest?: string
   message?: string
   positionTitle?: string
   cvUrl?: string
@@ -224,12 +227,23 @@ export function InquiryView({ doc, returnPath }: { doc: InquiryDoc; returnPath: 
                     fontSize: '0.75rem',
                     fontWeight: 600,
                     background:
-                      doc.formType === 'join' ? 'rgba(14,110,110,0.10)' : 'rgba(226,114,91,0.10)',
-                    color: doc.formType === 'join' ? '#0e6e6e' : '#e2725b',
+                      doc.formType === 'partnership'
+                        ? 'rgba(14,110,110,0.12)'
+                        : doc.formType === 'join'
+                          ? 'rgba(14,110,110,0.10)'
+                          : 'rgba(226,114,91,0.10)',
+                    color:
+                      doc.formType === 'partnership' || doc.formType === 'join'
+                        ? '#0e6e6e'
+                        : '#e2725b',
                     marginBottom: '0.375rem',
                   }}
                 >
-                  {doc.formType === 'join' ? 'Join Application' : 'Contact Inquiry'}
+                  {doc.formType === 'partnership'
+                    ? 'Partnership Enquiry'
+                    : doc.formType === 'join'
+                      ? 'Join Application'
+                      : 'Contact Inquiry'}
                 </span>
                 <p
                   style={{
@@ -255,6 +269,36 @@ export function InquiryView({ doc, returnPath }: { doc: InquiryDoc; returnPath: 
                 }}
               >
                 <strong>Position:</strong> {doc.positionTitle}
+              </div>
+            )}
+
+            {(doc.organization || doc.organizationType || doc.researchInterest) && (
+              <div
+                style={{
+                  marginTop: '0.75rem',
+                  padding: '0.6rem 0.875rem',
+                  background: 'rgba(14,110,110,0.06)',
+                  borderRadius: '8px',
+                  fontSize: '0.8125rem',
+                  color: '#374151',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.35rem',
+                }}
+              >
+                {doc.organization && (
+                  <div>
+                    <strong>Organization / Institution:</strong> {doc.organization}{' '}
+                    {doc.organizationType && (
+                      <span style={{ opacity: 0.75 }}>({doc.organizationType})</span>
+                    )}
+                  </div>
+                )}
+                {doc.researchInterest && (
+                  <div>
+                    <strong>Primary Research Interest:</strong> {doc.researchInterest}
+                  </div>
+                )}
               </div>
             )}
           </div>

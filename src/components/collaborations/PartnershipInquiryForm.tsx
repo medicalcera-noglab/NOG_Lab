@@ -56,7 +56,7 @@ export function PartnershipInquiryForm() {
                 name="name"
                 type="text"
                 required
-                placeholder="Dr. Jane Doe"
+                placeholder="e.g. Prof. Sarah Ahmed / Dr. Tariq Khan"
                 className={cn(
                   'border-border bg-bg text-fg w-full rounded-xl border px-4 py-3 text-sm transition-colors',
                   'focus:border-primary focus:ring-primary focus:ring-2 focus:outline-none',
@@ -73,7 +73,7 @@ export function PartnershipInquiryForm() {
                 name="email"
                 type="email"
                 required
-                placeholder="j.doe@institution.org"
+                placeholder="e.g. s.ahmed@institution.org"
                 className={cn(
                   'border-border bg-bg text-fg w-full rounded-xl border px-4 py-3 text-sm transition-colors',
                   'focus:border-primary focus:ring-primary focus:ring-2 focus:outline-none',
@@ -92,7 +92,7 @@ export function PartnershipInquiryForm() {
                 name="organization"
                 type="text"
                 required
-                placeholder="e.g. Imperial College London / Pfizer"
+                placeholder="e.g. Khyber Medical University / Imperial College London"
                 className={cn(
                   'border-border bg-bg text-fg w-full rounded-xl border px-4 py-3 text-sm transition-colors',
                   'focus:border-primary focus:ring-primary focus:ring-2 focus:outline-none',
