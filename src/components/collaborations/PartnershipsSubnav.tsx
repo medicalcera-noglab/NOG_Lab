@@ -3,7 +3,12 @@
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 
-const NAV_ITEMS = [
+export interface NavItem {
+  id: string
+  label: string
+}
+
+const DEFAULT_NAV_ITEMS: NavItem[] = [
   { id: 'what-we-offer', label: 'What We Offer' },
   { id: 'research-infrastructure', label: 'Infrastructure' },
   { id: 'who-we-work-with', label: 'Who We Work With' },
@@ -13,8 +18,13 @@ const NAV_ITEMS = [
   { id: 'enquiry', label: 'Get in Touch' },
 ]
 
-export function PartnershipsSubnav() {
-  const [activeSection, setActiveSection] = useState<string>('what-we-offer')
+interface PartnershipsSubnavProps {
+  items?: NavItem[]
+}
+
+export function PartnershipsSubnav({ items }: PartnershipsSubnavProps) {
+  const navItems = items && items.length > 0 ? items : DEFAULT_NAV_ITEMS
+  const [activeSection, setActiveSection] = useState<string>(navItems[0]?.id ?? 'what-we-offer')
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,13 +37,13 @@ export function PartnershipsSubnav() {
       { rootMargin: '-20% 0px -60% 0px', threshold: 0 },
     )
 
-    NAV_ITEMS.forEach(({ id }) => {
+    navItems.forEach(({ id }) => {
       const el = document.getElementById(id)
       if (el) observer.observe(el)
     })
 
     return () => observer.disconnect()
-  }, [])
+  }, [navItems])
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id)
@@ -52,6 +62,8 @@ export function PartnershipsSubnav() {
     }
   }
 
+  if (navItems.length === 0) return null
+
   return (
     <div className="border-border bg-bg/95 sticky top-16 z-30 border-y backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -59,7 +71,7 @@ export function PartnershipsSubnav() {
           aria-label="Partnership page sections"
           className="no-scrollbar flex items-center gap-2 overflow-x-auto py-3 text-xs font-medium sm:text-sm"
         >
-          {NAV_ITEMS.map(({ id, label }) => {
+          {navItems.map(({ id, label }) => {
             const isActive = activeSection === id
             return (
               <button
