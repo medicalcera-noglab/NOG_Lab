@@ -25,6 +25,7 @@ const INQUIRY_TABS = [
   { label: 'All', value: '' },
   { label: 'Contact', value: 'contact' },
   { label: 'Join', value: 'join' },
+  { label: 'Partnership', value: 'partnership' },
   { label: 'Unread', value: 'unread' },
 ]
 
@@ -60,6 +61,7 @@ export default async function CollectionListPage({ params, searchParams }: Props
   if (slug === 'inquiries') {
     if (inquiryTab === 'contact') qp.set('where[formType][equals]', 'contact')
     else if (inquiryTab === 'join') qp.set('where[formType][equals]', 'join')
+    else if (inquiryTab === 'partnership') qp.set('where[formType][equals]', 'partnership')
     else if (inquiryTab === 'unread') qp.set('where[isRead][equals]', 'false')
   } else if (statusFilter) {
     qp.set('where[status][equals]', statusFilter)
