@@ -10,11 +10,16 @@ import {
   ArrowRight,
   Quote,
   Sparkles,
+  X,
+  Eye,
+  CheckCircle,
 } from 'lucide-react'
 import { Section } from '@/components/ui/Section'
 import { Container } from '@/components/ui/Container'
 import { JoinForm } from '@/components/forms/JoinForm'
-import type { OpenPosition } from '../../../payload-types'
+import { MediaImage } from '@/components/MediaImage'
+import { RichText } from '@/components/RichText'
+import type { OpenPosition, Media } from '../../../payload-types'
 
 interface Testimonial {
   id?: string | null
@@ -24,10 +29,12 @@ interface Testimonial {
 }
 
 export interface PositionCard {
-  id: number
+  id: string | number
   title: string
   type: string
   previewText: string
+  image?: Media | null
+  rawDoc?: OpenPosition
 }
 
 interface JoinPageContentProps {
@@ -82,10 +89,12 @@ export function JoinPageContent({
   recaptchaSiteKey,
 }: JoinPageContentProps) {
   const [selectedPosition, setSelectedPosition] = useState('')
+  const [activeDetailPosition, setActiveDetailPosition] = useState<PositionCard | null>(null)
   const formSectionRef = useRef<HTMLDivElement>(null)
 
   const handleApply = (positionTitle: string) => {
     setSelectedPosition(positionTitle)
+    setActiveDetailPosition(null)
     requestAnimationFrame(() => {
       formSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
@@ -139,16 +148,17 @@ export function JoinPageContent({
               aria-label="Open positions"
               className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
             >
-              {positions.map((position, i) => {
+              {positions.map((position) => {
                 const typeStyle = getTypeStyle(position.type)
                 const TypeIcon = getTypeIcon(position.type)
 
                 return (
                   <li key={position.id}>
                     <motion.article
-                      className="group border-border bg-surface flex h-full flex-col overflow-hidden rounded-2xl border shadow-sm"
+                      className="group border-border bg-surface relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border shadow-sm transition-shadow duration-300 hover:shadow-md"
                       whileHover={{ y: -5, transition: { duration: 0.2 } }}
                       style={{ willChange: 'transform' }}
+                      onClick={() => setActiveDetailPosition(position)}
                     >
                       {/* Hover glow */}
                       <motion.div
@@ -162,57 +172,83 @@ export function JoinPageContent({
                         aria-hidden="true"
                       />
 
-                      {/* Card header */}
-                      <div className="p-6 pb-4">
-                        <div
-                          className="mb-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold capitalize"
-                          style={{
-                            backgroundColor: typeStyle.bg,
-                            color: typeStyle.text,
-                          }}
-                        >
-                          <TypeIcon size={11} aria-hidden="true" />
-                          {position.type.replace(/_/g, ' ')}
+                      {/* Card Cover Image */}
+                      <div className="bg-muted/20 border-border/50 relative h-48 w-full overflow-hidden border-b">
+                        <MediaImage
+                          doc={position.image}
+                          seed={position.id}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          placeholderLabel={`${position.title} illustration`}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                        <div className="absolute right-4 bottom-3 left-4 flex items-center justify-between">
+                          <div
+                            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold capitalize shadow-sm backdrop-blur-md"
+                            style={{
+                              backgroundColor: typeStyle.bg,
+                              color: typeStyle.text,
+                            }}
+                          >
+                            <TypeIcon size={11} aria-hidden="true" />
+                            {position.type.replace(/_/g, ' ')}
+                          </div>
                         </div>
-
-                        <h3 className="text-fg text-lg leading-snug font-bold">{position.title}</h3>
                       </div>
 
-                      {/* Preview text */}
-                      {position.previewText && (
-                        <div className="flex-1 px-6 pb-2">
-                          <p className="text-muted line-clamp-3 text-sm leading-relaxed">
+                      {/* Card Body */}
+                      <div className="flex flex-1 flex-col p-6">
+                        <h3 className="text-fg group-hover:text-primary mb-2.5 text-lg leading-snug font-bold transition-colors">
+                          {position.title}
+                        </h3>
+
+                        {position.previewText && (
+                          <p className="text-muted mb-6 line-clamp-3 text-sm leading-relaxed">
                             {position.previewText}
                           </p>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Apply CTA */}
-                      <div className="p-6 pt-4">
-                        <motion.button
-                          type="button"
-                          onClick={() => handleApply(position.title)}
-                          className="focus-visible:ring-ring inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:outline-none"
-                          style={{
-                            backgroundColor: `color-mix(in oklch, ${typeStyle.text} 10%, transparent)`,
-                            color: typeStyle.text,
-                            border: `1px solid color-mix(in oklch, ${typeStyle.text} 25%, transparent)`,
-                          }}
-                          whileHover={{
-                            backgroundColor: `color-mix(in oklch, ${typeStyle.text} 16%, transparent)`,
-                            scale: 1.01,
-                            transition: { duration: 0.15 },
-                          }}
-                          whileTap={{ scale: 0.98 }}
-                          aria-label={`Apply for ${position.title}`}
-                        >
-                          Apply for this position
-                          <ArrowRight
-                            size={14}
-                            aria-hidden="true"
-                            className="transition-transform duration-200 group-hover:translate-x-0.5"
-                          />
-                        </motion.button>
+                        <div className="mt-auto flex flex-col gap-2 pt-2">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setActiveDetailPosition(position)
+                            }}
+                            className="bg-bg border-border text-fg hover:bg-muted/30 inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                          >
+                            <Eye size={13} aria-hidden="true" />
+                            View Position Details
+                          </button>
+
+                          <motion.button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleApply(position.title)
+                            }}
+                            className="focus-visible:ring-ring inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:outline-none"
+                            style={{
+                              backgroundColor: `color-mix(in oklch, ${typeStyle.text} 12%, transparent)`,
+                              color: typeStyle.text,
+                              border: `1px solid color-mix(in oklch, ${typeStyle.text} 30%, transparent)`,
+                            }}
+                            whileHover={{
+                              backgroundColor: `color-mix(in oklch, ${typeStyle.text} 20%, transparent)`,
+                              scale: 1.01,
+                              transition: { duration: 0.15 },
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            aria-label={`Apply for ${position.title}`}
+                          >
+                            Apply for this position
+                            <ArrowRight
+                              size={14}
+                              aria-hidden="true"
+                              className="transition-transform duration-200 group-hover:translate-x-0.5"
+                            />
+                          </motion.button>
+                        </div>
                       </div>
 
                       {/* Accent sweep */}
@@ -232,6 +268,113 @@ export function JoinPageContent({
           )}
         </Container>
       </Section>
+
+      {/* ── Position Detail Modal ────────────────────────────────────────── */}
+      <AnimatePresence>
+        {activeDetailPosition && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveDetailPosition(null)}
+              className="fixed inset-0 bg-black/65 backdrop-blur-sm"
+              aria-hidden="true"
+            />
+
+            {/* Modal Dialog */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 12 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="border-border bg-surface relative z-10 my-8 flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border shadow-2xl"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="position-modal-title"
+            >
+              {/* Modal Cover Header */}
+              <div className="bg-muted/20 relative h-56 w-full flex-shrink-0 overflow-hidden">
+                <MediaImage
+                  doc={activeDetailPosition.image}
+                  seed={activeDetailPosition.id}
+                  fill
+                  className="object-cover"
+                  placeholderLabel={`${activeDetailPosition.title} cover`}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/40" />
+
+                {/* Close button */}
+                <button
+                  type="button"
+                  onClick={() => setActiveDetailPosition(null)}
+                  className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition-transform hover:scale-110 hover:bg-black/70 focus-visible:outline-none"
+                  aria-label="Close modal"
+                >
+                  <X size={18} />
+                </button>
+
+                <div className="absolute right-6 bottom-4 left-6">
+                  <div
+                    className="mb-2.5 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold capitalize backdrop-blur-md"
+                    style={{
+                      backgroundColor: getTypeStyle(activeDetailPosition.type).bg,
+                      color: getTypeStyle(activeDetailPosition.type).text,
+                    }}
+                  >
+                    {activeDetailPosition.type.replace(/_/g, ' ')}
+                  </div>
+                  <h2
+                    id="position-modal-title"
+                    className="text-2xl leading-tight font-bold text-white md:text-3xl"
+                  >
+                    {activeDetailPosition.title}
+                  </h2>
+                </div>
+              </div>
+
+              {/* Modal Content Body */}
+              <div className="flex-1 overflow-y-auto p-6 sm:p-8">
+                <p className="text-primary mb-4 text-xs font-semibold tracking-wider uppercase">
+                  Position Description & Requirements
+                </p>
+
+                {activeDetailPosition.rawDoc?.description ? (
+                  <RichText
+                    data={activeDetailPosition.rawDoc.description}
+                    className="text-fg text-base leading-relaxed"
+                  />
+                ) : (
+                  <p className="text-fg text-base leading-relaxed">
+                    {activeDetailPosition.previewText}
+                  </p>
+                )}
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div className="border-border bg-bg/60 flex flex-wrap items-center justify-between gap-4 border-t p-6 backdrop-blur-md">
+                <button
+                  type="button"
+                  onClick={() => setActiveDetailPosition(null)}
+                  className="border-border text-fg hover:bg-muted/30 rounded-xl border px-5 py-2.5 text-sm font-semibold transition-colors"
+                >
+                  Close
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleApply(activeDetailPosition.title)}
+                  className="bg-primary hover:bg-primary/90 inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:shadow-lg focus-visible:outline-none"
+                >
+                  <CheckCircle size={16} />
+                  Apply for this Position
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ── Testimonials ─────────────────────────────────────────────────── */}
       {testimonials.length > 0 && (

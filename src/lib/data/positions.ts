@@ -10,7 +10,7 @@ export const getOpenPositions = unstable_cache(
       collection: 'open_positions',
       where: { is_active: { equals: true } },
       limit: 50,
-      depth: 0,
+      depth: 1,
       overrideAccess: true,
     })
     return result.docs

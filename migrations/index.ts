@@ -35,6 +35,7 @@ import * as migration_20260704_000001_site_settings_cookie_consent from './20260
 import * as migration_20260705_000001_site_settings_section_visibility from './20260705_000001_site_settings_section_visibility'
 import * as migration_20260805_203741 from './20260805_203741'
 import * as migration_20260805_220511 from './20260805_220511'
+import * as migration_20260808_222418 from './20260808_222418'
 
 export const migrations = [
   {
@@ -221,5 +222,10 @@ export const migrations = [
     up: migration_20260805_220511.up,
     down: migration_20260805_220511.down,
     name: '20260805_220511',
+  },
+  {
+    up: migration_20260808_222418.up,
+    down: migration_20260808_222418.down,
+    name: '20260808_222418',
   },
 ]

@@ -550,6 +550,13 @@ export const COLLECTION_SCHEMAS: Record<string, CollectionDef> = {
         required: true,
         hint: 'e.g. PhD Fellowship, Postdoc',
       },
+      {
+        name: 'image',
+        label: 'Cover Image',
+        type: 'upload',
+        relationTo: 'media',
+        accept: 'image/*',
+      },
       { name: 'description', label: 'Description', type: 'richtext', required: true },
       { name: 'is_active', label: 'Active (visible on site)', type: 'checkbox' },
     ],

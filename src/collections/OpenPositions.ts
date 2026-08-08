@@ -54,6 +54,15 @@ export const OpenPositions: CollectionConfig = {
       },
     },
     {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Position Cover / Feature Image',
+      admin: {
+        description: 'Image displayed on the Join Us page for this open position.',
+      },
+    },
+    {
       name: 'is_active',
       type: 'checkbox',
       defaultValue: true,

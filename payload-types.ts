@@ -485,6 +485,10 @@ export interface OpenPosition {
    */
   type: string;
   /**
+   * Image displayed on the Join Us page for this open position.
+   */
+  image?: (number | null) | Media;
+  /**
    * Uncheck to hide from the public site.
    */
   is_active?: boolean | null;
@@ -1094,6 +1098,7 @@ export interface OpenPositionsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   type?: T;
+  image?: T;
   is_active?: T;
   updatedAt?: T;
   createdAt?: T;

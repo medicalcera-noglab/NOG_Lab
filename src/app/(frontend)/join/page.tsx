@@ -6,7 +6,7 @@ import { getSiteSettings } from '@/lib/data/site-settings'
 import { getPageSeo, resolvePageSeo } from '@/lib/data'
 import { PageBanner } from '@/components/ui/PageBanner'
 import { JoinPageContent, type PositionCard } from '@/components/join/JoinPageContent'
-import type { OpenPosition } from '../../../../payload-types'
+import type { OpenPosition, Media } from '../../../../payload-types'
 
 export async function generateMetadata(): Promise<Metadata> {
   const [settings, pageSeo] = await Promise.all([getSiteSettings(), getPageSeo()])
@@ -56,6 +56,8 @@ export default async function JoinPage() {
     title: p.title,
     type: p.type,
     previewText: extractPlainText(p.description).slice(0, 220),
+    image: p.image && typeof p.image === 'object' ? (p.image as Media) : null,
+    rawDoc: p,
   }))
 
   const testimonials = (about?.testimonials ?? []).map((t) => ({
