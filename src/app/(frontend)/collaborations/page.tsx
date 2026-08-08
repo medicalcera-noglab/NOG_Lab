@@ -100,26 +100,26 @@ export default async function CollaborationsPage() {
   const ctaTitle = partnershipsPage?.ctaTitle ?? "Let's Build Evidence Together"
   const ctaDescription = partnershipsPage?.ctaDescription
 
-  // Build dynamic navigation items driven by CMS data
+  // Build dynamic navigation items driven strictly by CMS array items
   const navItems: NavItem[] = [
-    (offerings.length > 0 || whatWeOfferTitle) && { id: 'what-we-offer', label: whatWeOfferTitle },
-    (infrastructurePillars.length > 0 || infrastructureTitle) && {
+    offerings.length > 0 && { id: 'what-we-offer', label: whatWeOfferTitle },
+    infrastructurePillars.length > 0 && {
       id: 'research-infrastructure',
       label: infrastructureTitle,
     },
-    (sectors.length > 0 || whoWeWorkWithTitle) && {
+    sectors.length > 0 && {
       id: 'who-we-work-with',
       label: whoWeWorkWithTitle,
     },
-    (exampleProjects.length > 0 || projectsTitle) && {
+    exampleProjects.length > 0 && {
       id: 'example-projects',
       label: projectsTitle,
     },
-    (models.length > 0 || modelsTitle) && {
+    models.length > 0 && {
       id: 'partnership-models',
       label: modelsTitle,
     },
-    (collaborators.length > 0 || collaboratorsTitle) && {
+    collaborators.length > 0 && {
       id: 'partner-institutions',
       label: collaboratorsTitle,
     },
@@ -137,7 +137,7 @@ export default async function CollaborationsPage() {
       />
 
       {/* Why Partner With Us Section */}
-      {(whyPartnerTitle || whyPartnerSubtitle || strengths.length > 0) && (
+      {strengths.length > 0 && (
         <Section className="border-border bg-surface border-b py-12 md:py-16">
           <Container>
             <FadeUp>
@@ -158,26 +158,24 @@ export default async function CollaborationsPage() {
               </div>
             </FadeUp>
 
-            {strengths.length > 0 && (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {strengths.map((strength, i) => {
-                  const Icon = STRENGTH_ICONS[i % STRENGTH_ICONS.length]
-                  return (
-                    <FadeUp key={strength.title || i} delay={i * 0.04}>
-                      <div className="border-border bg-bg flex h-full flex-col rounded-2xl border p-5 transition-shadow hover:shadow-sm">
-                        <div className="bg-primary/10 text-primary mb-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
-                          <Icon size={20} />
-                        </div>
-                        <h3 className="font-heading text-fg mb-1.5 text-base font-bold">
-                          {strength.title}
-                        </h3>
-                        <p className="text-muted text-xs leading-relaxed">{strength.desc}</p>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {strengths.map((strength, i) => {
+                const Icon = STRENGTH_ICONS[i % STRENGTH_ICONS.length]
+                return (
+                  <FadeUp key={strength.title || i} delay={i * 0.04}>
+                    <div className="border-border bg-bg flex h-full flex-col rounded-2xl border p-5 transition-shadow hover:shadow-sm">
+                      <div className="bg-primary/10 text-primary mb-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
+                        <Icon size={20} />
                       </div>
-                    </FadeUp>
-                  )
-                })}
-              </div>
-            )}
+                      <h3 className="font-heading text-fg mb-1.5 text-base font-bold">
+                        {strength.title}
+                      </h3>
+                      <p className="text-muted text-xs leading-relaxed">{strength.desc}</p>
+                    </div>
+                  </FadeUp>
+                )
+              })}
+            </div>
           </Container>
         </Section>
       )}
@@ -186,7 +184,7 @@ export default async function CollaborationsPage() {
       <PartnershipsSubnav items={navItems} />
 
       {/* ── SECTION 1: WHAT WE OFFER ── */}
-      {(whatWeOfferTitle || offerings.length > 0) && (
+      {offerings.length > 0 && (
         <Section id="what-we-offer" className="bg-bg py-16 md:py-24">
           <Container>
             <FadeUp>
@@ -194,41 +192,39 @@ export default async function CollaborationsPage() {
                 <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
                   Capabilities & Services
                 </p>
-                <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
-                  {whatWeOfferTitle}
-                </h2>
+                {whatWeOfferTitle && (
+                  <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
+                    {whatWeOfferTitle}
+                  </h2>
+                )}
                 {whatWeOfferSubtitle && (
                   <p className="text-muted mt-3 max-w-2xl leading-relaxed">{whatWeOfferSubtitle}</p>
                 )}
               </div>
             </FadeUp>
 
-            {offerings.length > 0 && (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {offerings.map((item, i) => {
-                  const Icon = OFFERING_ICONS[i % OFFERING_ICONS.length]
-                  return (
-                    <FadeUp key={item.title || i} delay={i * 0.05}>
-                      <div className="border-border bg-surface flex h-full flex-col rounded-2xl border p-6 shadow-sm transition-all hover:shadow-md">
-                        <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-2xl">
-                          <Icon size={24} />
-                        </div>
-                        <h3 className="font-heading text-fg mb-3 text-lg font-bold">
-                          {item.title}
-                        </h3>
-                        <p className="text-muted text-sm leading-relaxed">{item.text}</p>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {offerings.map((item, i) => {
+                const Icon = OFFERING_ICONS[i % OFFERING_ICONS.length]
+                return (
+                  <FadeUp key={item.title || i} delay={i * 0.05}>
+                    <div className="border-border bg-surface flex h-full flex-col rounded-2xl border p-6 shadow-sm transition-all hover:shadow-md">
+                      <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-2xl">
+                        <Icon size={24} />
                       </div>
-                    </FadeUp>
-                  )
-                })}
-              </div>
-            )}
+                      <h3 className="font-heading text-fg mb-3 text-lg font-bold">{item.title}</h3>
+                      <p className="text-muted text-sm leading-relaxed">{item.text}</p>
+                    </div>
+                  </FadeUp>
+                )
+              })}
+            </div>
           </Container>
         </Section>
       )}
 
       {/* ── SECTION 2: RESEARCH INFRASTRUCTURE ── */}
-      {(infrastructureTitle || infrastructurePillars.length > 0) && (
+      {infrastructurePillars.length > 0 && (
         <Section
           id="research-infrastructure"
           className="border-border bg-surface border-y py-16 md:py-24"
@@ -280,7 +276,7 @@ export default async function CollaborationsPage() {
       )}
 
       {/* ── SECTION 3: WHO WE WORK WITH ── */}
-      {(whoWeWorkWithTitle || sectors.length > 0) && (
+      {sectors.length > 0 && (
         <Section id="who-we-work-with" className="bg-bg py-16 md:py-24">
           <Container>
             <FadeUp>
@@ -288,9 +284,11 @@ export default async function CollaborationsPage() {
                 <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
                   Collaborative Ecosystem
                 </p>
-                <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
-                  {whoWeWorkWithTitle}
-                </h2>
+                {whoWeWorkWithTitle && (
+                  <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
+                    {whoWeWorkWithTitle}
+                  </h2>
+                )}
                 {whoWeWorkWithSubtitle && (
                   <p className="text-muted mx-auto mt-3 max-w-2xl leading-relaxed">
                     {whoWeWorkWithSubtitle}
@@ -299,42 +297,40 @@ export default async function CollaborationsPage() {
               </div>
             </FadeUp>
 
-            {sectors.length > 0 && (
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-                {sectors.map((sector, i) => {
-                  const Icon = SECTOR_ICONS[i % SECTOR_ICONS.length]
-                  return (
-                    <FadeUp key={sector.title || i} delay={i * 0.08}>
-                      <div className="border-border bg-surface flex h-full flex-col rounded-2xl border p-6 shadow-sm">
-                        <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-2xl">
-                          <Icon size={24} />
-                        </div>
-                        <h3 className="font-heading text-fg mb-4 text-xl font-bold">
-                          {sector.title}
-                        </h3>
-                        <ul className="space-y-2.5">
-                          {(sector.items ?? []).map((item, idx) => (
-                            <li
-                              key={item.name || idx}
-                              className="text-muted flex items-start gap-2 text-sm"
-                            >
-                              <CheckCircle2 size={16} className="text-primary mt-0.5 shrink-0" />
-                              <span>{item.name}</span>
-                            </li>
-                          ))}
-                        </ul>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {sectors.map((sector, i) => {
+                const Icon = SECTOR_ICONS[i % SECTOR_ICONS.length]
+                return (
+                  <FadeUp key={sector.title || i} delay={i * 0.08}>
+                    <div className="border-border bg-surface flex h-full flex-col rounded-2xl border p-6 shadow-sm">
+                      <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-2xl">
+                        <Icon size={24} />
                       </div>
-                    </FadeUp>
-                  )
-                })}
-              </div>
-            )}
+                      <h3 className="font-heading text-fg mb-4 text-xl font-bold">
+                        {sector.title}
+                      </h3>
+                      <ul className="space-y-2.5">
+                        {(sector.items ?? []).map((item, idx) => (
+                          <li
+                            key={item.name || idx}
+                            className="text-muted flex items-start gap-2 text-sm"
+                          >
+                            <CheckCircle2 size={16} className="text-primary mt-0.5 shrink-0" />
+                            <span>{item.name}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </FadeUp>
+                )
+              })}
+            </div>
           </Container>
         </Section>
       )}
 
       {/* ── SECTION 4: EXAMPLE PROJECTS ── */}
-      {(projectsTitle || exampleProjects.length > 0) && (
+      {exampleProjects.length > 0 && (
         <Section id="example-projects" className="border-border bg-surface border-t py-16 md:py-24">
           <Container>
             <FadeUp>
@@ -342,37 +338,37 @@ export default async function CollaborationsPage() {
                 <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
                   Proven Track Record
                 </p>
-                <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
-                  {projectsTitle}
-                </h2>
+                {projectsTitle && (
+                  <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
+                    {projectsTitle}
+                  </h2>
+                )}
                 {projectsSubtitle && (
                   <p className="text-muted mt-3 max-w-2xl leading-relaxed">{projectsSubtitle}</p>
                 )}
               </div>
             </FadeUp>
 
-            {exampleProjects.length > 0 && (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {exampleProjects.map((project, i) => (
-                  <FadeUp key={project.title || i} delay={i * 0.04}>
-                    <div className="border-border bg-bg hover:border-primary/50 flex items-center gap-3 rounded-xl border p-4 shadow-xs transition-colors">
-                      <div className="bg-primary/10 text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
-                        <CheckCircle2 size={16} />
-                      </div>
-                      <span className="font-heading text-fg text-sm font-semibold">
-                        {project.title}
-                      </span>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {exampleProjects.map((project, i) => (
+                <FadeUp key={project.title || i} delay={i * 0.04}>
+                  <div className="border-border bg-bg hover:border-primary/50 flex items-center gap-3 rounded-xl border p-4 shadow-xs transition-colors">
+                    <div className="bg-primary/10 text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+                      <CheckCircle2 size={16} />
                     </div>
-                  </FadeUp>
-                ))}
-              </div>
-            )}
+                    <span className="font-heading text-fg text-sm font-semibold">
+                      {project.title}
+                    </span>
+                  </div>
+                </FadeUp>
+              ))}
+            </div>
           </Container>
         </Section>
       )}
 
       {/* ── SECTION 5: PARTNERSHIP MODELS ── */}
-      {(modelsTitle || models.length > 0) && (
+      {models.length > 0 && (
         <Section id="partnership-models" className="bg-bg py-16 md:py-24">
           <Container>
             <FadeUp>
@@ -380,9 +376,11 @@ export default async function CollaborationsPage() {
                 <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
                   Flexible Engagement
                 </p>
-                <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
-                  {modelsTitle}
-                </h2>
+                {modelsTitle && (
+                  <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
+                    {modelsTitle}
+                  </h2>
+                )}
                 {modelsSubtitle && (
                   <p className="text-muted mx-auto mt-3 max-w-2xl leading-relaxed">
                     {modelsSubtitle}
@@ -391,29 +389,25 @@ export default async function CollaborationsPage() {
               </div>
             </FadeUp>
 
-            {models.length > 0 && (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {models.map((model, i) => (
-                  <FadeUp key={model.title || i} delay={i * 0.05}>
-                    <div className="border-border bg-surface flex h-full flex-col rounded-2xl border p-6 shadow-sm">
-                      <div className="bg-primary/10 text-primary mb-3 flex h-9 w-9 items-center justify-center rounded-xl">
-                        <Layers size={18} />
-                      </div>
-                      <h3 className="font-heading text-fg mb-2 text-base font-bold">
-                        {model.title}
-                      </h3>
-                      <p className="text-muted text-xs leading-relaxed">{model.desc}</p>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {models.map((model, i) => (
+                <FadeUp key={model.title || i} delay={i * 0.05}>
+                  <div className="border-border bg-surface flex h-full flex-col rounded-2xl border p-6 shadow-sm">
+                    <div className="bg-primary/10 text-primary mb-3 flex h-9 w-9 items-center justify-center rounded-xl">
+                      <Layers size={18} />
                     </div>
-                  </FadeUp>
-                ))}
-              </div>
-            )}
+                    <h3 className="font-heading text-fg mb-2 text-base font-bold">{model.title}</h3>
+                    <p className="text-muted text-xs leading-relaxed">{model.desc}</p>
+                  </div>
+                </FadeUp>
+              ))}
+            </div>
           </Container>
         </Section>
       )}
 
       {/* ── SECTION 6: PARTNER INSTITUTIONS ── */}
-      {(collaboratorsTitle || collaborators.length > 0) && (
+      {collaborators.length > 0 && (
         <Section
           id="partner-institutions"
           className="border-border bg-surface border-t py-16 md:py-24"
@@ -424,20 +418,20 @@ export default async function CollaborationsPage() {
                 <p className="text-primary mb-2 text-xs font-semibold tracking-[0.15em] uppercase">
                   Global Network
                 </p>
-                <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
-                  {collaboratorsTitle}
-                </h2>
-                {collaborators.length > 0 && (
-                  <p className="text-muted mt-3 max-w-2xl leading-relaxed">
-                    {collaborators.length} institutions across{' '}
-                    {new Set(collaborators.map((c) => c.country).filter(Boolean)).size} countries
-                    {collaboratorsSubtitle ? ` — ${collaboratorsSubtitle}` : ''}
-                  </p>
+                {collaboratorsTitle && (
+                  <h2 className="font-heading text-fg text-3xl font-bold md:text-4xl">
+                    {collaboratorsTitle}
+                  </h2>
                 )}
+                <p className="text-muted mt-3 max-w-2xl leading-relaxed">
+                  {collaborators.length} institutions across{' '}
+                  {new Set(collaborators.map((c) => c.country).filter(Boolean)).size} countries
+                  {collaboratorsSubtitle ? ` — ${collaboratorsSubtitle}` : ''}
+                </p>
               </div>
             </FadeUp>
 
-            {collaborators.length > 0 && <CollaboratorsGrid collaborators={collaborators} />}
+            <CollaboratorsGrid collaborators={collaborators} />
           </Container>
         </Section>
       )}
