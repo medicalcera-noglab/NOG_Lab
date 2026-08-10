@@ -36,8 +36,8 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1072.0",
-    "@aws-sdk/s3-request-presigner": "^3.1072.0",
+    "@aws-sdk/client-s3": "^3.1105.0",
+    "@aws-sdk/s3-request-presigner": "^3.1105.0",
     "@payloadcms/db-postgres": "^3.85.1",
     "@payloadcms/email-nodemailer": "^3.85.1",
     "@payloadcms/email-resend": "^3.85.1",
